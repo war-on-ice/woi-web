@@ -1,0 +1,27 @@
+{% extends "wrappers/wrapper.html" %}
+{% block title %}Home{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-md-4 col-sm-12">
+		<img src="{{ url_for('static', filename='img/LogoLightBlue1.png') }}" alt="logo" class="img-responsive">
+	</div>
+	<div class="col-md-8 col-sm-12">
+		<div class="well">
+			{% include "tables/teamandplayer.html" %}
+		</div>
+	</div>
+</div>
+<div class="row">
+	<div class="col-md-12">
+		<div class="well">
+			<h2>Click The Dates In The Table Below for Live Game Updates!</h2>
+			{% include "tables/livegames.html" %}
+		</div>
+	</div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+	{% include "tables/teamandplayer_js.html" %}
+	{% include "tables/livegames_js.html" %}
+{% endblock %}

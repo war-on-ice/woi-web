@@ -1,0 +1,71 @@
+<!-- Fixed navbar -->
+<nav class="navbar navbar-default navbar-fixed-top navbar-inverse navbar-custom">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+        <span class="sr-only">Toggle navigation</span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="/" style="padding-top:5px"><img src="{{ url_for('static', filename='img/logo-grey-40.png') }}"></a>
+      <a class="navbar-brand" href="#">WAR-On-Ice</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cap <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Cap Tools Home</a></li>
+            <li><a href="#">Buyout and Recapture Calculator</a></li>
+            <li><a href="#">CBA FAQ</a></li>
+            <li role="separator" class="divider"></li>
+            {% for team in ('Anaheim Ducks','Arizona Coyotes','Boston Bruins','Buffalo Sabres','Calgary Flames','Carolina Hurricanes','Chicago Blackhawks','Colorado Avalanche','Columbus Blue Jackets','Dallas Stars','Detroit Red Wings','Edmonton Oilers','Florida Panthers','Los Angeles Kings','Minnesota Wild','Montreal Canadiens','Nashville Predators','New Jersey Devils','New York Islanders','New York Rangers','Philadelphia Flyers','Pittsburgh Penguins','Ottawa Senators','San Jose Sharks','St Louis Blues','Tampa Bay Lightning','Toronto Maple Leafs','Vancouver Canucks','Washington Capitals','Winnipeg Jets') %}
+            <li><a href="#">{{ team }}</a></li>
+            {% endfor %}
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Players <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Skater Statistics</a></li>
+            <li><a href="#">Skater History</a></li>
+            <li><a href="#">Skater Hextally</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Goaltender Statistics</a></li>
+            <li><a href="#">Goaltender History</a></li>
+            <li><a href="#">Goaltender Hextally</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Wins Above Replacement</a></li>
+            
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Teams <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Team Standings</a></li>
+            <li role="separator" class="divider"></li>
+            <li><a href="#">Team Statistics</a></li>
+            <li><a href="#">Team History</a></li>
+            <li><a href="#">Team Hextally</a></li>
+            <li><a href="#">Team Goals Above Baseline</a></li>
+          </ul>
+        </li>
+
+        <li class="dropdown">
+          <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Games/Series <span class="caret"></span></a>
+          <ul class="dropdown-menu">
+            <li><a href="#">Game Table</a></li>
+            <li><a href="#">Series Summaries</a></li>
+          </ul>
+        </li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li><a href="#">Blog</a></li>
+        <li><a href="#">Glossary</a></li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div>
+</nav>

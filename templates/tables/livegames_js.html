@@ -1,0 +1,9 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#livegames').DataTable( {
+			"ajax": "{{ url_for('dummy_path', filename='livegamedummydata.txt') }}",
+			"aaSorting": [],
+			"pagingType": "full",
+		});
+	} );
+</script>

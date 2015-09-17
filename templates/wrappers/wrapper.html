@@ -1,0 +1,48 @@
+<html>
+	<head>
+		<!-- Meta tags -->
+		<meta charset="UTF-8">
+		<meta name="description" content="">
+		<meta name="keywords" content="">
+		<meta name="author" content="WAR-On-Ice">
+		<!-- title -->
+		<title>{% block title %}{% endblock %} | WAR-On-Ice</title>
+		<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-black-40.png') }}" />
+		<!-- CSS -->
+		<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
+		<link href="{{ url_for('static', filename='css/woi.css') }}" rel="stylesheet">
+		<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/css/dataTables.bootstrap.min.css') }}"/>
+		{% block page_css %}{% endblock %}
+		<!-- Load jquery in head, in case included pages need it before they load -->
+		<script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
+	</head>
+	<body data-spy="scroll" data-target=".navbar-fixed-top">
+		<!-- Navigation -->
+		{% include "wrappers/navigation.html" %}
+		<div class="container">
+			{% include "wrappers/topads.html" %}
+			<div class="row">
+				<div class="col-md-10">
+					{% block content %}{% endblock %}
+				</div>
+				<div class="col-md-2">
+					{% include "wrappers/sideads.html" %}
+				</div>
+			</div>
+			<div class="row">
+				<div class="footer">
+					<hr>
+				    <footer>
+				      <p>Design elements copyright (2015) war-on-ice.com.</p>
+				    </footer>
+				</div>
+			</div>
+		</div>
+		<!-- JavaScript -->
+		<script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='js/nav.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='DataTables/js/jquery.dataTables.min.js') }}"></script>
+		<script type="text/javascript" src="{{ url_for('static', filename='DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+		{% block page_js %}{% endblock %}
+	</body>
+</html>
