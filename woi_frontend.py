@@ -7,6 +7,11 @@ def hello():
 	return render_template("index.html")
 
 
+@app.route("/iframe")
+def iframe_test():
+	return render_template("iframe_test.html")
+
+
 @app.route("/dummydata/<string:filename>")
 def dummy_path(filename):
 	return send_from_directory('dummydata', filename)
