@@ -1,33 +1,51 @@
 from flask import Flask, render_template, send_from_directory
 app = Flask(__name__)
 
+from navigation import setup_nav
+
 
 @app.route("/")
 def index():
-	return render_template("index.html")
+	rd = setup_nav()
+	return render_template("index.html", rd=rd)
 
 
 @app.route("/iframe")
 def iframe_test():
-	return render_template("iframe_test.html")
+	rd = setup_nav()
+	return render_template("iframe_test.html", rd=rd)
 
 @app.route("/r/<string:pagename>/")
 def iframe_woi(pagename):
-	return render_template("woi-frame.html", page = pagename)
+	rd = setup_nav()
+	print pagename
+	return render_template("woi-frame.html", page=pagename, rd=rd,
+		url="http://biscuit.war-on-ice.com/" + pagename)
+
+
+@app.route("/cap/")
+def iframe_cap():
+	rd = setup_nav()
+	endurls = [("quicksheet", "Quick Look"),
+				("recent-signings", "Recent Signings"),
+				("playerroster", "Player AAV By Season"),
+				("attained-bonuses", "Performance Bonuses Attained")]
+	urls = []
+	for u in endurls:
+		tu = {}
+		tu["id"] = u[0]
+		tu["name"] = u[1]
+		tu["url"] = "http://www.war-on-ice.com/cap/" + u[0] + ".html"
+		urls.append(tu)
+	rd["urls"] = urls
+	return render_template("iframe_cap.html", cap=True, rd=rd)
+
 
 @app.route("/cap/team/<string:team>/")
 def iframe_cap_team(team):
-	teamDict ={
-		'Anaheim Ducks': 'ANA','Arizona Coyotes': 'ARI','Boston Bruins': 'BOS','Buffalo Sabres':'BUF',
-				  'Calgary Flames':'CGY','Carolina Hurricanes':'CAR','Chicago Blackhawks':'CHI','Colorado Avalanche':'COL',
-				  'Columbus Blue Jackets':'CBJ','Dallas Stars':'DAL','Detroit Red Wings':'DET','Edmonton Oilers':'EDM',
-				  'Florida Panthers':'FLA','Los Angeles Kings':'L.A','Minnesota Wild':'MIN','Montreal Canadiens':'MTL',
-				  'Nashville Predators':'NSH','New Jersey Devils':'N.J','New York Islanders':'NYI','New York Rangers':'NYR',
-				  'Philadelphia Flyers':'PHI','Pittsburgh Penguins':'PIT','Ottawa Senators':'OTT','San Jose Sharks':'S.J',
-				  'St Louis Blues':'STL','Tampa Bay Lightning':'T.B','Toronto Maple Leafs':'TOR','Vancouver Canucks':'VAN',
-				  'Washington Capitals':'WSH','Winnipeg Jets':'WPG'
-	}
-	return render_template("woi-frame.html", page = teamDict[team])
+	rd = setup_nav()
+	return render_template("woi-frame.html", page=team, rd=rd,
+		url="http://biscuit.war-on-ice.com/" + team + ".html")
 
 
 @app.route("/dummydata/<string:filename>")

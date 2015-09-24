@@ -19,17 +19,23 @@
 	<body data-spy="scroll" data-target=".navbar-fixed-top">
 		<!-- Navigation -->
 		{% include "wrappers/navigation.html" %}
-		<div class="container">
-			{% include "wrappers/topads.html" %}
-			<div class="row">
-				<div class="col-md-10">
-					{% block content %}{% endblock %}
-				</div>
-				<div class="col-md-2">
-					{% include "wrappers/sideads.html" %}
+		<div class="row">
+			<div class="col-md-11">
+				<div class="container">
+					{% include "wrappers/topads.html" %}
+					<div class="row">
+						<div class="col-md-12">
+							{% block content %}{% endblock %}
+						</div>
+					</div>
 				</div>
 			</div>
-			<div class="row">
+			<div class="col-md-1">
+				{% include "wrappers/sideads.html" %}
+			</div>
+		</div>
+		<div class="row">
+			<div class="container">
 				<div class="footer">
 					<hr>
 				    <footer>

@@ -16,12 +16,12 @@
         <li class="dropdown">
           <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cap <span class="caret"></span></a>
           <ul class="dropdown-menu">
-            <li><a href="">Cap Tools Home</a></li>
+            <li><a href="/cap/">Cap Tools Home</a></li>
             <li><a href="/r/buyout-recap/">Buyout and Recapture Calculator</a></li>
             <li><a href="#">CBA FAQ</a></li>
             <li role="separator" class="divider"></li>
-            {% for team in ('Anaheim Ducks','Arizona Coyotes','Boston Bruins','Buffalo Sabres','Calgary Flames','Carolina Hurricanes','Chicago Blackhawks','Colorado Avalanche','Columbus Blue Jackets','Dallas Stars','Detroit Red Wings','Edmonton Oilers','Florida Panthers','Los Angeles Kings','Minnesota Wild','Montreal Canadiens','Nashville Predators','New Jersey Devils','New York Islanders','New York Rangers','Philadelphia Flyers','Pittsburgh Penguins','Ottawa Senators','San Jose Sharks','St Louis Blues','Tampa Bay Lightning','Toronto Maple Leafs','Vancouver Canucks','Washington Capitals','Winnipeg Jets') %}
-            <li><a href="/cap/team/{{ team }}/">{{ team }}</a></li>
+            {% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
+            <li><a href="/cap/team/{{ url }}/">{{ team }}</a></li>
             {% endfor %}
           </ul>
         </li>
@@ -49,7 +49,7 @@
             <li role="separator" class="divider"></li>
             <li><a href="/r/teamtable/">Team Statistics</a></li>
             <li><a href="/r/teamtime/">Team History</a></li>
-            <li><a href="/r/team-hextally/">Team Hextally</a></li>
+            <li><a href="/r/hextally-teams/">Team Hextally</a></li>
             <li><a href="/r/teamGAB/">Team Goals Above Baseline</a></li>
           </ul>
         </li>
