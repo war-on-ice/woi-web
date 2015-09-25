@@ -5,5 +5,4 @@ venv/
 .vagrant/
 .idea/
 *.pyc
-config-prod.py
-config.py
+cred.py

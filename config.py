@@ -1,9 +1,6 @@
-USER_NAME = "username"
-PASSWORD =  "password"
-db_Server = "serveraddress"
-db_Name = "dbname"
+import cred
 
-connStr = "mysql://" + USER_NAME +  ":" + PASSWORD + "@" + db_Server + "/" + db_Name
+connStr = "mysql://" + cred.mysql_username +  ":" + cred.mysql_password + "@" + cred.mysql_server + "/" + cred.mysql_dbname
 
 import os
 _basedir = os.path.abspath(os.path.dirname(__file__))
