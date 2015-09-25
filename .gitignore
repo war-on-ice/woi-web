@@ -1,1 +1,9 @@
 scripts/
+vagrantfile
+env/
+venv/
+.vagrant/
+.idea/
+*.pyc
+config-prod.py
+config.py

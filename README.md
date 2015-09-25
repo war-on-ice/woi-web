@@ -3,11 +3,10 @@ WAR On Ice - Web
 
 ## Compile Instructions
 1. Install vagrant and VirtualBox (or your favorite VM software)
-2. Initialize a vagrant instance (I used "ubuntu/trusty64") - vagrant init ubuntu/trusty64
-3. Open the Vagrantfile and forward the guest machine's port - config.vm.network "forwarded_port", guest: 5000, host: 5000
-4. Start the vagrant box and ssh in ("vagrant up" and "vagrant ssh")
-5. Create a virtual environment for the project
-6. Install pip
-6. Install the requirements for this project - pip install -r required.txt
-7. Run the flask file - python woi_frontend.py
+2. Spin up vagrant instance from Vagrantfile `vagrant up`
+4. SSH into vagrant box: `vagrant ssh`
+5. Create a virtual environment for the project (optional)
+6. Install the requirements for this project `pip install -r required.txt`
+7. You will need to copy the config file and rename it to config.py. Update the username/password/server/db-name to your credentials.
+7. Run the flask file - `python run.py`
 8. Connect to localhost:5000 to see the site running!

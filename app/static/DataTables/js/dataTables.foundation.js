@@ -130,7 +130,7 @@ DataTable.ext.renderer.pageButton.foundation = function ( settings, host, idx, b
 
 // Define as an AMD module if possible
 if ( typeof define === 'function' && define.amd ) {
-	define( ['jquery', 'datatables'], factory );
+	define( ['jquery.dataTables', 'datatables'], factory );
 }
 else if ( typeof exports === 'object' ) {
     // Node/CommonJS

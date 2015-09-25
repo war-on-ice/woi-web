@@ -1,8 +1,15 @@
 from flask import Flask, render_template, send_from_directory
+from flask.ext.sqlalchemy import SQLAlchemy
+from sqlalchemy.ext.declarative import declarative_base
+
 app = Flask(__name__)
+app.config.from_object('config')
+db = SQLAlchemy(app)
 
-from navigation import setup_nav
+Base = declarative_base()
+Base.metadata.reflect(bind = db.engine, views = True)
 
+from app.navigation import setup_nav
 
 @app.route("/")
 def index():
@@ -22,7 +29,6 @@ def iframe_woi(pagename):
 	return render_template("woi-frame.html", page=pagename, rd=rd,
 		url="http://biscuit.war-on-ice.com/" + pagename)
 
-
 @app.route("/cap/")
 def iframe_cap():
 	rd = setup_nav()
@@ -40,19 +46,24 @@ def iframe_cap():
 	rd["urls"] = urls
 	return render_template("iframe_cap.html", cap=True, rd=rd)
 
-
-@app.route("/cap/team/<string:team>/")
-def iframe_cap_team(team):
-	rd = setup_nav()
-	return render_template("woi-frame.html", page=team, rd=rd,
-		url="http://biscuit.war-on-ice.com/" + team + ".html")
-
+# @app.route("/cap/team/<string:team>/")
+# def iframe_cap_team(team):
+# 	rd = setup_nav()
+# 	return render_template("woi-frame.html", page=team, rd=rd,
+# 		url="http://biscuit.war-on-ice.com/" + team + ".html")
 
 @app.route("/dummydata/<string:filename>")
 def dummy_path(filename):
 	return send_from_directory('dummydata', filename)
 
+from app.cap.views import mod as capModule
+app.register_blueprint(capModule)
 
 
-if __name__ == "__main__":
-	app.run("0.0.0.0", debug=True)
+@app.template_filter()
+def format_currency(value):
+    value = round(value,0)
+    return "${:,.0f}".format(value)
+
+
+app.jinja_env.filters['format_currency'] = format_currency

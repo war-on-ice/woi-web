@@ -1,2 +1,4 @@
 Flask
 beautifulsoup4
+Flask-SQLAlchemy
+MySQL-Python
