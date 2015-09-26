@@ -17,7 +17,6 @@ def index():
 	rd = setup_nav()
 	return render_template("index.html", rd=rd)
 
-
 @app.route("/iframe")
 def iframe_test():
 	rd = setup_nav()
@@ -59,6 +58,9 @@ def dummy_path(filename):
 
 from app.cap.views import mod as capModule
 app.register_blueprint(capModule)
+
+from app.gamesummary.views import mod as gameSummaryModule
+app.register_blueprint(gameSummaryModule)
 
 app.register_blueprint(filters.blueprint)
 #

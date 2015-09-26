@@ -1,0 +1,126 @@
+body {
+    color: #222;
+    font-family: sans-serif;
+}
+
+h1 {
+    font-size: 30px;
+    font-weight: 400;
+    line-height: 48px;
+    margin: 0;
+}
+    h1 span.result {
+        margin-right: 20px;
+    }
+
+    h1 span.time,
+    h1 span.date {
+        font-size: 15px;
+        line-height: 0;
+
+        padding: 2px 5px;
+        margin-right: 15px;
+
+    }
+
+    h1 span.date {
+        background: none;
+        margin-right: 0;
+    }
+
+h2 {
+    font-size: 25px;
+    font-weight: 400;
+    line-height: 36px;
+    margin: 0;
+}
+
+h3 {
+    font-size: 21px;
+    font-weight: 400;
+    line-height: 30px;
+    margin: 0;
+}
+
+h4 {
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 24px;
+    margin: 0;
+}
+
+p {
+    font-size: 15px;
+    line-height: 24px;
+}
+
+.navbar {
+    background: #f2f2f2;
+    border: none;
+    margin-bottom: 36px;
+}
+
+.nav-tabs {
+    box-sizing: border-box;
+    border-bottom: 1px solid #ddf;
+    margin-bottom: 42px;
+}
+    .nav-tabs li a {
+        box-sizing: border-box;
+        color: blue;
+        height: 54px;
+        line-height: 54px;
+
+        margin: 0;
+        margin-right: 40px;
+        padding: 0;
+
+        border: none;
+        border-radius: 0;
+    }
+
+    .nav-tabs li a:hover {
+        background: none;
+        border-bottom: 4px solid #ddf;
+    }
+
+     .nav-tabs li a:focus {
+        background: none;
+    }
+
+    .nav-tabs li.active a,
+    .nav-tabs li.active a:hover,
+    .nav-tabs li.active a:focus {
+        border: none;
+        border-bottom: 4px solid blue;
+        color: blue;
+    }
+
+.dropdown .btn {
+    box-sizing: border-box;
+    text-align: left;
+    border: none;
+    border-bottom: 2px solid #ddf;
+    border-radius: 0;
+    height: 32px;
+    line-height: 32px;
+    padding: 0 5px;
+    margin: 0;
+    margin-bottom: 24px;
+}
+    .dropdown .btn:hover,
+    .dropdown .btn.active,
+    .dropdown .btn:focus {
+        background: none;
+        border-bottom: 2px solid blue;
+        box-shadow: none;
+    }
+
+    /* Remove background highlight from dropdown menu when it's open */
+    .btn-default:active:hover, .btn-default.active:hover, .open>.dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open>.dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open>.dropdown-toggle.btn-default.focus {
+        background: none;
+    }
+
+.tab-content h3 {
+    margin-top: 48px;
+}
