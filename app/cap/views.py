@@ -1,7 +1,5 @@
 from flask import Blueprint
 
-__author__ = 'akm'
-
 from app import app
 from app.cap.models import Contract, Player, Team
 from flask import render_template

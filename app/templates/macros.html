@@ -1,0 +1,31 @@
+{% macro create_dropdown(dropdown_dict) %}
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            Dropdown
+                        <span class="pull-right">
+                            <span class="caret"></span>
+                        </span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            {% for key, value in dropdown_dict.iteritems() %}
+                <li><a href="#">{{ key }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}
+
+{% macro create_dropdown_def(dropdown_dict) %}
+    <div class="dropdown">
+        <button class="btn btn-default dropdown-toggle" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+            {{ dropdown_dict["default"] }}
+                        <span class="pull-right">
+                            <span class="caret"></span>
+                        </span>
+        </button>
+        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+            {% for key, value in dropdown_dict["options"].iteritems() %}
+                <li><a href="#">{{ key }}</a></li>
+            {% endfor %}
+        </ul>
+    </div>
+{% endmacro %}

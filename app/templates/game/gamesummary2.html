@@ -1,0 +1,36 @@
+{% extends "wrappers/wrapper.html" %}
+{% from "macros.html" import create_dropdown, create_dropdown_def %}
+
+{% block content %}
+    <div id="inputPanel">
+        <div class="row">
+            <div class="col-sm-3">
+                {{ create_dropdown_def(strength_situations) }}
+            </div>
+            <div class="col-sm-3">
+                {{ create_dropdown_def(score_situations) }}
+            </div>
+            <div class="col-sm-3">
+                {{ create_dropdown_def(periods) }}
+            </div>
+            <div class="col-sm-3">
+                Columns to Display
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-sm-3">
+                <label><input type="checkbox" value="">Auto-Refresh</label>
+            </div>
+            <div class="col-sm-3">
+                <label><input type="checkbox" value="">Use Legacy Naming</label>
+            </div>
+            <div class="col-sm-3">
+
+            </div>
+            <div class="col-sm-3">
+                <button type="button" class="btn btn-default">Download Table</button>
+            </div>
+        </div>
+    </div>
+
+{% endblock %}
