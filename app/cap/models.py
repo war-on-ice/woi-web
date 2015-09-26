@@ -4,8 +4,8 @@ from app import db#, metadata
 
 from app import Base
 
-class Players(db.Model):
-    __table__ = Base.metadata.tables["roster"]
+class Player(db.Model):
+    __table__ = Base.metadata.tables["Player"]
     # __tablename__ = "roster"
     # woiid = db.Column(db.String(15), primary_key= True)
     # pos = db.Column(db.String(3))
@@ -23,7 +23,7 @@ class ContractHeaders(db.Model):
         return self.ContractID
 
 
-class Contracts(db.Model):
+class Contract(db.Model):
     __tablename__ = "Contracts"
     DetailID = Column(Integer, primary_key= True)
     # ContractID = Column(Integer)
@@ -57,8 +57,8 @@ class Contracts(db.Model):
     def __repr__(self):
         return self.ContractID
 
-class Teams(db.Model):
-    __table__ = Base.metadata.tables["Teams"]
+class Team(db.Model):
+    __table__ = Base.metadata.tables["Team"]
     # __table__ = metadata.tables["Teams"]
 
     def __repr__(self):

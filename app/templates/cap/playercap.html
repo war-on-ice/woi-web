@@ -1,9 +1,9 @@
 {% extends "wrappers/wrapper.html" %}
 {% block content %}
-    <h2>{{ player.firstlast }}</h2>
-    Position: {{ player.position }} | Date of Birth: {{ player.DOB }} <br>
-    Shoots: {{ player.shoots }} | Height: {{ player.height }} | Weight: {{ player.weight }} <br>
-    <a href ="http://war-on-ice.com/playerseason.html?woiid={{ player.woiid }}">Ask Me About My Statistical Performance</a>
+    <h2>{{ player.FullName }}</h2>
+    Position: {{ player.Position }} | Date of Birth: {{ player.Birthday }} <br>
+    Shoots: {{ player.Shoots }} | Height: {{ player.Height }} | Weight: {{ player.Weight }} <br>
+    <a href ="http://war-on-ice.com/playerseason.html?woiid={{ player.PlayerId }}">Ask Me About My Statistical Performance</a>
     <h3>Contract History</h3>
 
     {% for contractHeader in contractDetails|groupby("ContractID")|reverse %}

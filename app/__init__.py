@@ -1,4 +1,5 @@
 from flask import Flask, render_template, send_from_directory
+import filters
 from flask.ext.sqlalchemy import SQLAlchemy
 from sqlalchemy.ext.declarative import declarative_base
 
@@ -59,11 +60,6 @@ def dummy_path(filename):
 from app.cap.views import mod as capModule
 app.register_blueprint(capModule)
 
-
-@app.template_filter()
-def format_currency(value):
-    value = round(value,0)
-    return "${:,.0f}".format(value)
-
-
-app.jinja_env.filters['format_currency'] = format_currency
+app.register_blueprint(filters.blueprint)
+#
+# filters.define_filters()
