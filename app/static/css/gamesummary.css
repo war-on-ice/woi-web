@@ -1,6 +1,6 @@
 body {
     color: #222;
-    font-family: sans-serif;
+    font-family: Roboto, sans-serif;
 }
 
 h1 {
@@ -55,10 +55,16 @@ p {
 }
 
 .navbar {
-    background: #f2f2f2;
+    background: #222;
     border: none;
-    margin-bottom: 36px;
+    margin-bottom: 0;
+    /*margin-bottom: 36px;*/
 }
+
+    .navbar-default .navbar-nav>li>a,
+    .navbar-default .navbar-brand {
+        color: #222;
+    }
 
 .nav-tabs {
     box-sizing: border-box;
@@ -235,55 +241,13 @@ form.table-opts {
 .header {
     box-sizing: content-box;
     width: 100%;
-    height: 54px;
-    padding: 24px 0;
-    margin-bottom: 12px;
+    height: 120px;
     text-align: center;
     position: relative;
     overflow: hidden;
+    margin-bottom: 24px;
 }
-    .header h1 {
-        display: inline-block;
-        line-height: 54px;
-    }
-        .header h1.team {
-            min-width: 200px;
-            text-align: left;
-        }
 
-        .header h1.team.away {
-            text-align: right;
-        }
-
-        .header h1.score {
-            width: 30px;
-            text-align: center;
-        }
-
-    .header img {
-        display: inline-block;
-        height: 42px;
-        vertical-align: top;
-        margin: 6px 10px;
-    }
-
-    .header .date {
-        display: inline-block;
-        font-size: 13px;
-        line-height: 18px;
-        font-weight: 400;
-        vertical-align: top;
-        margin-top: 9px;
-        margin-left: 20px;
-        margin-right: 20px;
-        color: #000;
-    }
-
-    .header .game-meta {
-        margin-top: 24px; /* Equals top-heading in parent element */
-    }
-
-    .header .game-meta,
     .header .header-bg {
         width: 100%;
         height: 100%;
@@ -291,6 +255,75 @@ form.table-opts {
         top: 0;
         left: 0;
     }
+
+    .header .game-meta {
+        height: 54px;
+        position: relative;
+        top: 50%;
+        -ms-transform: translateY(-50%); /* IE 9 */
+        -webkit-transform: translateY(-50%); /* Chrome, Safari, Opera */
+        transform: translateY(-50%);
+
+        /* Outline text in white */
+        text-shadow:
+            -2px -2px 0 #fff,
+            2px -2px 0 #fff,
+            -2px 2px 0 #fff,
+            2px 2px 0 #fff;
+    }
+
+        .header .game-meta h1 {
+            display: inline-block;
+            line-height: 54px;
+            font-weight: 900;
+            text-transform: uppercase;
+            font-size: 25px;
+            letter-spacing: -1px;
+        }
+            .header .game-meta h1.team {
+                min-width: 180px;
+                text-align: left;
+            }
+
+            .header .game-meta h1.team.away {
+                text-align: right;
+            }
+
+            .header .game-meta h1.score {
+                width: 30px;
+                text-align: left;
+            }
+
+            .header .game-meta h1.score.home {
+                text-align: right;
+            }
+
+        .header .game-meta img {
+            display: inline-block;
+            height: 42px;
+            vertical-align: top;
+            margin: 6px 12px;
+        }
+
+        .header .game-meta .date {
+            display: inline-block;
+            height: 54px;
+            vertical-align: top;
+            margin: 0 20px;
+        }
+            .header .game-meta .date p {
+                font-family: 'Roboto Mono';
+                text-transform: uppercase;
+                font-size: 13px;
+                line-height: 16px;
+
+                position: relative;
+                top: 50%;
+                top: calc(50% - 2px); /* Optical adjustment */
+                -ms-transform: translateY(-50%); /* IE 9 */
+                -webkit-transform: translateY(-50%); /* Chrome, Safari, Opera */
+                transform: translateY(-50%);
+            }
 
     .header .header-bg {
         z-index: -10;
@@ -301,7 +334,6 @@ form.table-opts {
 * DATATABLES
 *
 */
-
 
 table.dataTable tbody tr:hover,
 table.dataTable thead th:hover {
@@ -326,7 +358,7 @@ table.dataTable thead th:hover {
 
 .table>tbody>tr>td.right {
     text-align: right;
-    font-family: Courier;
+    font-family: 'Roboto Mono';
 }
 
 .table>thead>tr>th.right {
