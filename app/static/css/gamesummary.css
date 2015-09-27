@@ -96,31 +96,171 @@ p {
         color: blue;
     }
 
-.dropdown .btn {
+/*
+*
+* INPUT ELEMENTS
+*
+*/
+
+.dropdown .btn,
+.dropdown .btn:focus,
+.form-group input[type=text] {
     box-sizing: border-box;
+    line-height: 36px;
+    height: 36px;
+
     text-align: left;
-    border: none;
-    border-bottom: 2px solid #ddf;
-    border-radius: 0;
-    height: 32px;
-    line-height: 32px;
-    padding: 0 5px;
-    margin: 0;
-    margin-bottom: 24px;
+    border: 1px solid #ddf;
+    background: none;
+    border-radius: 3px;
+    padding: 0 10px;
+    box-shadow: none;
 }
     .dropdown .btn:hover,
-    .dropdown .btn.active,
-    .dropdown .btn:focus {
+    .dropdown .btn.active {
+        border: 1px solid blue;
         background: none;
-        border-bottom: 2px solid blue;
         box-shadow: none;
     }
 
     /* Remove background highlight from dropdown menu when it's open */
-    .btn-default:active:hover, .btn-default.active:hover, .open>.dropdown-toggle.btn-default:hover, .btn-default:active:focus, .btn-default.active:focus, .open>.dropdown-toggle.btn-default:focus, .btn-default:active.focus, .btn-default.active.focus, .open>.dropdown-toggle.btn-default.focus {
+    .open>.dropdown-toggle.btn-default:hover,
+    .open>.dropdown-toggle.btn-default:focus {
         background: none;
+        border: 1px solid blue;
+        box-shadow: none;
     }
 
-.tab-content h3 {
-    margin-top: 48px;
+a.btn,
+a.btn:focus {
+    border: none;
+    background: #ddf;
+    color: #222;
+
+    height: 36px;
+    line-height: 36px;
+    padding: 0 20px;
 }
+    a.btn:hover {
+        background: #ccf;
+        color: #000;
+    }
+
+    a.btn-default:active:hover,
+    a.btn-default:active:focus {
+        background: #bbf;
+        color: #000;
+        box-shadow: none;
+    }
+
+    .form-control::-webkit-input-placeholder { color: #aaa; }
+    .form-control:-moz-placeholder { color: #aaa; }
+    .form-control::-moz-placeholder { color: #aaa; }
+    .form-control:-ms-input-placeholder { color: #aaa; }
+
+.form-group input[type=text]:focus {
+    border: 1px solid blue;
+    outline: none;
+    box-shadow: none;
+}
+
+/* Remove focus glow on buttons for Chrome OSX */
+.btn:focus,.btn:active:focus,.btn.active:focus,
+.btn.focus,.btn:active.focus,.btn.active.focus {
+    outline: none;
+}
+
+label {
+    font-size: 13px;
+
+    height: 18px;
+    line-height: 18px;
+
+    margin: 3px 0;
+    font-weight: 400;
+    color: #aaa;
+}
+    label.invisible {
+        color: transparent;
+    }
+
+
+    .checkbox,
+    .checkbox label,
+    input[type=checkbox]  {
+        margin: 0;
+        height: 36px;
+        line-height: 36px;
+        font-size: 15px;
+        color: #222;
+    }
+
+/* For inputs like checkboxes and buttons that don't have a label above (like text fields and dropdowns do), replace the label with a margin */
+.beside-fields {
+    margin-top: 24px;
+}
+
+.form-group {
+    margin: 0;
+}
+
+form .row {
+    margin-bottom: 18px;
+}
+
+/*
+*
+* OTHER STUFF
+*
+*/
+
+form.table-opts {
+    margin-bottom: 42px;
+}
+
+.tab-content h3 {
+    margin-bottom: 12px;
+}
+
+.row.datatable {
+    margin-bottom: 48px;
+}
+
+
+.header {
+    height: 54px;
+    margin-bottom: 24px;
+    text-align: center;
+    color: #777;
+}
+    .header h1 {
+        display: inline-block;
+        line-height: 54px;
+    }
+
+    .header img {
+        display: inline-block;
+        height: 42px;
+        vertical-align: top;
+        margin: 6px 15px;
+    }
+
+    .header .game-meta {
+        display: inline-block;
+        font-size: 13px;
+        line-height: 18px;
+
+        vertical-align: top;
+        margin-top: 9px;
+        margin-left: 30px;
+        margin-right: 30px;
+    }
+
+/*.nav-tabs > li, .nav-pills > li {
+    float:none;
+    display:inline-block;
+}
+
+.nav-tabs, .nav-pills {
+    text-align:center;
+}*/
