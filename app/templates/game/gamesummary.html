@@ -5,11 +5,15 @@
 	<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-black-40.png') }}" />
 	<!-- CSS -->
 	<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link href="{{ url_for('static', filename='css/gamesummary.css') }}" rel="stylesheet">
 	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/css/dataTables.bootstrap.min.css') }}"/>
+	<link href="{{ url_for('static', filename='css/gamesummary.css') }}" rel="stylesheet">
 	<!-- Load jquery in head, in case included pages need it before they load -->
 	<script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
 	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='DataTables/js/jquery.dataTables.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='DataTables/js/dataTables.bootstrap.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/textures.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
 </head>
 <body>
 	<nav class="navbar navbar-default navbar-static-top fluid">
@@ -39,15 +43,19 @@
 	</nav>
 	<div class="container">
 		<div class="header">
-			<h1>Lightning</h1>
-			<img src="{{ url_for('static', filename='img/team/T.B.png') }}">
-			<h1>4</h1>
 			<div class="game-meta">
-				Final<br>Sep 25, 2015
+				<h1>Lightning</h1>
+				<img src="{{ url_for('static', filename='img/team/T.B.png') }}">
+				<h1>4</h1>
+				<div class="date">
+					Final<br>Sep 25, 2015
+				</div>
+				<h1>2</h1>
+				<img src="{{ url_for('static', filename='img/team/BOS.png') }}">
+				<h1>Bruins</h1>
 			</div>
-			<h1>2</h1>
-			<img src="{{ url_for('static', filename='img/team/BOS.png') }}">
-			<h1>Bruins</h1>
+			<div class="header-bg">
+			</div>
 		</div>
 		<ul class="nav nav-tabs" role="tablist">
 			<li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
@@ -157,7 +165,7 @@
 							</div>
 						</div>
 						<div class="col-sm-3">
-							<a class="btn btn-default beside-fields" href="#" role="button">Download tables</a>
+							<a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
 						</div>
 					</div>
 
@@ -167,7 +175,7 @@
 				<h3>Teams</h3>
 				<div class="row datatable">
 					<div class="col-sm-12">
-						<table id="example" class="table table-striped table-bordered dataTable no-footer" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 200px;">Name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 320px;">Position</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Office</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 115px;">Salary</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">Airi Satou</td><td>Accountant</td><td>Tokyo</td><td>$162,700</td></tr><tr role="row" class="even"><td class="sorting_1">Angelica Ramos</td><td>Chief Executive Officer (CEO)</td><td>London</td><td>$1,200,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Ashton Cox</td><td>Junior Technical Author</td><td>San Francisco</td><td>$86,000</td></tr><tr role="row" class="even"><td class="sorting_1">Bradley Greer</td><td>Software Engineer</td><td>London</td><td>$132,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Brenden Wagner</td><td>Software Engineer</td><td>San Francisco</td><td>$206,850</td></tr><tr role="row" class="even"><td class="sorting_1">Brielle Williamson</td><td>Integration Specialist</td><td>New York</td><td>$372,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Bruno Nash</td><td>Software Engineer</td><td>London</td><td>$163,500</td></tr><tr role="row" class="even"><td class="sorting_1">Caesar Vance</td><td>Pre-Sales Support</td><td>New York</td><td>$106,450</td></tr><tr role="row" class="odd"><td class="sorting_1">Cara Stevens</td><td>Sales Assistant</td><td>New York</td><td>$145,600</td></tr><tr role="row" class="even"><td class="sorting_1">Cedric Kelly</td><td>Senior Javascript Developer</td><td>Edinburgh</td><td>$433,060</td></tr></tbody></table>
+						<table class="table dataTable hover no-footer" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 200px;">Name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 320px;">Position</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Office</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 115px;">Salary</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">Airi Satou</td><td>Accountant</td><td>Tokyo</td><td>$162,700</td></tr><tr role="row" class="even"><td class="sorting_1">Angelica Ramos</td><td>Chief Executive Officer (CEO)</td><td>London</td><td>$1,200,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Ashton Cox</td><td>Junior Technical Author</td><td>San Francisco</td><td>$86,000</td></tr><tr role="row" class="even"><td class="sorting_1">Bradley Greer</td><td>Software Engineer</td><td>London</td><td>$132,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Brenden Wagner</td><td>Software Engineer</td><td>San Francisco</td><td>$206,850</td></tr><tr role="row" class="even"><td class="sorting_1">Brielle Williamson</td><td>Integration Specialist</td><td>New York</td><td>$372,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Bruno Nash</td><td>Software Engineer</td><td>London</td><td>$163,500</td></tr><tr role="row" class="even"><td class="sorting_1">Caesar Vance</td><td>Pre-Sales Support</td><td>New York</td><td>$106,450</td></tr><tr role="row" class="odd"><td class="sorting_1">Cara Stevens</td><td>Sales Assistant</td><td>New York</td><td>$145,600</td></tr><tr role="row" class="even"><td class="sorting_1">Cedric Kelly</td><td>Senior Javascript Developer</td><td>Edinburgh</td><td>$433,060</td></tr></tbody></table>
 					</div>
 				</div>
 				<h3>Goalies</h3>
@@ -191,16 +199,49 @@
 	</div>
 </body>
 <script>
-/*
-*
-* Handle tabs
-*
-*/
 
-// Select all tabs
+// Handle tabs
 $('.nav-tabs a').click(function(){
     $(this).tab('show');
-})
+});
+
+// Initialize DataTable
+$(document).ready(function() {
+    $('.dataTable').DataTable({
+    	"paging": false,
+    	"filter": false,
+    	"sDom": '<"top">rt<"bottom"flp><"clear">',
+    	"columnDefs": [
+    		{ className: "right", "targets": [ 3 ] }
+		]
+    });
+});
+
+</script>
+<script>
+	var w = $(".header-bg").width();
+	var h = $(".header-bg").height();
+
+	var svg = d3.select(".header-bg").append("svg")
+		//.style("width", w + "px")
+		.style("width", "10000px")
+		.style("height", h + "px");
+
+	var t = textures.paths()
+	    .d("hexagons")
+	    .size(12)
+	    .strokeWidth(1)
+	    .stroke("#e9e9ff");
+
+  	svg.call(t);
+
+  	svg.append("rect")
+  		.attr("x", 0)
+  		.attr("y", 0)
+  		//.attr("width", w)
+  		.style("width", "10000px")
+		.attr("height", h)
+  		.style("fill", t.url());
 
 </script>
 </html>

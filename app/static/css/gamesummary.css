@@ -62,8 +62,8 @@ p {
 
 .nav-tabs {
     box-sizing: border-box;
-    border-bottom: 1px solid #ddf;
-    margin-bottom: 42px;
+    border-bottom: 1px solid #aaf;
+    margin-bottom: 30px;
 }
     .nav-tabs li a {
         box-sizing: border-box;
@@ -81,7 +81,7 @@ p {
 
     .nav-tabs li a:hover {
         background: none;
-        border-bottom: 4px solid #ddf;
+        border-bottom: 4px solid #aaf;
     }
 
      .nav-tabs li a:focus {
@@ -116,16 +116,26 @@ p {
     padding: 0 10px;
     box-shadow: none;
 }
+    .dropdown .btn,
+    .dropdown .btn:focus {
+        /* Bump dropdown text up by 1px to align it with other input elements */
+        /* Not sure why dropdowns needs this, though */
+        line-height: 35px;
+        padding-bottom: 11px;
+    }
+
     .dropdown .btn:hover,
-    .dropdown .btn.active {
-        border: 1px solid blue;
+    .dropdown .btn.active,
+    .form-group input[type=text]:hover {
+        border: 1px solid #77f;
         background: none;
         box-shadow: none;
     }
 
     /* Remove background highlight from dropdown menu when it's open */
     .open>.dropdown-toggle.btn-default:hover,
-    .open>.dropdown-toggle.btn-default:focus {
+    .open>.dropdown-toggle.btn-default:focus,
+    .form-group input[type=text]:focus  {
         background: none;
         border: 1px solid blue;
         box-shadow: none;
@@ -158,15 +168,12 @@ a.btn:focus {
     .form-control::-moz-placeholder { color: #aaa; }
     .form-control:-ms-input-placeholder { color: #aaa; }
 
-.form-group input[type=text]:focus {
-    border: 1px solid blue;
-    outline: none;
-    box-shadow: none;
-}
+
 
 /* Remove focus glow on buttons for Chrome OSX */
 .btn:focus,.btn:active:focus,.btn.active:focus,
-.btn.focus,.btn:active.focus,.btn.active.focus {
+.btn.focus,.btn:active.focus,.btn.active.focus,
+.form-group input[type=text]:focus {
     outline: none;
 }
 
@@ -218,20 +225,20 @@ form.table-opts {
     margin-bottom: 42px;
 }
 
-.tab-content h3 {
-    margin-bottom: 12px;
-}
-
 .row.datatable {
     margin-bottom: 48px;
 }
 
 
 .header {
+    box-sizing: content-box;
+    width: 100%;
     height: 54px;
-    margin-bottom: 24px;
+    padding: 24px 0;
+    margin-bottom: 12px;
     text-align: center;
-    color: #777;
+    position: relative;
+    overflow: hidden;
 }
     .header h1 {
         display: inline-block;
@@ -245,22 +252,100 @@ form.table-opts {
         margin: 6px 15px;
     }
 
-    .header .game-meta {
+    .header .date {
         display: inline-block;
         font-size: 13px;
         line-height: 18px;
-
+        font-weight: 400;
         vertical-align: top;
         margin-top: 9px;
         margin-left: 30px;
         margin-right: 30px;
+        color: #000;
     }
 
-/*.nav-tabs > li, .nav-pills > li {
-    float:none;
-    display:inline-block;
+    .header .game-meta {
+        margin-top: 24px; /* Equals top-heading in parent element */
+    }
+
+    .header .game-meta,
+    .header .header-bg {
+        width: 100%;
+        height: 100%;
+        position: absolute;
+        top: 0;
+        left: 0;
+    }
+
+    .header .header-bg {
+        z-index: -10;
+    }
+
+/*
+*
+* DATATABLES
+*
+*/
+
+
+table.dataTable tbody tr:hover,
+table.dataTable thead th:hover {
+    background-color: #f7f7ff;
 }
 
-.nav-tabs, .nav-pills {
-    text-align:center;
-}*/
+.table>tbody>tr>td {
+    font-size: 13px;
+    line-height: 18px;
+    border-bottom: 1px solid #eee;
+    padding: 9px 10px
+}
+
+.table>thead>tr>th {
+    font-size: 13px;
+    line-height: 18px;
+    border-bottom: 1px solid #aaf;
+    padding: 9px 10px;
+    font-weight: 400;
+    color: blue;
+}
+
+.table>tbody>tr>td.right {
+    text-align: right;
+    font-family: Courier;
+}
+
+.table>thead>tr>th.right {
+    text-align: right;
+}
+
+/* Update sorting icons */
+table.dataTable thead .sorting:after {
+    display: none;
+}
+table.dataTable thead .sorting_asc:after {
+    content: '↑';
+    color: blue;
+    opacity: 1;
+    margin-right: 10px;
+}
+table.dataTable thead .sorting_desc:after {
+    content: '↓';
+    color: blue;
+    opacity: 1;
+    margin-right: 10px;
+}
+
+    /* Update positioning of sorting icons */
+    table.dataTable thead>tr>th.sorting {
+        padding-right: 10px;
+    }
+
+    table.dataTable thead>tr>th.right.sorting_asc,
+    table.dataTable thead>tr>th.right.sorting_desc {
+        padding-right: 23px;
+    }
+
+    table.dataTable thead>tr>th.sorting_asc:after,
+    table.dataTable thead>tr>th.sorting_desc:after {
+        right: 0;
+    }
