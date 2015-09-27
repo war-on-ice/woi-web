@@ -64,6 +64,7 @@ p {
     box-sizing: border-box;
     border-bottom: 1px solid #aaf;
     margin-bottom: 30px;
+    vertical-align: bottom;
 }
     .nav-tabs li a {
         box-sizing: border-box;
@@ -93,6 +94,7 @@ p {
     .nav-tabs li.active a:focus {
         border: none;
         border-bottom: 4px solid blue;
+        background: none;
         color: blue;
     }
 
@@ -244,12 +246,25 @@ form.table-opts {
         display: inline-block;
         line-height: 54px;
     }
+        .header h1.team {
+            min-width: 200px;
+            text-align: left;
+        }
+
+        .header h1.team.away {
+            text-align: right;
+        }
+
+        .header h1.score {
+            width: 30px;
+            text-align: center;
+        }
 
     .header img {
         display: inline-block;
         height: 42px;
         vertical-align: top;
-        margin: 6px 15px;
+        margin: 6px 10px;
     }
 
     .header .date {
@@ -259,8 +274,8 @@ form.table-opts {
         font-weight: 400;
         vertical-align: top;
         margin-top: 9px;
-        margin-left: 30px;
-        margin-right: 30px;
+        margin-left: 20px;
+        margin-right: 20px;
         color: #000;
     }
 
