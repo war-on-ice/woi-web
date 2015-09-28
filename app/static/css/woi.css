@@ -517,3 +517,9 @@ table.dataTable thead>tr>th.sorting_asc:after,
 table.dataTable thead>tr>th.sorting_desc:after {
     right: 0;
 }
+
+
+.table>tbody>tr>td.cur {
+    text-align: right;
+    font-family: 'Roboto Mono';
+}

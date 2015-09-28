@@ -1,9 +1,9 @@
 {% extends "wrappers/wrapper.html" %}
 {% block content %}
-    <h2>{{ player.FullName }}</h2>
+    <h1>{{ player.FullName }}</h1>
     Position: {{ player.Position }} | Date of Birth: {{ player.Birthday }} <br>
     Shoots: {{ player.Shoots }} | Height: {{ player.Height }} | Weight: {{ player.Weight }} <br>
-    <a href ="http://war-on-ice.com/playerseason.html?woiid={{ player.PlayerId }}">Ask Me About My Statistical Performance</a>
+    <a href ="http://war-on-ice.com/playerseason.html?woiid={{ player.PlayerId }}">Ask Me About My Statistical Performance</a><br><br>
     <h3>Contract History</h3>
 
     {% for contractHeader in contractDetails|groupby("ContractID")|reverse %}
@@ -11,39 +11,41 @@
         {% for contractDetails in contractHeader.list %}
 
             {% if loop.first %}
-                {% if contractDetails.Unconfirmed == 1 %}
-                <h5 class="unconfirmed">
-                    {% else %}
-                    <h5>
-                    {% endif %}
-                    Length: {{ contractDetails.ContractLength }} year(s) | Type: {{ contractDetails.HeaderType }} |
-                    Expiry Status: {{ contractDetails.ExpiryStatus }} | Signing Date: {{ contractDetails.SigningDate }} |
-                    Contract Team: {{ contractDetails.ContractTeamID }} | Source: {{ contractDetails.Source }} </h5>
-                <table class="table table-condensed table-responsive">
-                <tr class="contract-header">
+            <div class="panel panel-default">
+                <div class="panel-body">
+                   Signed a <i>{{ contractDetails.HeaderType}}-way contract </i>with <b>{{ contractDetails.TeamName }}</b>
+                    on {{ contractDetails.SigningDate }}, per {{ contractDetails.Source }}. At expiry, {{ player.FullName }} will be
+                    a {{ contractDetails.ExpiryStatus }}.
+{#            Length: {{ contractDetails.ContractLength }} year(s) | Type: {{ contractDetails.HeaderType }} |#}
+{#            Expiry Status: {{ contractDetails.ExpiryStatus }} | Signing Date: {{ contractDetails.SigningDate }} |#}
+{#            Contract Team: {{ contractDetails.ContractTeamID }} | Source: {{ contractDetails.Source }}#}
+                </div>
+            </div>
+
+                <table class="table dataTable hover no-footer contractTable" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;">
+                <thead>
+                <tr role="row">
                     <th></th>
                     <th>Season Ending</th>
                     <th>AAV</th>
                     <th>Base Salary</th>
                     <th>Signing Bonuses</th>
                     <th>AHL Salary</th>
-
-                    {% if contractDetails.PerfBonusElg == 1 %}
-                        <th>Earned Performance Bonuses</th>
-                        <th>Max Performance Bonuses</th>
-                    {% endif %}
+                    <th>Earned Performance Bonuses</th>
+                    <th>Max Performance Bonuses</th>
 
                 </tr>
+                </thead>
             {% endif %}
         {% if contractDetails.ActiveContract == 1 %}
             <tr class="active-contract">
-             {% elif contractDetails.Slid == 1 %}
-                <tr class="slid">
-                    {% elif contractDetails.BoughtOut == 1 %}
-                <tr class="boughtout">
-                    {% elif contractDetails.Retired == 1 %}
-                            <tr class="retired">
-        {% else %}
+                {% elif contractDetails.Slid == 1 %}
+            <tr class="slid">
+                {% elif contractDetails.BoughtOut == 1 %}
+            <tr class="boughtout">
+                {% elif contractDetails.Retired == 1 %}
+            <tr class="retired">
+                {% else %}
             <tr>
         {% endif %}
         <td>
@@ -69,16 +71,14 @@
         <td>{{ contractDetails.AAV|format_currency}}</td>
         <td>{{ contractDetails.BaseSalary|format_currency}}</td>
         <td>{{ contractDetails.SigningBonus|format_currency }}</td>
-            {% if contractDetails.MinorSalary != 0 %}
-        <td>{{ contractDetails.MinorSalary|format_currency }}</td>
-            {% else %}
-                <td>{{ contractDetails.BaseSalary|format_currency}}</td>
-            {% endif %}
-
-        {% if contractDetails.PerfBonusElg == 1 %}
-            <td>{{ contractDetails.PerfBonusMet|format_currency }}</td>
-            <td>{{ contractDetails.MaxPerfBonus|format_currency }}</td>
+        {% if contractDetails.MinorSalary != 0 %}
+            <td>{{ contractDetails.MinorSalary|format_currency }}</td>
+        {% else %}
+            <td>{{ contractDetails.BaseSalary|format_currency}}</td>
         {% endif %}
+
+        <td>{{ contractDetails.PerfBonusMet|format_currency }}</td>
+        <td>{{ contractDetails.MaxPerfBonus|format_currency }}</td>
         </tr>
 
         {% if loop.last %}
@@ -88,5 +88,22 @@
         {% endfor %}
         <br>
     {% endfor %}
+
+{% endblock %}
+
+{% block page_js %}
+    <script>
+        $(document).ready(function() {
+            $('.contractTable').DataTable({
+                "paging": false,
+                "filter": false,
+                "bSort": false,
+                "sDom": '<"top">rt<"bottom"flp><"clear">',
+                "columnDefs": [
+                    { className: "cur", "targets": [ 2,3,4,5,6,7 ] }
+                ]
+            });
+        });
+    </script>
 
 {% endblock %}
