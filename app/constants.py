@@ -1,38 +1,38 @@
-# Score Situations
-score_situations_options = {"Trailing By 3+": 0,
-                    "Trailing By 2": 1,
-                    "Trailing By 1": 2,
-                    "Tied": 3,
-                    "Leading By 1": 4,
-                    "Leading By 2": 5,
-                    "Leading By 3+": 6,
-                    "All": 7,
-                    "All, Score Adjusted": 8,
-                    "Within 1": 9,
-                    "Close": 10,
-                    "Leading": 11,
-                    "Leading By 2+": 12,
-                    "Trailing By 2+": 13,
-                    "Trailing": 14}
-score_situation_default = "All"
+def create_dict(dictionary):
+    return {'options': sorted(dictionary.items(), key=lambda x: x[1]['order']),
+                    'default': filter(lambda item: item[1]['default'] == 1, dictionary.items())[0][0]}
 
-score_situations = {"options": score_situations_options,
-                    "default": score_situation_default}
+# Score Situations
+score_situations_dict = {"Trailing By 3+": {'value': 0, 'order': 5, 'default': 0},
+                    "Trailing By 2": {'value': 1, 'order': 6, 'default': 0},
+                    "Trailing By 1": {'value': 2, 'order': 7, 'default': 0},
+                    "Tied": {'value': 3, 'order': 9, 'default': 0},
+                    "Leading By 1": {'value': 4, 'order': 11, 'default': 0},
+                    "Leading By 2": {'value': 5, 'order':12, 'default': 0},
+                    "Leading By 3+": {'value': 6, 'order': 14, 'default': 0},
+                    "All": {'value': 7, 'order': 0, 'default': 1},
+                    "All, Score Adjusted": {'value': 8, 'order': 1, 'default': 0},
+                    "Within 1": {'value': 9, 'order': 3, 'default': 0},
+                    "Close": {'value': 10, 'order': 2, 'default': 0},
+                    "Leading": {'value': 11, 'order': 10, 'default': 0},
+                    "Leading By 2+": {'value': 12, 'order': 13, 'default': 0},
+                    "Trailing By 2+": {'value': 13, 'order': 8, 'default': 0},
+                    "Trailing": {'value': 14, 'order': 4, 'default': 0}}
+
+score_situations = create_dict(score_situations_dict)
 
 
 # Strength Situations
-strength_situations_options = {"All": 7,
-                      "Even Strength 5v5": 1,
-                      "Power Play": 2,
-                      "Shorthanded": 3,
-                      "4v4": 4,
-                      "Opposing Goalie Pulled": 5,
-                      "Team Goalie Pulled": 6,
-                      "Leftovers": 0}
-strength_situations_default = "Even Strength 5v5"
+strength_situations_dict = {"All": {'value': 7, 'order': 2, 'default': 0},
+                      "Even Strength 5v5": {'value': 1, 'order': 1, 'default': 1},
+                      "Power Play": {'value': 2, 'order': 3, 'default': 0},
+                      "Shorthanded": {'value': 3, 'order': 4, 'default': 0},
+                      "4v4": {'value': 4, 'order': 5, 'default': 0},
+                      "Opposing Goalie Pulled": {'value': 5, 'order': 6, 'default': 0},
+                      "Team Goalie Pulled": {'value': 6, 'order': 7, 'default': 0},
+                      "Leftovers": {'value': 0, 'order': 8, 'default': 0}}
 
-strength_situations = {"options": strength_situations_options,
-                       "default": strength_situations_default}
+strength_situations = create_dict(strength_situations_dict)
 
 # Positions
 all_pos = ["C", "CR", "RC", "L", "CL", "LC", "CD", "DC", "RL", "LR",
@@ -53,18 +53,15 @@ positions = {"options": positions_options,
 # Game Periods
 all_periods = [1,2,3,4,5,6,7] #assumes max 4 OTs
 
-periods_options = {"1": filter(lambda pd: pd == 1, all_periods),
-           "2": filter(lambda pd: pd == 2, all_periods),
-           "3": filter(lambda pd: pd == 3, all_periods),
-           "Regulation": filter(lambda pd: pd <= 3, all_periods),
-           "Overtime": filter(lambda pd: pd >= 4, all_periods),
-           "1 OT": filter(lambda pd: pd == 4, all_periods),
-           "2 OT": filter(lambda pd: pd == 5, all_periods),
-           "3 OT": filter(lambda pd: pd == 6, all_periods),
-           "4 OT": filter(lambda pd: pd == 7, all_periods),
-           "All": all_periods}
+periods_options = {"1": {'value': filter(lambda pd: pd == 1, all_periods), 'order': 2, 'default': 0},
+           "2": {'value': filter(lambda pd: pd == 2, all_periods), 'order': 3, 'default': 0},
+           "3": {'value': filter(lambda pd: pd == 3, all_periods), 'order': 4, 'default': 0},
+           "Regulation": {'value': filter(lambda pd: pd <= 3, all_periods), 'order': 6, 'default': 0},
+           "Overtime": {'value': filter(lambda pd: pd >= 4, all_periods), 'order': 5, 'default': 0},
+           "1 OT": {'value': filter(lambda pd: pd == 4, all_periods), 'order': 7, 'default': 0},
+           "2 OT": {'value': filter(lambda pd: pd == 5, all_periods), 'order': 8, 'default': 0},
+           "3 OT": {'value': filter(lambda pd: pd == 6, all_periods), 'order': 9, 'default': 0},
+           "4 OT": {'value': filter(lambda pd: pd == 7, all_periods), 'order': 10, 'default': 0},
+           "All": {'value': all_periods, 'order': 1, 'default': 1}}
 
-periods_default = "All"
-
-periods = {"options": periods_options,
-           "default": periods_default}
+periods = create_dict(periods_options)
