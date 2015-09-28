@@ -1,0 +1,9 @@
+<script type="text/javascript">
+	$(document).ready(function() {
+		$('#teamandplayer').DataTable( {
+			"ajax": "{{ url_for('dummy_path', filename='playerandteamdummydata.txt') }}",
+			"aaSorting": [],
+			"pagingType": "full",
+		});
+	} );
+</script>

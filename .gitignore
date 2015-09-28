@@ -1,0 +1,7 @@
+scripts/
+env/
+venv/
+.vagrant/
+.idea/
+*.pyc
+cred.py

@@ -1,0 +1,13 @@
+{% extends "wrappers/wrapper.html" %}
+{% block title %}iframe Test{% endblock %}
+{% block content %}
+<div class="row">
+	<div class="col-md-12">
+		<iframe id="iframe" style="border:none;" height="100%" width="100%" src="http://biscuit.war-on-ice.com/gamesummary2/" onload="iframeLoaded()"></iframe>
+	</div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+	
+{% endblock %}

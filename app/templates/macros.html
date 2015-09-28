@@ -1,0 +1,18 @@
+{% macro create_dropdown(label, dropdown_dict) %}
+    <div class="form-group">
+        <label class="control-label" for="test-input">{{ label }}</label>
+        <div class="dropdown">
+            <button class="btn btn-default dropdown-toggle btn-block" type="button" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                {{ dropdown_dict["default"] }}
+										<span class="pull-right">
+											<span class="caret"></span>
+										</span>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                {% for item in dropdown_dict["options"] %}
+                    <li><a href="#">{{ item[0] }}</a></li>
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+{% endmacro %}

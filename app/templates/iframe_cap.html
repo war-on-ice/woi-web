@@ -1,0 +1,36 @@
+{% extends "wrapper.html" %}
+{% block title %}iframe Test{% endblock %}
+{% block content %}
+
+<div>
+	<!-- Nav tabs -->
+    <ul class="nav nav-tabs" role="tablist" id="capTabs">
+	{% for url in rd.urls %}
+		<li role="presentation" {% if loop.first %}class="active"{% endif %}>
+			<a href="#{{ url.id }}" aria-controls="home" role="tab" data-toggle="tab">{{ url.name }}</a>
+		</li>
+	{% endfor %}
+	</ul>
+
+	<!-- Tab panes -->
+	<div class="tab-content">
+		{% for urlcontent in rd.urls %}
+	    <div role="tabpanel" class="tab-pane active" id="{{ urlcontent.id }}">
+	    	{% with url=urlcontent.url %}
+	    		{% include "iframe_table.html" %}
+	    	{% endwith %}
+	    </div>
+	    {% endfor %}
+	</div>
+</div>
+
+{% endblock %}
+
+{% block page_js %}
+	<script type="text/javascript">
+		$('#capTabs a').click(function (e) {
+		  e.preventDefault()
+		  $(this).tab('show')
+		})
+	</script>
+{% endblock %}
