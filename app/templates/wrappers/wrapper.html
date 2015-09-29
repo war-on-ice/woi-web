@@ -10,47 +10,60 @@
     <link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-black-40.png') }}" />
     <!-- CSS -->
     <link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-    <link href="{{ url_for('static', filename='css/woi.css') }}" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/css/dataTables.bootstrap.min.css') }}"/>
-    {#    <link href="{{ url_for('static', filename='css/gamesummary.css') }}" rel="stylesheet">#}
-    <script src="{{ url_for('static', filename='js/textures.min.js') }}"></script>
-    <script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
+    <link href="{{ url_for('static', filename='css/woi.css') }}" rel="stylesheet">
+	<script src="{{ url_for('static', filename='js/textures.min.js') }}"></script>
+	<script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
     <link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
     <link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700' rel='stylesheet' type='text/css'>
-
     {% block page_css %}{% endblock %}
     <!-- Load jquery in head, in case included pages need it before they load -->
     <script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
-    {{ moment.include_moment() }}
 </head>
 <body data-spy="scroll" data-target=".navbar-fixed-top">
 <!-- Navigation -->
 {% include "wrappers/navigation.html" %}
-<div class="row">
-    <div class="col-md-11">
-        <div class="container">
-            {% include "wrappers/topads.html" %}
-            <div class="row">
-                <div class="col-md-12">
-                    {% block content %}{% endblock %}
-                </div>
-            </div>
-        </div>
-    </div>
-    <div class="col-md-1">
-        {% include "wrappers/sideads.html" %}
-    </div>
+
+<div class="container">
+
+	<!-- Top banner ads -->
+	<div class="row">
+		<div class="col-md-12">
+		{% include "wrappers/topads.html" %}
+		</div>
+	</div>
+
+	<!-- Full width content -->
+	<div class="row">
+		<div class="col-md-12">
+			<div class="header">
+				{% block content_header %}{% endblock %}
+			</div>
+		</div>
+	</div>
+
+	<!-- Content with ad side bar -->
+	<div class="row">
+		<div class="col-md-10">
+			{% block content %}{% endblock %}
+		</div>
+		<div class="col-md-2">
+			{% include "wrappers/sideads.html" %}
+		</div>
+	</div>
+
+	<!-- Footer ads -->
+	<div class="row">
+		<div class="col-md-12">
+		{% include "wrappers/topads.html" %}
+		</div>
+	</div>
 </div>
-<div class="row">
-    <div class="container">
-        <div class="footer">
-            <hr>
-            <footer>
-                <p>Design elements copyright (2015) war-on-ice.com.</p>
-            </footer>
-        </div>
-    </div>
-</div>
+
+
+
+
+
 <!-- JavaScript -->
 <script type="text/javascript" src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='js/nav.js') }}"></script>
