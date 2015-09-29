@@ -1,11 +1,13 @@
 from flask import Flask, render_template, send_from_directory
 import filters
 from flask.ext.sqlalchemy import SQLAlchemy
+from flask.ext.moment import Moment
 from sqlalchemy.ext.declarative import declarative_base
 
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
+moment = Moment(app)
 
 Base = declarative_base()
 Base.metadata.reflect(bind = db.engine, views = True)

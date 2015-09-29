@@ -1,7 +1,7 @@
 {% extends "wrappers/wrapper.html" %}
 {% block content %}
     <h1>{{ player.FullName }}</h1>
-    Position: {{ player.Position }} | Date of Birth: {{ player.Birthday }} <br>
+    Position: {{ player.Position }} | Date of Birth: {{ moment(player.Birthday).format('MMMM Do, YYYY') }} <br>
     Shoots: {{ player.Shoots }} | Height: {{ player.Height }} | Weight: {{ player.Weight }} <br>
     <a href ="http://war-on-ice.com/playerseason.html?woiid={{ player.PlayerId }}">Ask Me About My Statistical Performance</a><br><br>
     <h3>Contract History</h3>
@@ -13,8 +13,8 @@
             {% if loop.first %}
             <div class="panel panel-default">
                 <div class="panel-body">
-                   Signed a <i>{{ contractDetails.HeaderType}}-way contract </i>with <b>{{ contractDetails.TeamName }}</b>
-                    on {{ contractDetails.SigningDate }}, per {{ contractDetails.Source }}. At expiry, {{ player.FullName }} will be
+                   Signed a <i>{{ contractDetails.HeaderType}}-way contract </i>with the <b>{{ contractDetails.TeamName }}</b>
+                    on {{moment(contractDetails.SigningDate).format('MMMM Do YYYY')}}, per {{ contractDetails.Source }}. At expiry, {{ player.FullName }} will be
                     a {{ contractDetails.ExpiryStatus }}.
 {#            Length: {{ contractDetails.ContractLength }} year(s) | Type: {{ contractDetails.HeaderType }} |#}
 {#            Expiry Status: {{ contractDetails.ExpiryStatus }} | Signing Date: {{ contractDetails.SigningDate }} |#}

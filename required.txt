@@ -2,3 +2,4 @@ Flask
 beautifulsoup4
 Flask-SQLAlchemy
 MySQL-Python
+Flask-Moment
