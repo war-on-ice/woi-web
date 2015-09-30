@@ -1,8 +1,7 @@
 body {
-    padding-top: 80px;
     color: #222;
     font-family: Roboto, sans-serif;
-    /*background-color: #e4e5e6;*/
+    padding-top: 80px;
 }
 
 .container {
@@ -138,6 +137,12 @@ body {
     }
 }
 
+/*
+*
+* TEXT STYLES
+*
+*/
+
 h1 {
     font-size: 30px;
     font-weight: 400;
@@ -189,20 +194,26 @@ p {
     line-height: 24px;
 }
 
+/*
+*
+* TABS
+*
+*/
+
 .nav-tabs {
     box-sizing: border-box;
-    border-bottom: 1px solid #aaf;
+    border-bottom: 1px solid #005fdd;
     margin-bottom: 30px;
     vertical-align: bottom;
 }
 .nav-tabs li a {
     box-sizing: border-box;
-    color: blue;
-    height: 54px;
-    line-height: 54px;
+    color: #0050bb;
+    height: 60px;
+    line-height: 60px;
 
     margin: 0;
-    margin-right: 40px;
+    margin-right: 30px;
     padding: 0;
 
     border: none;
@@ -211,7 +222,7 @@ p {
 
 .nav-tabs li a:hover {
     background: none;
-    border-bottom: 4px solid #aaf;
+    border-bottom: 4px solid #005fdd;
 }
 
 .nav-tabs li a:focus {
@@ -222,9 +233,9 @@ p {
 .nav-tabs li.active a:hover,
 .nav-tabs li.active a:focus {
     border: none;
-    border-bottom: 4px solid blue;
+    border-bottom: 4px solid #005fdd;
     background: none;
-    color: blue;
+    color: #0050bb;
 }
 
 
@@ -242,7 +253,7 @@ p {
     height: 36px;
 
     text-align: left;
-    border: 1px solid #ddf;
+    border: 1px solid #cce2ff;
     background: none;
     border-radius: 3px;
     padding: 0 10px;
@@ -259,7 +270,7 @@ p {
 .dropdown .btn:hover,
 .dropdown .btn.active,
 .form-group input[type=text]:hover {
-    border: 1px solid #77f;
+    border: 1px solid #005fdd;
     background: none;
     box-shadow: none;
 }
@@ -269,14 +280,14 @@ p {
 .open>.dropdown-toggle.btn-default:focus,
 .form-group input[type=text]:focus  {
     background: none;
-    border: 1px solid blue;
+    border: 1px solid #005fdd;
     box-shadow: none;
 }
 
 a.btn,
 a.btn:focus {
     border: none;
-    background: #ddf;
+    background: #cce2ff;
     color: #222;
 
     height: 36px;
@@ -284,13 +295,13 @@ a.btn:focus {
     padding: 0 20px;
 }
 a.btn:hover {
-    background: #ccf;
+    background: #bbd8ff;
     color: #000;
 }
 
 a.btn-default:active:hover,
 a.btn-default:active:focus {
-    background: #bbf;
+    background: #aaceff;
     color: #000;
     box-shadow: none;
 }
@@ -361,13 +372,12 @@ form.table-opts {
 
 
 .header {
-    box-sizing: content-box;
     width: 100%;
-    height: 120px;
+    height: 150px;
     text-align: center;
     position: relative;
     overflow: hidden;
-    margin-bottom: 24px;
+    border-bottom: 3px solid #005fdd;
 }
 
 .header .header-bg {
@@ -385,6 +395,7 @@ form.table-opts {
     -ms-transform: translateY(-50%); /* IE 9 */
     -webkit-transform: translateY(-50%); /* Chrome, Safari, Opera */
     transform: translateY(-50%);
+    z-index: 10;
 
     /* Outline text in white */
     text-shadow:
@@ -447,9 +458,6 @@ form.table-opts {
     transform: translateY(-50%);
 }
 
-.header .header-bg {
-    z-index: -10;
-}
 
 /*
 *
@@ -459,7 +467,7 @@ form.table-opts {
 
 table.dataTable tbody tr:hover,
 table.dataTable thead th:hover {
-    background-color: #f7f7ff;
+    background-color: #eef5ff;
 }
 
 .table>tbody>tr>td {
@@ -472,10 +480,10 @@ table.dataTable thead th:hover {
 .table>thead>tr>th {
     font-size: 13px;
     line-height: 18px;
-    border-bottom: 1px solid #aaf;
+    border-bottom: 1px solid #005fdd;
     padding: 9px 10px;
     font-weight: 400;
-    color: blue;
+    color: #0050bb;
 }
 
 .table>tbody>tr>td.right {
@@ -494,7 +502,7 @@ table.dataTable thead .sorting:after {
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc:after {
     content: '↑';
-    color: blue;
+    color: #0050bb;
     opacity: 1;
     margin-right: 10px;
     top: 8px;

@@ -2,28 +2,36 @@
 {% from "macros.html" import create_dropdown %}
 
 {% block content_header %}
-<div class="game-meta">
-    <h1 class="team away">Lightning</h1
-    ><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
-    ><h1 class="score away">4</h1
-    ><div class="date">
-        <p>Final<br>
-        Sep 25, 2015</p>
-    </div
-    ><h1 class="score home">2</h1
-    ><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
-    ><h1 class="team home">Bruins</h1>
-</div>
-<div class="header-bg">
+<div class="col-md-12">
+    <div class="header">
+        <div class="game-meta">
+            <h1 class="team away">Lightning</h1
+            ><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
+            ><h1 class="score away">4</h1
+            ><div class="date">
+                <p>Final<br>
+                Sep 25, 2015</p>
+            </div
+            ><h1 class="score home">2</h1
+            ><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
+            ><h1 class="team home">Bruins</h1>
+        </div>
+        <div class="header-bg">
+        </div>
+    </div>
 </div>
 <script>
     var h = $(".header-bg").height();
 
     d3.select(".header-bg")
-        .style("background-image", "linear-gradient(90deg, dodgerblue, #ddd, darkorange)")
-        .style("opacity", 0.3);
+        .style("background-image", "linear-gradient(90deg, #1E91D6, #ddd, #FFBC42)")
+        .style("opacity", 0.25);
 
     // Gradient colours: darkorange, dodgerblue, crimson, teal
+    // blue: 1E91D6
+    // yellow: FFBC42
+    // green: 179054
+    // red: C5283D
     var svg = d3.select(".header-bg").append("svg")
         .style("width", "10000px")
         .style("height", h + "px");
@@ -36,6 +44,7 @@
         .stroke("white");
     svg.call(t1);
     svg.append("rect")
+        .attr("class", "dither")
         .attr("x", 0)
         .attr("y", 0)
         .attr("width", 10000)
@@ -45,16 +54,34 @@
     // Apply larger hexagon texture
     var t2 = textures.paths()
         .d("hexagons")
-        .size(20) //18, 20, 23 look good
+        .size(16) //18, 20, 23 look good
         .strokeWidth(1.5)
         .stroke("white");
     svg.call(t2);
     svg.append("rect")
+        .attr("class", "hex")
         .attr("x", 0)
         .attr("y", 0)
         .attr("width", 10000)
         .attr("height", h)
         .style("fill", t2.url());
+
+    svg.select("rect.dither")
+        .style("opacity", 0.8);
+
+    svg.select("rect.hex")
+        .style("opacity", 0.8);
+
+    // Add a 1px mask so the bottom of the texture doesn't clash with the header's bottom-border
+    svg.append("rect")
+        .attr("class", "base")
+        .attr("x", 0)
+        .attr("y", h - 1)
+        .attr("width", 10000)
+        .attr("height", 1)
+        .style("fill", "white")
+        .style("fill-opacity", 1);
+
 </script>
 {% endblock %}
 
@@ -164,4 +191,25 @@
             </div>
         </div>
     </div>
+{% endblock %}
+
+{% block page_js %}
+<script>
+// Handle tabs
+$('.nav-tabs a').click(function(){
+    $(this).tab('show');
+});
+
+// Initialize DataTable
+$(document).ready(function() {
+    $('table.dataTable').DataTable({
+        "paging": false,
+        "filter": false,
+        "sDom": '<"top">rt<"bottom"flp><"clear">',
+        "columnDefs": [
+            { className: "right", "targets": [ 3 ] }
+        ]
+    });
+});
+</script>
 {% endblock %}
