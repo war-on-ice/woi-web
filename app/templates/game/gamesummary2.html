@@ -5,83 +5,117 @@
 <div class="col-md-12">
     <div class="header">
         <div class="game-meta">
-            <h1 class="team away">Lightning</h1
+            <h1 class="team away"><span>Lightning</span></h1
             ><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
-            ><h1 class="score away">4</h1
+            ><h1 class="score away"><span>4</span></h1
             ><div class="date">
-                <p>Final<br>
-                Sep 25, 2015</p>
+                <p><span>Final</span></p>
+                <p><span>Sep 25, 2015</span></p>
             </div
-            ><h1 class="score home">2</h1
+            ><h1 class="score home"><span>2</span></h1
             ><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
-            ><h1 class="team home">Bruins</h1>
+            ><h1 class="team home"><span>Bruins</span></h1>
         </div>
         <div class="header-bg">
         </div>
     </div>
 </div>
 <script>
-    var h = $(".header-bg").height();
 
-    d3.select(".header-bg")
-        .style("background-image", "linear-gradient(90deg, #1E91D6, #ddd, #FFBC42)")
-        .style("opacity", 0.25);
+    drawMesh();
 
-    // Gradient colours: darkorange, dodgerblue, crimson, teal
-    // blue: 1E91D6
-    // yellow: FFBC42
-    // green: 179054
-    // red: C5283D
-    var svg = d3.select(".header-bg").append("svg")
-        .style("width", "10000px")
-        .style("height", h + "px");
+    // Update on resize - wait 500ms before redrawing the mesh
+    var counter;
+    $(window).resize(function() {
+        clearTimeout(counter);
+        counter = setTimeout(doneResizing, 500);
+    });
 
-    // Apply dithering texture
-    var t1 = textures.paths()
-        .d("hexagons")
-        .size(2)
-        .strokeWidth(1)
-        .stroke("white");
-    svg.call(t1);
-    svg.append("rect")
-        .attr("class", "dither")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 10000)
-        .attr("height", h)
-        .style("fill", t1.url());
+    var currentW = 0;
+    function doneResizing() {
+        // Only resize if the div width has changed
+        newWidth = $(".header-bg").width();
+        if (currentW !== newWidth) {
+            currentW = newWidth;
+            d3.select(".header-bg").select("svg").remove();
+            drawMesh();
+        }
+    }
 
-    // Apply larger hexagon texture
-    var t2 = textures.paths()
-        .d("hexagons")
-        .size(16) //18, 20, 23 look good
-        .strokeWidth(1.5)
-        .stroke("white");
-    svg.call(t2);
-    svg.append("rect")
-        .attr("class", "hex")
-        .attr("x", 0)
-        .attr("y", 0)
-        .attr("width", 10000)
-        .attr("height", h)
-        .style("fill", t2.url());
+    function drawMesh() {
+        var divH = $(".header-bg").height();
+        var divW = $(".header-bg").width();
 
-    svg.select("rect.dither")
-        .style("opacity", 0.8);
+        var hexR = 12;
+        var hexH = hexR * 2;
+        var hexW = hexR * Math.sqrt(3);
 
-    svg.select("rect.hex")
-        .style("opacity", 0.8);
+        var hexagonPoly=[[0,-1],[Math.sqrt(3)/2,0.5],[0,1],[-Math.sqrt(3)/2,0.5],[-Math.sqrt(3)/2,-0.5],[0,-1],[Math.sqrt(3)/2,-0.5]];
+        var hexagonPath = "m"+hexagonPoly.map(function(p){return [p[0]*hexR, p[1]*hexR].join(",")}).join("l")+"z";
 
-    // Add a 1px mask so the bottom of the texture doesn't clash with the header's bottom-border
-    svg.append("rect")
-        .attr("class", "base")
-        .attr("x", 0)
-        .attr("y", h - 1)
-        .attr("width", 10000)
-        .attr("height", 1)
-        .style("fill", "white")
-        .style("fill-opacity", 1);
+        var strokeWidth = 1;
+        var margin = {top: strokeWidth + 1, right: strokeWidth + 1, bottom: strokeWidth + 1, left: strokeWidth + 1};
+        var width = divW - margin.left - margin.right;
+        var height = divH - margin.top - margin.bottom;
 
+        // Colour scale
+        // blue: 1E91D6
+        // yellow: FFBC42
+        // green: 179054
+        // red: C5283D
+        // Alternate colours: dodgerblue, orange, crimson, teal
+        var colour = d3.scale.linear()
+            .domain([0 + hexR * 6, width - hexR * 6]) // Shrink domain so that there's more hexes of the "true" colours at each end of the mesh
+            .clamp(true)
+            .range(["#1E91D6", "#FFBC42"])
+            .interpolate(d3.interpolateLab);
+
+        var opacity = d3.scale.linear()
+            .domain([0, width / 2, width])
+            .range([0.4, 0.1, 0.4]);
+
+        // Create array of hex center coordinates
+        var numCols = Math.floor((width)/hexW);
+        var numRows = Math.floor(height/(0.75*hexH));
+        var points = [];
+        for (var i = 0; i < numCols; i++) {
+            for (var j = 0; j < numRows; j++) {
+                var thisY = hexH / 2 + (0.75 * hexH * j);
+
+                // Check if current row is odd - if it is, shift the row's hexagons to the left so they interlock with the row above
+                var thisX = hexW / 2 + (hexW * i);
+                if (j % 2) { thisX = thisX - hexW / 2; }
+
+                // If it's an odd row, then don't add the first hexagon that was shifted to the left, because it will be clipped
+                // Randomly skip some hexagons
+                if (j % 2 && i > 0 || !(j % 2)) {
+                    if (Math.random() <= 0.4) {
+                        points.push([thisX, thisY]);
+                    }
+                }
+            }
+        }
+
+        // Append svg and paths
+        var svg = d3.select(".header-bg").append("svg")
+            .attr("width", width + margin.left + margin.right)
+            .attr("height", height + margin.top + margin.bottom)
+            .append("g")
+                .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+        var paths = svg.selectAll("path")
+            .data(points)
+            .enter().append("path")
+                .attr("d", function(d) { return "M" + d[0] + "," + d[1] + hexagonPath; })
+                .style("stroke-width", strokeWidth)
+                .style("stroke", "white")
+                .style("fill", function(d) { return colour(d[0]); })
+                .style("fill-opacity", function(d) { return opacity(d[0]); });
+
+        // Center mesh in svg
+        var meshWidth = numCols * hexW - 0.25 * hexW;
+        var meshHeight = numRows * (0.75 * hexH);
+        svg.attr("transform", "translate(" + ((width - meshWidth)/2) + "," + ((height - meshHeight)/2) + ")");
+    }
 </script>
 {% endblock %}
 
