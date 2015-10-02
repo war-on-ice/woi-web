@@ -282,13 +282,15 @@ label.invisible {
     color: transparent;
 }
 
-
-.checkbox,
-.checkbox label,
-input[type=checkbox]  {
-    margin: 0;
+.checkbox {
+    display: table;
     height: 36px;
-    line-height: 36px;
+}
+
+.checkbox label {
+    display: table-cell;
+    vertical-align: middle;
+    line-height: 18px;
     font-size: 15px;
     color: #222;
 }
