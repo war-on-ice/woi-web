@@ -202,6 +202,7 @@ p {
     box-sizing: border-box;
     border-bottom: 1px solid #005fdd;
     margin-bottom: 42px;
+    margin-top: 12px;
     vertical-align: bottom;
 }
 
@@ -378,7 +379,6 @@ form.table-opts {
     height: 120px;
     text-align: center;
     overflow: hidden;
-    margin-bottom: 12px;
 }
 
 .header .header-bg {
