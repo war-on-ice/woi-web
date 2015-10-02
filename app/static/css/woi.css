@@ -244,6 +244,7 @@ a.btn:focus {
     line-height: 36px;
     padding: 0 20px;
 }
+
 a.btn:hover {
     background: #bbd8ff;
     color: #000;
@@ -278,6 +279,7 @@ label {
     font-weight: 400;
     color: #aaa;
 }
+
 label.invisible {
     color: transparent;
 }
@@ -300,11 +302,10 @@ label.invisible {
     margin-top: 24px;
 }
 
-.form-group {
-    margin: 0;
-}
 
-form .row {
+
+form button.btn,
+form input {
     margin-bottom: 18px;
 }
 
