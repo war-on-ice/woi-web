@@ -28,13 +28,15 @@ nav.navbar a.navbar-brand:focus,
 nav.navbar .navbar-right a:focus,
 nav.navbar a.dropdown-toggle:focus  {
     color: #aaa;
-    box-sizing: border-box;
+
+    height: auto;
     font-size: 13px;
     line-height: 24px;
-    height: auto;
     padding: 3px 0px;
+    padding-bottom: 0;
+    border-bottom: 3px solid #222; /* Replace bottom padding with border - since height is auto, box-sizing: border-box won't help */
+
     margin: 21px 15px;
-    border-bottom: 3px solid #222;
     font-weight: 500;
 }
 
@@ -46,29 +48,67 @@ nav.navbar a.dropdown-toggle:focus  {
     nav.navbar a.navbar-brand:hover,
     nav.navbar .navbar-right a:hover,
     nav.navbar a.dropdown-toggle:hover,
-    nav.navbar .dropdown.open a.navbar-brand,
-    nav.navbar .dropdown.open a.dropdown-toggle {
+    nav.navbar li.dropdown.open a.dropdown-toggle {
         color: #ccc;
         border-bottom: 3px solid #0050bb;
         background: none;
     }
 
-    nav.navbar a.navbar-brand {
+    nav.navbar a.navbar-brand,
+    nav.navbar a.navbar-brand:focus {
         text-transform: uppercase;
         font-weight: 900;
     }
 
-nav a.navbar-brand.logo {
+nav.navbar a.navbar-brand.logo {
+    /* total height (height + padding + margin) should equal the banner link heights */
     height: 40px;
-    padding: 0px 15px; /* total height (height + padding + margin) should equal the banner link heights */
+    padding: 0px 15px;
     margin: 16px 10px;
+    margin-right: 0;
+    padding-right: 0;
+
     border: none;
     opacity: 0.7;
 }
-    nav a.navbar-brand.logo:hover {
+    nav.navbar a.navbar-brand.logo:hover {
         border: none;
         opacity: 0.8;
     }
+
+/* Responsive navigation bar's toggle */
+nav.navbar .navbar-toggle {
+    /* total height (height + padding + margin) should equal the banner link heights */
+    height: 40px;
+    padding: 0px 15px;
+    margin: 16px 15px;
+    font-size: 13px;
+    line-height: 24px;
+
+    border: 1px solid #444;
+    border-radius: 3px;
+    background: none;
+    color: #aaa;
+    font-weight: 500;
+
+}
+    nav.navbar .navbar-toggle:focus,
+    nav.navbar .navbar-toggle.collapsed:focus {
+        background: none;
+    }
+
+@media (min-width: 768px) {
+    nav.navbar a.navbar-brand.logo {
+        padding-right: 15px;
+        margin-right: 15px;
+    }
+}
+
+/*
+*
+* DROPDOWNS: Used for main navigation and dropdown menus
+*
+*/
 
 .dropdown-menu {
     border-color: #aaa;
@@ -349,7 +389,6 @@ form.table-opts {
     -webkit-transform: translateY(-50%); /* Chrome, Safari, Opera */
     transform: translateY(-50%);
     z-index: 10;
-
 }
 
 .header .game-meta h1 {
