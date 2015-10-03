@@ -1,213 +1,137 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-	<title>Game Summary: {{ gameId }} | WAR On Ice</title>
-	<link rel="icon" type="image/png" href="{{ url_for('static', filename='img/logo-black-40.png') }}" />
-	<!-- CSS -->
-	<link href="{{ url_for('static', filename='bootstrap/css/bootstrap.min.css') }}" rel="stylesheet">
-	<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='DataTables/css/dataTables.bootstrap.min.css') }}"/>
-	<link href="{{ url_for('static', filename='css/gamesummary.css') }}" rel="stylesheet">
-	<!-- Load jquery in head, in case included pages need it before they load -->
-	<script src="{{ url_for('static', filename='jquery/jquery.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='bootstrap/js/bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='DataTables/js/jquery.dataTables.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='DataTables/js/dataTables.bootstrap.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/textures.min.js') }}"></script>
-	<script src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
-	<link href='https://fonts.googleapis.com/css?family=Roboto:400,500,700,900' rel='stylesheet' type='text/css'>
-	<link href='https://fonts.googleapis.com/css?family=Roboto+Mono:400,500,700' rel='stylesheet' type='text/css'>
-</head>
-<body>
-	<nav class="navbar navbar-default navbar-static-top fluid">
-		<div class="container">
-			<div class="navbar-header">
-				<button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-				<span class="sr-only">Toggle navigation</span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				<span class="icon-bar"></span>
-				</button>
-				<a class="navbar-brand" href="#">WAR On Ice</a>
-			</div>
-			<div id="navbar" class="collapse navbar-collapse">
-				<ul class="nav navbar-nav">
-					<!-- <li class="active"><a href="#">Cap</a></li> -->
-					<li><a href="#">Cap</a></li>
-					<li><a href="#players">Players</a></li>
-					<li><a href="#teams">Teams</a></li>
-					<li><a href="#games">Games</a></li>
-					<li><a href="#blog">Blog</a></li>
-					<li><a href="#glossary">Glossary</a></li>
-					<li><a href="#labs">Labs</a></li>
-					<li><a href="#about">About Us</a></li>
-				</ul>
-			</div><!--/.nav-collapse -->
-		</div>
-	</nav>
-	<div class="container-fluid">
-		<div class="row">
-			<div class="header">
-				<div class="game-meta">
-					<h1 class="team away">Lightning</h1
-					><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
-					><h1 class="score away">4</h1
-					><div class="date">
-						<p>Final<br>
-						Sep 25, 2015</p>
-					</div
-					><h1 class="score home">2</h1
-					><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
-					><h1 class="team home">Bruins</h1>
-				</div>
-				<div class="header-bg">
-				</div>
-			</div>
-		</div>
-	</div>
-	<div class="container">
-		<ul class="nav nav-tabs" role="tablist">
-			<li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
-			<li role="presentation"><a href="#event-charts">Event Charts</a></li>
-			<li role="presentation"><a href="#player-usage">Player Usage</a></li>
-			<li role="presentation"><a href="#win-probs">Win Probabilities</a></li>
-		</ul>
-		<div class="tab-content">
-			<div id="event-tables" class="tab-pane fade in active">
-				<form class="table-opts">
+{% extends "wrappers/wrapper.html" %}
+{% from "macros.html" import create_dropdown %}
 
-					<div class="row">
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label class="control-label invisible" for="test-input">Team strengths</label>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									Even strength 5v5
-										<span class="pull-right">
-											<span class="caret"></span>
-										</span>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label class="control-label invisible" for="test-input">Score situation</label>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									All score situations
-										<span class="pull-right">
-											<span class="caret"></span>
-										</span>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label class="control-label" for="test-input">Period</label>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									All
-										<span class="pull-right">
-											<span class="caret"></span>
-										</span>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label class="control-label" for="test-input">Columns to display</label>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									Prime
-										<span class="pull-right">
-											<span class="caret"></span>
-										</span>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-					</div>
+{% block content_header %}
+<div class="col-md-12">
+    <div class="header">
+        <div class="game-meta">
+            <h1 class="team away"><span>Lightning</span></h1
+            ><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
+            ><h1 class="score away"><span>4</span></h1
+            ><div class="date">
+                <p><span>Final</span></p>
+                <p><span>Sep 25, 2015</span></p>
+            </div
+            ><h1 class="score home"><span>2</span></h1
+            ><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
+            ><h1 class="team home"><span>Bruins</span></h1>
+        </div>
+        <div class="header-bg">
+        </div>
+    </div>
+</div>
+{% endblock %}
 
-					<div class="row">
-						<div class="col-sm-3">
-							<div class="form-group">
-									<label for="exampleInputEmail1">An example text field</label>
-									<input type="text" class="form-control" id="exampleInputEmail1" placeholder="Team">
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="checkbox">
-								<label>
-									<input type="checkbox"> Automatically refresh tables
-								</label>
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<div class="form-group">
-								<label class="control-label invisible" for="test-input">Team strengths</label>
-								<div class="dropdown">
-									<button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-									Mixed inputs
-										<span class="pull-right">
-											<span class="caret"></span>
-										</span>
-									</button>
-									<ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-										<li><a href="#">Action</a></li>
-									</ul>
-								</div>
-							</div>
-						</div>
-						<div class="col-sm-3">
-							<a class="btn btn-default btn-block" href="#" role="button">Download tables</a>
-						</div>
-					</div>
+
+{% block content %}
+    <div class="row">
+        <div class="col-md-12">
+            <ul id="main-content-tab-container" class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
+                <li role="presentation"><a href="#event-charts">Event Charts</a></li>
+                <li role="presentation"><a href="#player-usage">Player Usage</a></li>
+                <li role="presentation"><a href="#win-probs">Win Probabilities</a></li>
+            </ul>
+            <div class="tab-content">
+                <div id="event-tables" class="tab-pane fade in active">
+                    <form class="table-opts">
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                {{ create_dropdown('Team strengths', strength_situations) }}
+                            </div>
+                            <div class="col-sm-3">
+                                {{ create_dropdown('Score situations', score_situations) }}
+                            </div>
+                            <div class="col-sm-3">
+                                {{ create_dropdown('Period', periods) }}
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label" for="test-input">Columns to display</label>
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Prime
+                                            <span class="pull-right">&nbsp;
+                                                <span class="caret"></span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <li><a href="#">Action</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                        <label for="exampleInputEmail1">An example text field</label>
+                                        <input type="text" class="form-control" id="exampleInputEmail1" placeholder="Team">
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="checkbox beside-fields">
+                                    <label>
+                                        <input type="checkbox"> Automatically refresh tables
+                                    </label>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <div class="form-group">
+                                    <label class="control-label invisible" for="test-input">Team strengths</label>
+                                    <div class="dropdown">
+                                        <button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
+                                        Mixed inputs
+                                            <span class="pull-right">&nbsp;
+                                                <span class="caret"></span>
+                                            </span>
+                                        </button>
+                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
+                                            <li><a href="#">Action</a></li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-sm-3">
+                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
+                            </div>
+                        </div>
 
 
 
-				</form>
-				<h3>Teams</h3>
-				<div class="row datatable">
-					<div class="col-sm-12">
-						<table class="table dataTable hover no-footer" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 200px;">Name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 320px;">Position</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Office</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 115px;">Salary</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">Airi Satou</td><td>Accountant</td><td>Tokyo</td><td>$162,700</td></tr><tr role="row" class="even"><td class="sorting_1">Angelica Ramos</td><td>Chief Executive Officer (CEO)</td><td>London</td><td>$1,200,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Ashton Cox</td><td>Junior Technical Author</td><td>San Francisco</td><td>$86,000</td></tr><tr role="row" class="even"><td class="sorting_1">Bradley Greer</td><td>Software Engineer</td><td>London</td><td>$132,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Brenden Wagner</td><td>Software Engineer</td><td>San Francisco</td><td>$206,850</td></tr><tr role="row" class="even"><td class="sorting_1">Brielle Williamson</td><td>Integration Specialist</td><td>New York</td><td>$372,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Bruno Nash</td><td>Software Engineer</td><td>London</td><td>$163,500</td></tr><tr role="row" class="even"><td class="sorting_1">Caesar Vance</td><td>Pre-Sales Support</td><td>New York</td><td>$106,450</td></tr><tr role="row" class="odd"><td class="sorting_1">Cara Stevens</td><td>Sales Assistant</td><td>New York</td><td>$145,600</td></tr><tr role="row" class="even"><td class="sorting_1">Cedric Kelly</td><td>Senior Javascript Developer</td><td>Edinburgh</td><td>$433,060</td></tr></tbody></table>
-					</div>
-				</div>
-				<h3>Goalies</h3>
-				<h3>Skaters – Lightning</h3>
-				<h3>Skaters – Bruins</h3>
-			</div>
-			<div id="event-charts" class="tab-pane fade">
-				<h3>Event charts</h3>
-				<p>Event chart content</p>
-			</div>
-			<div id="player-usage" class="tab-pane fade">
-				<h3>Matchup Charts</h3>
-				<p>Matchup charts go here</p>
-				<h3>Line Charts</h3>
-				<p>Line charts go here</p>
-			</div>
-			<div id="win-probs" class="tab-pane fade">
-				<p>Win probabilities</p>
-			</div>
-		</div>
-	</div>
-</body>
+                    </form>
+                    <h3>Teams</h3>
+                    <div class="row datatable">
+                        <div class="col-sm-12">
+                            <table class="table dataTable hover no-footer" cellspacing="0" width="100%" role="grid" aria-describedby="example_info" style="width: 100%;"><thead><tr role="row"><th class="sorting_asc" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-sort="ascending" aria-label="Name: activate to sort column descending" style="width: 200px;">Name</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Position: activate to sort column ascending" style="width: 320px;">Position</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Office: activate to sort column ascending" style="width: 148px;">Office</th><th class="sorting" tabindex="0" aria-controls="example" rowspan="1" colspan="1" aria-label="Salary: activate to sort column ascending" style="width: 115px;">Salary</th></tr></thead><tbody><tr role="row" class="odd"><td class="sorting_1">Airi Satou</td><td>Accountant</td><td>Tokyo</td><td>$162,700</td></tr><tr role="row" class="even"><td class="sorting_1">Angelica Ramos</td><td>Chief Executive Officer (CEO)</td><td>London</td><td>$1,200,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Ashton Cox</td><td>Junior Technical Author</td><td>San Francisco</td><td>$86,000</td></tr><tr role="row" class="even"><td class="sorting_1">Bradley Greer</td><td>Software Engineer</td><td>London</td><td>$132,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Brenden Wagner</td><td>Software Engineer</td><td>San Francisco</td><td>$206,850</td></tr><tr role="row" class="even"><td class="sorting_1">Brielle Williamson</td><td>Integration Specialist</td><td>New York</td><td>$372,000</td></tr><tr role="row" class="odd"><td class="sorting_1">Bruno Nash</td><td>Software Engineer</td><td>London</td><td>$163,500</td></tr><tr role="row" class="even"><td class="sorting_1">Caesar Vance</td><td>Pre-Sales Support</td><td>New York</td><td>$106,450</td></tr><tr role="row" class="odd"><td class="sorting_1">Cara Stevens</td><td>Sales Assistant</td><td>New York</td><td>$145,600</td></tr><tr role="row" class="even"><td class="sorting_1">Cedric Kelly</td><td>Senior Javascript Developer</td><td>Edinburgh</td><td>$433,060</td></tr></tbody></table>
+                        </div>
+                    </div>
+                    <h3>Goalies</h3>
+                    <h3>Skaters – Lightning</h3>
+                    <h3>Skaters – Bruins</h3>
+                </div>
+                <div id="event-charts" class="tab-pane fade">
+                    <h3>Event charts</h3>
+                    <p>Event chart content</p>
+                </div>
+                <div id="player-usage" class="tab-pane fade">
+                    <h3>Matchup Charts</h3>
+                    <p>Matchup charts go here</p>
+                    <h3>Line Charts</h3>
+                    <p>Line charts go here</p>
+                </div>
+                <div id="win-probs" class="tab-pane fade">
+                    <p>Win probabilities</p>
+                </div>
+            </div>
+        </div>
+    </div>
+{% endblock %}
+
+{% block page_js %}
 <script>
-
 // Handle tabs
 $('.nav-tabs a').click(function(){
     $(this).tab('show');
@@ -215,55 +139,122 @@ $('.nav-tabs a').click(function(){
 
 // Initialize DataTable
 $(document).ready(function() {
-    $('.dataTable').DataTable({
-    	"paging": false,
-    	"filter": false,
-    	"sDom": '<"top">rt<"bottom"flp><"clear">',
-    	"columnDefs": [
-    		{ className: "right", "targets": [ 3 ] }
-		]
+    $('table.dataTable').DataTable({
+        "paging": false,
+        "filter": false,
+        "sDom": '<"top">rt<"bottom"flp><"clear">',
+        "columnDefs": [
+            { className: "right", "targets": [ 3 ] }
+        ]
     });
 });
 
+// Draw header banner
+drawMesh();
+
+// Update on resize - wait 500ms before redrawing the mesh
+var counter;
+$(window).resize(function() {
+    clearTimeout(counter);
+    counter = setTimeout(doneResizing, 500);
+});
+
+var currentHeaderWidth = $(".header-bg").width();
+var currentTabContainerHeight = $("#main-content-tab-container").height();
+function doneResizing() {
+    // Check if header width has changed
+    var newHeaderWidth = $(".header-bg").width();
+    if (currentHeaderWidth !== newHeaderWidth) {
+        currentHeaderWidth = newHeaderWidth;
+        d3.select(".header-bg").select("svg").remove();
+        drawMesh();
+    }
+
+    // Check if tab container height has changed
+    var newTabContainerHeight = $("#main-content-tab-container").height();
+    if (currentTabContainerHeight !== newTabContainerHeight) {
+        currentTabContainerHeight = newTabContainerHeight;
+        console.log(newTabContainerHeight);
+        // if newHeight < currentHeight, switch to dropdown
+        // else if newHeight > currentHeight, switch to tabs
+        // Also always switch to dropdown if <768px? probably not necessary
+    }
+}
+
+// Draw hexagon mesh for header
+function drawMesh() {
+    var divH = $(".header").height();
+    var divW = $(".header").width();
+
+    var hexR = 12;
+    var hexH = hexR * 2;
+    var hexW = hexR * Math.sqrt(3);
+
+    var hexagonPoly=[[0,-1],[Math.sqrt(3)/2,0.5],[0,1],[-Math.sqrt(3)/2,0.5],[-Math.sqrt(3)/2,-0.5],[0,-1],[Math.sqrt(3)/2,-0.5]];
+    var hexagonPath = "m"+hexagonPoly.map(function(p){return [p[0]*hexR, p[1]*hexR].join(",")}).join("l")+"z";
+
+    var strokeWidth = 1;
+    var margin = {top: strokeWidth + 1, right: strokeWidth + 1, bottom: strokeWidth + 1, left: strokeWidth + 1};
+    var width = divW - margin.left - margin.right;
+    var height = divH - margin.top - margin.bottom;
+
+    // Colour scale
+    // blue: 1E91D6
+    // yellow: FFBC42
+    // green: 179054
+    // red: C5283D
+    // Alternate colours: dodgerblue, orange, crimson, teal
+    var colour = d3.scale.linear()
+        .domain([0 + hexR * 6, width - hexR * 6]) // Shrink domain so that there's more hexes of the "true" colours at each end of the mesh
+        .clamp(true)
+        .range(["#1E91D6", "#FFBC42"])
+        .interpolate(d3.interpolateLab);
+
+    var opacity = d3.scale.linear()
+        .domain([0, width / 2, width])
+        .range([0.4, 0.1, 0.4]);
+
+    // Create array of hex center coordinates
+    var numCols = Math.floor((width)/hexW);
+    var numRows = Math.floor(height/(0.75*hexH));
+    var points = [];
+    for (var i = 0; i < numCols; i++) {
+        for (var j = 0; j < numRows; j++) {
+            var thisY = hexH / 2 + (0.75 * hexH * j);
+
+            // Check if current row is odd - if it is, shift the row's hexagons to the left so they interlock with the row above
+            var thisX = hexW / 2 + (hexW * i);
+            if (j % 2) { thisX = thisX - hexW / 2; }
+
+            // If it's an odd row, then don't add the first hexagon that was shifted to the left, because it will be clipped
+            // Randomly skip some hexagons
+            if (j % 2 && i > 0 || !(j % 2)) {
+                if (Math.random() <= 0.4) {
+                    points.push([thisX, thisY]);
+                }
+            }
+        }
+    }
+
+    // Append svg and paths
+    var svg = d3.select(".header-bg").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var paths = svg.selectAll("path")
+        .data(points)
+        .enter().append("path")
+            .attr("d", function(d) { return "M" + d[0] + "," + d[1] + hexagonPath; })
+            .style("stroke-width", strokeWidth)
+            .style("stroke", "white")
+            .style("fill", function(d) { return colour(d[0]); })
+            .style("fill-opacity", function(d) { return opacity(d[0]); });
+
+    // Center mesh in svg
+    var meshWidth = numCols * hexW - 0.25 * hexW;
+    var meshHeight = numRows * (0.75 * hexH);
+    svg.attr("transform", "translate(" + ((width - meshWidth)/2) + "," + ((height - meshHeight)/2) + ")");
+}
 </script>
-<script>
-	var h = $(".header-bg").height();
-
-	d3.select(".header-bg")
-		.style("background-image", "linear-gradient(90deg, dodgerblue, #ddd, darkorange)")
-		.style("opacity", 0.3);
-
-	// Gradient colours: darkorange, dodgerblue, crimson, teal
-	var svg = d3.select(".header-bg").append("svg")
-		.style("width", "10000px")
-		.style("height", h + "px");
-
-	// Apply dithering texture
-	var t1 = textures.paths()
-	    .d("hexagons")
-	    .size(2)
-	    .strokeWidth(1)
-	    .stroke("white");
-  	svg.call(t1);
-  	svg.append("rect")
-  		.attr("x", 0)
-  		.attr("y", 0)
-  		.attr("width", 10000)
-		.attr("height", h)
-  		.style("fill", t1.url());
-
-  	// Apply larger hexagon texture
-  	var t2 = textures.paths()
-	    .d("hexagons")
-	    .size(20) //18, 20, 23 look good
-	    .strokeWidth(1.5)
-	    .stroke("white");
-	svg.call(t2);
-  	svg.append("rect")
-  		.attr("x", 0)
-  		.attr("y", 0)
-  		.attr("width", 10000)
-		.attr("height", h)
-  		.style("fill", t2.url());
-</script>
-</html>
+{% endblock %}

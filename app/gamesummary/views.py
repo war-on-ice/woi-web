@@ -10,13 +10,8 @@ mod = Blueprint('game', __name__, url_prefix='/game')
 
 @mod.route('/<gameId>/')
 def show_game_summary(gameId):
-    return render_template('game/gamesummary.html',
-                           gameId = gameId)
-
-@mod.route('/test/<gameId>/')
-def show_game_summary_test(gameId):
     rd = setup_nav()
-    return render_template('game/gamesummary2.html',
+    return render_template('game/gamesummary.html',
                            gameId = gameId,
                            strength_situations = constants.strength_situations,
                            score_situations = constants.score_situations,
