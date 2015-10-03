@@ -119,7 +119,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 
     nav.navbar ul.nav.navbar-nav {
     /* Width = 4 items * (ul.nav.navbar-nav>li margin-left + ul.nav.navbar-nav>li>a width) */
-        width: 520px;
+        width: 540px;
     }
 
     nav.navbar ul.nav.navbar-nav>li {
@@ -135,7 +135,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         font-size: 13px;
         font-weight: 500px;
 
-        width: 110px;
+        width: 115px;
         height: 30px;
         line-height: 30px;
 
