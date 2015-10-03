@@ -17,17 +17,110 @@ nav.navbar {
     background: #222;
     border-radius: 0;
     border: none;
-
-    margin: 0;
     margin-bottom: 24px;
-
-    padding: 18px 0 12px 0;
 }
 
-nav.navbar ul.nav.navbar-nav {
+.navbar-toggle,
+.navbar-toggle:focus,
+.navbar-toggle.collapsed:focus {
+    color: #aaa;
+    background: none;
+    border-radius: 3px;
+
+    padding: 0 10px;
+    line-height: 36px;
+
+    /* Collapsed navbar height will be equal to height + v-margins */
+    height: 36px;
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+    .navbar-toggle:hover {
+        color: #ccc;
+    }
+
+nav.navbar .navbar-header .navbar-brand {
+    color: #aaa;
+    font-size: 13px;
+    font-weight: 900;
+    text-transform: uppercase;
+
+    padding-top: 0;
+    padding-bottom: 0;
+
+    /* Set equal to .navbar-toggle height plus its v-margins */
+    height: 60px;
+    line-height: 60px;
+}
+    nav.navbar .navbar-header .navbar-brand:hover {
+        color: #ccc;
+    }
+
+    nav.navbar .navbar-header .navbar-brand.logo {
+        display: none;
+        opacity: 0.7;
+    }
+        nav.navbar .navbar-header .navbar-brand.logo:hover {
+            opacity: 0.9;
+        }
+
+nav.navbar ul.nav.navbar-nav>li>a,
+nav.navbar ul.nav.navbar-nav>li>a:focus {
+    color: #aaa;
+    background: none;
+    font-size: 13px;
+    font-weight: 500px;
+}
+    nav.navbar ul.nav.navbar-nav>li>a>.caret {
+        color: #777;
+    }
+
+/* Full navigation bar */
+@media (min-width: 768px) {
+
+    nav.navbar {
+        padding-top: 18px;
+        padding-bottom: 12px;
+        height: auto;
+    }
+
+    nav.navbar .navbar-header {
+        margin: 0;
+        padding: 0;
+        vertical-align: middle;
+    }
+
+    nav.navbar .navbar-header .navbar-brand {
+        line-height: 84px;
+        height: 84px;
+        margin: 0;
+        padding: 0;
+    }
+
+        nav.navbar .navbar-header .navbar-brand.logo {
+            display: inline-block;
+            opacity: 0.7;
+        }
+
+        /* Vertically center image */
+        nav.navbar .navbar-header .navbar-brand.logo:before {
+            content: " ";
+            display: inline-block;
+            vertical-align: middle;
+            height: 100%;
+        }
+        nav.navbar .navbar-header .navbar-brand.logo img {
+            display: inline-block;
+            vertical-align: middle;
+            height: 40px;
+            padding-right: 10px;
+        }
+    /* End: Vertically center image */
+
+    nav.navbar ul.nav.navbar-nav {
     /* Width = 4 items * (ul.nav.navbar-nav>li margin-left + ul.nav.navbar-nav>li>a width) */
-    width: 520px;
-}
+        width: 520px;
+    }
 
     nav.navbar ul.nav.navbar-nav>li {
         margin: 0;
@@ -42,7 +135,6 @@ nav.navbar ul.nav.navbar-nav {
         font-size: 13px;
         font-weight: 500px;
 
-        box-sizing: border-box;
         width: 110px;
         height: 30px;
         line-height: 30px;
@@ -58,54 +150,6 @@ nav.navbar ul.nav.navbar-nav {
         border-bottom: 2px solid #005fdd;
         color: #ccc;
     }
-
-nav.navbar .navbar-header .navbar-brand {
-    color: #aaa;
-}
-    nav.navbar .navbar-header .navbar-brand:hover {
-        color: #ccc;
-    }
-
-    nav.navbar .navbar-header .navbar-brand.logo {
-        opacity: 0.7;
-    }
-        nav.navbar .navbar-header .navbar-brand.logo:hover {
-            opacity: 0.9;
-        }
-
-/* Full navigation bar */
-@media (min-width: 768px) {
-
-    nav.navbar .navbar-header {
-        margin: 0;
-        padding: 0;
-        vertical-align: middle;
-    }
-
-    nav.navbar .navbar-header .navbar-brand {
-        margin: 0;
-        padding: 0;
-        font-size: 13px;
-        font-weight: 900;
-        text-transform: uppercase;
-        line-height: 84px;
-        height: 84px;
-    }
-
-    /* Vertically center image */
-    nav.navbar .navbar-header .navbar-brand.logo:before {
-        content: " ";
-        display: inline-block;
-        vertical-align: middle;
-        height: 100%;
-    }
-    nav.navbar .navbar-header .navbar-brand.logo img {
-        display: inline-block;
-        vertical-align: middle;
-        height: 40px;
-        padding-right: 10px;
-    }
-    /* End: Vertically center image */
 }
 
 /*
