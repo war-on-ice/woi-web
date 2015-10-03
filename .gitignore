@@ -5,3 +5,4 @@ venv/
 .idea/
 *.pyc
 cred.py
+Vagrantfile
