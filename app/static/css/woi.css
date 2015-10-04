@@ -277,13 +277,13 @@ p {
 */
 
 .nav-tabs {
-    border-bottom: 1px solid #005fdd;
+    border-bottom: 4px solid #eee;
     margin-bottom: 42px;
     margin-top: 12px;
 }
 
 .nav-tabs>li {
-	margin-bottom: 0;
+	margin-bottom: -4px; /* Set equal to .nav-tabs border-bottom */
 }
 
 .nav-tabs li a,
@@ -300,6 +300,7 @@ p {
 
     border: none;
     border-radius: 0;
+    font-weight: 500;
 }
 
 .nav-tabs li a:hover {
@@ -333,6 +334,7 @@ p {
     margin: 0 auto;
     height: 42px;
     line-height: 42px;
+    font-weight: 400;
 }
 
 .nav-tabs.nav-stacked li a:hover,
