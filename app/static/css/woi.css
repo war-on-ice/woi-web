@@ -277,18 +277,18 @@ p {
 */
 
 .nav-tabs {
-    box-sizing: border-box;
     border-bottom: 1px solid #005fdd;
     margin-bottom: 42px;
     margin-top: 12px;
-    vertical-align: bottom;
 }
 
-.nav-tabs li a {
+.nav-tabs li a,
+.nav-tabs li a:focus {
     box-sizing: border-box;
+    background: none;
     color: #0050bb;
-    height: 60px;
-    line-height: 60px;
+    height: 54px;
+    line-height: 54px;
 
     margin: 0;
     margin-right: 30px;
@@ -298,14 +298,9 @@ p {
     border-radius: 0;
 }
 
-
 .nav-tabs li a:hover {
     background: none;
     border-bottom: 4px solid #005fdd;
-}
-
-.nav-tabs li a:focus {
-    background: none;
 }
 
 .nav-tabs li.active a,
@@ -317,6 +312,33 @@ p {
     color: #0050bb;
 }
 
+/*
+* 
+* Stacked navigation tabs (Javascript will toggle between horizontal and stacked tabs)
+*
+*/
+
+.nav-tabs.nav-stacked {
+    border: none;
+}
+.nav-tabs.nav-stacked li a {
+    border-bottom: 1px solid #cce2ff;
+    text-align: center;
+    width: 0;
+    min-width: 60%;
+    margin: 0 auto;
+    height: 42px;
+    line-height: 42px;
+}
+
+.nav-tabs.nav-stacked li a:hover,
+.nav-tabs.nav-stacked li.active a {
+    border-bottom: 2px solid #005fdd;
+}
+
+.nav-tabs.nav-stacked li.active a {
+    font-weight: 700;
+}
 
 /*
 *

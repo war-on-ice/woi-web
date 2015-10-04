@@ -38,18 +38,21 @@
                     <form class="table-opts">
 
                         <div class="row">
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 {{ create_dropdown('Team strengths', strength_situations) }}
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 {{ create_dropdown('Score situations', score_situations) }}
                             </div>
-                            <div class="col-sm-3">
+                            <div class="col-sm-4">
                                 {{ create_dropdown('Period', periods) }}
                             </div>
-                            <div class="col-sm-3">
+                        </div>
+
+                        <div class="row">
+                            <div class="col-sm-4">
                                 <div class="form-group">
-                                    <label class="control-label" for="test-input">Columns to display</label>
+                                    <label class="control-label" for="test-input">Table columns</label>
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
                                         Prime
@@ -63,18 +66,15 @@
                                     </div>
                                 </div>
                             </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-sm-9">
-                                <div class="checkbox">
+                            <div class="col-sm-4">
+                                <div class="checkbox beside-fields">
                                     <label>
                                         <input type="checkbox"> Automatically refresh tables
                                     </label>
                                 </div>
                             </div>
-                             <div class="col-sm-3">
-                                <a class="btn btn-default btn-block" href="#" role="button">Download tables</a>
+                             <div class="col-sm-4">
+                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
                             </div>
                         </div>
 
@@ -111,35 +111,41 @@
 
 {% block page_js %}
 <script>
-// Handle tabs
-$('.nav-tabs a').click(function(){
-    $(this).tab('show');
-});
+var currentHeaderWidth;
+var counter;
 
-// Initialize DataTable
 $(document).ready(function() {
-    $('table.dataTable').DataTable({
-        "paging": false,
-        "filter": false,
-        "sDom": '<"top">rt<"bottom"flp><"clear">',
-        "columnDefs": [
-            { className: "right", "targets": [ 3 ] }
-        ]
+    console.log("hi");
+
+    // Handle tabs
+    $('.nav-tabs a').click(function(){
+        $(this).tab('show');
+    });
+
+    // Initialize DataTable
+    $(document).ready(function() {
+        $('table.dataTable').DataTable({
+            "paging": false,
+            "filter": false,
+            "sDom": '<"top">rt<"bottom"flp><"clear">',
+            "columnDefs": [
+                { className: "right", "targets": [ 3 ] }
+            ]
+        });
+    });
+
+    // Draw header banner
+    drawMesh();
+
+    // Update on resize - wait 500ms before redrawing the mesh
+    currentHeaderWidth = $(".header-bg").width();
+    doneResizing(); // Initialize layout
+    $(window).resize(function() {
+        clearTimeout(counter);
+        counter = setTimeout(doneResizing, 500);
     });
 });
 
-// Draw header banner
-drawMesh();
-
-// Update on resize - wait 500ms before redrawing the mesh
-var counter;
-$(window).resize(function() {
-    clearTimeout(counter);
-    counter = setTimeout(doneResizing, 500);
-});
-
-var currentHeaderWidth = $(".header-bg").width();
-var currentTabContainerHeight = $("#main-content-tab-container").height();
 function doneResizing() {
     // Check if header width has changed
     var newHeaderWidth = $(".header-bg").width();
@@ -149,14 +155,10 @@ function doneResizing() {
         drawMesh();
     }
 
-    // Check if tab container height has changed
-    var newTabContainerHeight = $("#main-content-tab-container").height();
-    if (currentTabContainerHeight !== newTabContainerHeight) {
-        currentTabContainerHeight = newTabContainerHeight;
-        console.log(newTabContainerHeight);
-        // if newHeight < currentHeight, switch to dropdown
-        // else if newHeight > currentHeight, switch to tabs
-        // Also always switch to dropdown if <768px? probably not necessary
+    if (newHeaderWidth <= 767) {
+        $("#main-content-tab-container").addClass("nav-stacked");
+    } else {
+        $("#main-content-tab-container").removeClass("nav-stacked");
     }
 }
 
