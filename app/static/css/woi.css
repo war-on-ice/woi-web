@@ -416,6 +416,8 @@ label.invisible {
 .checkbox {
     display: table;
     height: 36px;
+    margin-top: 0;
+    margin-bottom: 0;
 }
 
 .checkbox label {
@@ -431,10 +433,10 @@ label.invisible {
     margin-top: 24px;
 }
 
-
-
 form button.btn,
-form input {
+form input,
+form a.btn.btn-default,
+form div.checkbox {
     margin-bottom: 18px;
 }
 
