@@ -277,13 +277,13 @@ p {
 */
 
 .nav-tabs {
-    border-bottom: 4px solid #eee;
+    border-bottom: 5px solid #eee;
     margin-bottom: 42px;
     margin-top: 12px;
 }
 
 .nav-tabs>li {
-	margin-bottom: -4px; /* Set equal to .nav-tabs border-bottom */
+	margin-bottom: -5px; /* Set equal to .nav-tabs border-bottom */
 }
 
 .nav-tabs li a,
@@ -305,14 +305,14 @@ p {
 
 .nav-tabs li a:hover {
     background: none;
-    border-bottom: 4px solid #cce2ff;
+    border-bottom: 5px solid #cce2ff;
 }
 
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover,
 .nav-tabs li.active a:focus {
     border: none;
-    border-bottom: 4px solid #005fdd;
+    border-bottom: 5px solid #005fdd;
     background: none;
     color: #0050bb;
 }
