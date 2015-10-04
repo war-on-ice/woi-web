@@ -4,8 +4,8 @@ def create_dict(dictionary):
 
 # Score Situations
 score_situations_dict = {"Trailing By 3+": {'value': 0, 'order': 5, 'default': 0},
-                    "Trailing By 2": {'value': 1, 'order': 6, 'default': 0},
-                    "Trailing By 1": {'value': 2, 'order': 7, 'default': 0},
+                    "Trailing By 2": {'value': 1, 'order': 7, 'default': 0},
+                    "Trailing By 1": {'value': 2, 'order': 8, 'default': 0},
                     "Tied": {'value': 3, 'order': 9, 'default': 0},
                     "Leading By 1": {'value': 4, 'order': 11, 'default': 0},
                     "Leading By 2": {'value': 5, 'order':12, 'default': 0},
@@ -16,7 +16,7 @@ score_situations_dict = {"Trailing By 3+": {'value': 0, 'order': 5, 'default': 0
                     "Close": {'value': 10, 'order': 2, 'default': 0},
                     "Leading": {'value': 11, 'order': 10, 'default': 0},
                     "Leading By 2+": {'value': 12, 'order': 13, 'default': 0},
-                    "Trailing By 2+": {'value': 13, 'order': 8, 'default': 0},
+                    "Trailing By 2+": {'value': 13, 'order': 6, 'default': 0},
                     "Trailing": {'value': 14, 'order': 4, 'default': 0}}
 
 score_situations = create_dict(score_situations_dict)

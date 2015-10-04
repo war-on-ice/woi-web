@@ -87,7 +87,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
     nav.navbar ul.nav.navbar-nav>li>a,
     nav.navbar ul.nav.navbar-nav>li>a,
     .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
-        line-height: 24px;
+        line-height: 30px;
         padding-top: 6px;
         padding-bottom: 6px;
         color: #aaa;
@@ -101,6 +101,8 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
     .navbar-inverse .navbar-nav .open .dropdown-menu .divider {
         background-color: #333;
         margin-left: 25px;
+        margin-bottom: 6px;
+        margin-top: 6px;
     }
 }
 
@@ -189,21 +191,20 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 
 .navbar-nav>li>.dropdown-menu,
 .dropdown-menu  {
-    margin-top: 3px;
     border-radius: 3px;
     border-color: #aaa;
-    padding-top: 9px;
-    padding-bottom: 9px;
+    padding-top: 3px;
+    padding-bottom: 3px;
 }
 
 .dropdown-menu .divider {
     background-color: #ccc;
-    margin: 9x 0px;
+    margin: 3px 0px;
 }
 
 .dropdown-menu>li>a {
     font-size: 13px;
-    line-height: 18px;
+    line-height: 24px;
     padding: 6px 20px;
     color: #222;
 }
