@@ -282,6 +282,10 @@ p {
     margin-top: 12px;
 }
 
+.nav-tabs>li {
+	margin-bottom: 0;
+}
+
 .nav-tabs li a,
 .nav-tabs li a:focus {
     box-sizing: border-box;
@@ -300,7 +304,7 @@ p {
 
 .nav-tabs li a:hover {
     background: none;
-    border-bottom: 4px solid #005fdd;
+    border-bottom: 4px solid #cce2ff;
 }
 
 .nav-tabs li.active a,
