@@ -77,25 +77,40 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         color: #777;
     }
 
+/* Team list in the Cap dropdown */
+.row.conference {
+	margin: 12px 0;
+	color: #005fdd; /* Blue text for the division name */
+}
+	/* The western conference is listed last; use red text for its divisions */
+	.row.conference:last-child {
+		color: #c5283d;
+	}
 
-.dropdown-link {
-    margin-left: 0px;
-    margin-right: 0px;
+.row.division-name,
+.row.team {
+	padding: 6px 0 6px 20px;
+	font-size: 13px;
+	line-height: 18px;
+}
+	.row.division-name {
+		font-weight: 700;
+	}
+
+.row.team:hover {
+	background: #eff8fd;
 }
 
-.dropdown-link:hover {
-    background: #eff8fd;
+.row.team a {
+	text-decoration: none;
+	color: #222;
 }
 
-.dropdown-link>div>a {
-    font-size: 13px;
-    line-height: 24px;
-    color: #222;
+.row.team img {
+	vertical-align: bottom;
+	margin-right: 8px;
 }
-
-.dropdown-link>div>a:hover {
-    text-decoration: none;
-}
+	
 
 /* Collapsed navigation dropdown */
 @media (max-width: 767px) {
@@ -127,23 +142,28 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         margin-top: 6px;
     }
 
-    .dropdown-link,
-    .conference {
-        color: #aaa;
-    }
+    .row.team:hover {
+    	color: #ccc;
+		background: #272727;
+	}
 
-    .dropdown-link:hover {
-        color: #ccc;
-        background: #272727;
-    }
+	.row.team a {
+		color: #aaa;
+	}
 
-    .dropdown-link>div>a {
-        color: #aaa;
-    }
+	.row.division-name,
+	.row.team {
+		padding-left: 25px;
+	}
 
-    .dropdown-link>div>a:hover {
-        color: #ccc;
-    }
+	/* Since divisions are listed in a single column, replace conference margins with division margins */
+	.row.conference {
+		margin: 0;
+	}
+	.division {
+		margin: 6px 0 12px 0;
+	}
+
 }
 
 /* Full navigation bar */

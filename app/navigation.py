@@ -38,10 +38,10 @@ def setup_nav():
 	pacDict = conferences(pacific, teamDict)
 
 	rd["conferences"] = {
-		"Eastern - Atlantic": atlDict,
-		"Eastern - Metropolitan": metDict,
-		"Western - Pacific": pacDict,
-		"Western - Central": cenDict,
+		"Atlantic - East": atlDict,
+		"Metropolitan - East": metDict,
+		"Pacific - West": pacDict,
+		"Central - West": cenDict,
 	}
 
 	rd["teamDict"] = teamDict
