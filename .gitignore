@@ -6,3 +6,4 @@ venv/
 *.pyc
 cred.py
 Vagrantfile
+bootstrap.sh
