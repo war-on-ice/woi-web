@@ -84,7 +84,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 }
 
 .dropdown-link:hover {
-    background: #eef5ff;
+    background: #eff8fd;
 }
 
 .dropdown-link>div>a {
@@ -218,7 +218,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 
     nav.navbar ul.nav.navbar-nav>li>a:hover,
     nav.navbar ul.nav.navbar-nav>li.dropdown.open>a {
-        border-bottom: 2px solid #61bbdf;
+        border-bottom: 2px solid #2799e9;
         color: #ccc;
     }
 
@@ -254,7 +254,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 }
 
 .dropdown-menu>li>a:hover {
-    background: #eef5ff;
+    background: #eff8fd;
 }
 
 /*
@@ -334,7 +334,7 @@ p {
 .nav-tabs li a:focus {
     box-sizing: border-box;
     background: none;
-    color: #0050bb;
+    color: #1375b9;
     height: 54px;
     line-height: 54px;
 
@@ -349,16 +349,16 @@ p {
 
 .nav-tabs li a:hover {
     background: none;
-    border-bottom: 5px solid #cce2ff;
+    border-bottom: 5px solid #d1e9fa;
 }
 
 .nav-tabs li.active a,
 .nav-tabs li.active a:hover,
 .nav-tabs li.active a:focus {
     border: none;
-    border-bottom: 5px solid #61bbdf;
+    border-bottom: 5px solid #2799e9;
     background: none;
-    color: #0050bb;
+    color: #1375b9;
 }
 
 /*
@@ -371,7 +371,7 @@ p {
     border: none;
 }
 .nav-tabs.nav-stacked li a {
-    border-bottom: 1px solid #cce2ff;
+    border-bottom: 1px solid #d1e9fa;
     text-align: center;
     width: 0;
     min-width: 60%;
@@ -383,7 +383,7 @@ p {
 
 .nav-tabs.nav-stacked li a:hover,
 .nav-tabs.nav-stacked li.active a {
-    border-bottom: 2px solid #61bbdf;
+    border-bottom: 2px solid #2799e9;
 }
 
 .nav-tabs.nav-stacked li.active a {
@@ -404,7 +404,7 @@ p {
     height: 36px;
 
     text-align: left;
-    border: 1px solid #cce2ff;
+    border: 1px solid #d1e9fa;
     background: none;
     border-radius: 3px;
     padding: 0 10px;
@@ -421,7 +421,7 @@ p {
 .dropdown .btn:hover,
 .dropdown .btn.active,
 .form-group input[type=text]:hover {
-    border: 1px solid #61bbdf;
+    border: 1px solid #2799e9;
     background: none;
     box-shadow: none;
 }
@@ -431,14 +431,14 @@ p {
 .open>.dropdown-toggle.btn-default:focus,
 .form-group input[type=text]:focus  {
     background: none;
-    border: 1px solid #61bbdf;
+    border: 1px solid #2799e9;
     box-shadow: none;
 }
 
 a.btn,
 a.btn:focus {
     border: none;
-    background: #cce2ff;
+    background: #d1e9fa;
     color: #222;
 
     height: 36px;
@@ -447,13 +447,13 @@ a.btn:focus {
 }
 
 a.btn:hover {
-    background: #bbd8ff;
+    background: #c1e2f9;
     color: #000;
 }
 
 a.btn-default:active:hover,
 a.btn-default:active:focus {
-    background: #aaceff;
+    background: #b2dbf7;
     color: #000;
     box-shadow: none;
 }
@@ -634,7 +634,7 @@ form.table-opts {
 
 table.dataTable tbody tr:hover,
 table.dataTable thead th:hover {
-    background-color: #eef5ff;
+    background-color: #eff8fd;
 }
 
 .table>tbody>tr>td {
@@ -647,10 +647,10 @@ table.dataTable thead th:hover {
 .table>thead>tr>th {
     font-size: 13px;
     line-height: 18px;
-    border-bottom: 1px solid #61bbdf;
+    border-bottom: 1px solid #2799e9;
     padding: 9px 10px;
     font-weight: 400;
-    color: #0050bb;
+    color: #1375b9;
 }
 
 .table>tbody>tr>td.right {
@@ -669,7 +669,7 @@ table.dataTable thead .sorting:after {
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc:after {
     content: '↑';
-    color: #0050bb;
+    color: #1375b9;
     opacity: 1;
     margin-right: 10px;
     top: 8px;
