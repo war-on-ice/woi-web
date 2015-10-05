@@ -14,14 +14,15 @@
 
                   <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cap <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
+                    <ul class="dropdown-menu dropdown-cap">
                       <li><a href="/cap/">Cap Tools Home</a></li>
                       <li><a href="/r/buyout-recap/">Buyout and Recapture Calculator</a></li>
                       <li><a href="#">CBA FAQ</a></li>
                       <li role="separator" class="divider"></li>
-                      {% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
+                      <!--{% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
                       <li><a href="/cap/team/{{ url }}/">{{ team }}</a></li>
-                      {% endfor %}
+                      {% endfor %}-->
+                      {% include "wrappers/teams.html" %}
                     </ul>
                   </li>
 

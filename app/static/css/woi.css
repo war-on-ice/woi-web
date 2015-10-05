@@ -7,6 +7,8 @@ body {
     max-width: 1600px;
 }
 
+.img-responsive{width:100%;}
+
 /*
 *
 * NAVBAR
@@ -75,6 +77,26 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         color: #777;
     }
 
+
+.dropdown-link {
+    margin-left: 0px;
+    margin-right: 0px;
+}
+
+.dropdown-link:hover {
+    background: #eef5ff;
+}
+
+.dropdown-link>div>a {
+    font-size: 13px;
+    line-height: 24px;
+    color: #222;
+}
+
+.dropdown-link>div>a:hover {
+    text-decoration: none;
+}
+
 /* Collapsed navigation dropdown */
 @media (max-width: 767px) {
 
@@ -103,6 +125,24 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         margin-left: 25px;
         margin-bottom: 6px;
         margin-top: 6px;
+    }
+
+    .dropdown-link,
+    .conference {
+        color: #aaa;
+    }
+
+    .dropdown-link:hover {
+        color: #ccc;
+        background: #272727;
+    }
+
+    .dropdown-link>div>a {
+        color: #aaa;
+    }
+
+    .dropdown-link>div>a:hover {
+        color: #ccc;
     }
 }
 
@@ -178,8 +218,12 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 
     nav.navbar ul.nav.navbar-nav>li>a:hover,
     nav.navbar ul.nav.navbar-nav>li.dropdown.open>a {
-        border-bottom: 2px solid #005fdd;
+        border-bottom: 2px solid #61bbdf;
         color: #ccc;
+    }
+
+    .dropdown-cap {
+        width: 550px;
     }
 }
 
@@ -209,9 +253,9 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
     color: #222;
 }
 
-    .dropdown-menu>li>a:hover {
-        background: #eef5ff;
-    }
+.dropdown-menu>li>a:hover {
+    background: #eef5ff;
+}
 
 /*
 *
@@ -312,7 +356,7 @@ p {
 .nav-tabs li.active a:hover,
 .nav-tabs li.active a:focus {
     border: none;
-    border-bottom: 5px solid #005fdd;
+    border-bottom: 5px solid #61bbdf;
     background: none;
     color: #0050bb;
 }
@@ -339,7 +383,7 @@ p {
 
 .nav-tabs.nav-stacked li a:hover,
 .nav-tabs.nav-stacked li.active a {
-    border-bottom: 2px solid #005fdd;
+    border-bottom: 2px solid #61bbdf;
 }
 
 .nav-tabs.nav-stacked li.active a {
@@ -377,7 +421,7 @@ p {
 .dropdown .btn:hover,
 .dropdown .btn.active,
 .form-group input[type=text]:hover {
-    border: 1px solid #005fdd;
+    border: 1px solid #61bbdf;
     background: none;
     box-shadow: none;
 }
@@ -387,7 +431,7 @@ p {
 .open>.dropdown-toggle.btn-default:focus,
 .form-group input[type=text]:focus  {
     background: none;
-    border: 1px solid #005fdd;
+    border: 1px solid #61bbdf;
     box-shadow: none;
 }
 
@@ -603,7 +647,7 @@ table.dataTable thead th:hover {
 .table>thead>tr>th {
     font-size: 13px;
     line-height: 18px;
-    border-bottom: 1px solid #005fdd;
+    border-bottom: 1px solid #61bbdf;
     padding: 9px 10px;
     font-weight: 400;
     color: #0050bb;

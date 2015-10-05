@@ -1,4 +1,7 @@
 import pymysql
+
+import sys
+sys.path.append("../")
 import cred
 from datetime import date
 from decimal import Decimal
