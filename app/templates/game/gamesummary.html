@@ -114,10 +114,6 @@
 var currentHeaderWidth;
 var counter;
 
-// Use stacked tabs when ($window).width() <= tabBreakpoint; else use horizontal tabs
-// tabBreakpoint will need to be set per page, depending on its tabs
-var tabBreakpoint = 768; 
-
 $(document).ready(function() {
 
     // Handle tabs
@@ -156,12 +152,6 @@ function doneResizing() {
         currentHeaderWidth = newHeaderWidth;
         d3.select(".header-bg").select("svg").remove();
         drawMesh();
-    }
-
-    if ($(window).width() < tabBreakpoint) {
-        $("#main-content-tab-container").addClass("nav-stacked");
-    } else {
-        $("#main-content-tab-container").removeClass("nav-stacked");
     }
 }
 

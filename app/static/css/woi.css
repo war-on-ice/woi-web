@@ -101,12 +101,13 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 	background: #eff8fd;
 }
 
-.row.conference .division .row.team {
+/* For the divisions on the left of the dropdown menu, round the top-right and bottom-right corners */
+.row.division .row.team {
 	border-top-right-radius: 3px;
 	border-bottom-right-radius: 3px;
 }
-
-	.row.conference .division:last-child .row.team {
+    /* For the divisions on the right of the dropdown menu, round the top-left and bottom-left corners */
+	.row.division:last-child .row.team {
 		border-top-left-radius: 3px;
 		border-bottom-left-radius: 3px;
 	}
@@ -256,7 +257,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
     }
 
     .dropdown-cap {
-        width: 550px;
+        width: 500px;
     }
 }
 
@@ -396,31 +397,41 @@ p {
 
 /*
 * 
-* Stacked navigation tabs (Javascript will toggle between horizontal and stacked tabs)
+* Stacked navigation tabs
 *
 */
+@media (max-width: 767px) {
+    .nav-tabs {
+        border: none;
+    }
 
-.nav-tabs.nav-stacked {
-    border: none;
-}
-.nav-tabs.nav-stacked li a {
-    border-bottom: 1px solid #d1e9fa;
-    text-align: center;
-    width: 0;
-    min-width: 60%;
-    margin: 0 auto;
-    height: 42px;
-    line-height: 42px;
-    font-weight: 400;
-}
+    .nav-tabs li {
+        float: none;
+        margin: 0;
+    }
 
-.nav-tabs.nav-stacked li a:hover,
-.nav-tabs.nav-stacked li.active a {
-    border-bottom: 2px solid #2799e9;
-}
+    .nav-tabs li a,
+    .nav-tabs li a:focus {
+        border-bottom: 1px solid #d1e9fa;
+        text-align: center;
+        width: 0;
+        min-width: 60%;
+        margin: 0 auto;
+        height: 42px;
+        line-height: 42px;
+        font-weight: 400;
+        padding: 0;
+    }
 
-.nav-tabs.nav-stacked li.active a {
-    font-weight: 700;
+    .nav-tabs li a:hover,
+    .nav-tabs li.active a,
+    .nav-tabs li.active a:hover {
+        border-bottom: 2px solid #2799e9;
+    }
+
+    .nav-tabs li.active a {
+        font-weight: 700;
+    }
 }
 
 /*
@@ -443,6 +454,7 @@ p {
     padding: 0 10px;
     box-shadow: none;
 }
+
 .dropdown .btn,
 .dropdown .btn:focus {
     /* Bump dropdown text up by 1px to align it with other input elements */
