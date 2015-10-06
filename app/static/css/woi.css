@@ -101,6 +101,16 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 	background: #eff8fd;
 }
 
+.row.conference .division .row.team {
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 3px;
+}
+
+	.row.conference .division:last-child .row.team {
+		border-top-left-radius: 3px;
+		border-bottom-left-radius: 3px;
+	}
+
 .row.team a {
 	text-decoration: none;
 	color: #222;
@@ -164,6 +174,9 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 		margin: 6px 0 12px 0;
 	}
 
+	.row.conference .division .row.team {
+		border-radius: 0;
+	}
 }
 
 /* Full navigation bar */
