@@ -4,6 +4,8 @@ from flask.ext.sqlalchemy import SQLAlchemy
 from flask.ext.moment import Moment
 from sqlalchemy.ext.declarative import declarative_base
 
+
+
 app = Flask(__name__)
 app.config.from_object('config')
 db = SQLAlchemy(app)
@@ -58,12 +60,21 @@ def iframe_cap():
 def dummy_path(filename):
 	return send_from_directory('dummydata', filename)
 
-from app.cap.views import mod as capModule
-app.register_blueprint(capModule)
+@app.route("/glossary/")
+def glossary():
+    rd = setup_nav()
+    return render_template("misc/glossary.html", rd = rd)
 
+@app.route("/about/")
+def about():
+    rd = setup_nav()
+    return render_template("misc/about.html", rd = rd)
+
+from app.cap.views import mod as capModule
 from app.gamesummary.views import mod as gameSummaryModule
+
+# Register blueprints
+app.register_blueprint(capModule)
 app.register_blueprint(gameSummaryModule)
 
 app.register_blueprint(filters.blueprint)
-#
-# filters.define_filters()

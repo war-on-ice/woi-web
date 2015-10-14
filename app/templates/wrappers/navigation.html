@@ -1,87 +1,86 @@
 <!-- Fixed navbar -->
 <nav class="navbar navbar-default navbar-inverse">
-  <div class="container">
+    <div class="container">
         <div class="navbar-header">
-          <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-            <span class="sr-only">Toggle navigation</span>Menu
-          </button>
-          <a class="navbar-brand logo" href="/"><img src="{{ url_for('static', filename='img/logo-grey-40.png') }}"></a>
-          <a class="navbar-brand" href="{{ url_for('index') }}">WAR-On-Ice</a>
+            <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
+                <span class="sr-only">Toggle navigation</span>Menu
+            </button>
+            <a class="navbar-brand logo" href="/"><img src="{{ url_for('static', filename='img/logo-grey-40.png') }}"></a>
+            <a class="navbar-brand" href="{{ url_for('index') }}">WAR-On-Ice</a>
         </div>
 
         <div id="navbar" class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-right">
 
-                  <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Cap <span class="caret"></span></a>
                     <ul class="dropdown-menu dropdown-cap">
-                      <li><a href="/cap/">Cap Tools Home</a></li>
-                      <li><a href="/r/buyout-recap/">Buyout and Recapture Calculator</a></li>
-                      <li><a href="#">CBA FAQ</a></li>
-                      <li role="separator" class="divider"></li>
-                      <!--{% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
+                        <li><a href="/cap/">Cap Tools Home</a></li>
+                        <li><a href="/r/buyout-recap/">Buyout and Recapture Calculator</a></li>
+                        <li><a href="#">CBA FAQ</a></li>
+                        <li role="separator" class="divider"></li>
+                        <!--{% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
                       <li><a href="/cap/team/{{ url }}/">{{ team }}</a></li>
                       {% endfor %}-->
-                      {% include "wrappers/teams.html" %}
+                        {% include "wrappers/teams.html" %}
                     </ul>
-                  </li>
+                </li>
 
-                  <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Players <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/r/playertable/">Skater Statistics</a></li>
-                      <li><a href="/r/playerseason/">Skater History</a></li>
-                      <li><a href="/r/hextally-players/">Skater Hextally</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="/r/goalietable/">Goaltender Statistics</a></li>
-                      <li><a href="/r/goalieseason/">Goaltender History</a></li>
-                      <li><a href="/r/hextally-goalies/">Goaltender Hextally</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="/r/WARboard/">Wins Above Replacement</a></li>
+                        <li><a href="/r/playertable/">Skater Statistics</a></li>
+                        <li><a href="/r/playerseason/">Skater History</a></li>
+                        <li><a href="/r/hextally-players/">Skater Hextally</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/r/goalietable/">Goaltender Statistics</a></li>
+                        <li><a href="/r/goalieseason/">Goaltender History</a></li>
+                        <li><a href="/r/hextally-goalies/">Goaltender Hextally</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/r/WARboard/">Wins Above Replacement</a></li>
                     </ul>
-                  </li>
+                </li>
 
-                  <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Teams <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/r/standings3/">Team Standings</a></li>
-                      <li role="separator" class="divider"></li>
-                      <li><a href="/r/teamtable/">Team Statistics</a></li>
-                      <li><a href="/r/teamtime/">Team History</a></li>
-                      <li><a href="/r/hextally-teams/">Team Hextally</a></li>
-                      <li><a href="/r/teamGAB/">Team Goals Above Baseline</a></li>
+                        <li><a href="/r/standings3/">Team Standings</a></li>
+                        <li role="separator" class="divider"></li>
+                        <li><a href="/r/teamtable/">Team Statistics</a></li>
+                        <li><a href="/r/teamtime/">Team History</a></li>
+                        <li><a href="/r/hextally-teams/">Team Hextally</a></li>
+                        <li><a href="/r/teamGAB/">Team Goals Above Baseline</a></li>
                     </ul>
-                  </li>
+                </li>
 
-                  <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Games & Series <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/r/gametable/">Game Table</a></li>
-                      <li><a href="/r/seriessummary/">Series Summaries</a></li>
+                        <li><a href="/r/gametable/">Game Table</a></li>
+                        <li><a href="/r/seriessummary/">Series Summaries</a></li>
                     </ul>
-                  </li>
+                </li>
 
-                  <li class="dropdown">
+                <li class="dropdown">
                     <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">Labs <span class="caret"></span></a>
                     <ul class="dropdown-menu">
-                      <li><a href="/r/gametable/">Game Table</a></li>
-                      <li><a href="/r/seriessummary/">Series Summaries</a></li>
+                        <li><a href="/r/pull-the-goalie/">Pull the Goalie</a></li>
+                        <li><a href="/r/bench-assists/">Bench Assists and Gordie Howe Hat Tricks</a></li>
+                        <li><a href="/r/dCorsi/">dCorsi and dFenwick by @SteveBurtch</a></li>
+                        <li><a href="/r/similarity-scores/">Similarity Scores by @MannyElk</a></li>
+                        <li><a href="/r/bombay-scores/">Bombay Scores by @MannyElk</a></li>
                     </ul>
-                  </li>
+                </li>
 
-                  <li><a href="#">Blog</a></li>
+                <li><a href="#">Blog</a></li>
 
-                  <li><a href="#">Glossary</a></li>
+                <li><a href="/glossary/">Glossary</a></li>
 
-                  <li class="dropdown">
-                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">About Us <span class="caret"></span></a>
-                    <ul class="dropdown-menu">
-                      <li><a href="/r/gametable/">Game Table</a></li>
-                      <li><a href="/r/seriessummary/">Series Summaries</a></li>
-                    </ul>
-                  </li>
+                <li>
+                    <a href="/about/">About Us</a>
+                </li>
 
             </ul>
         </div><!--/.nav-collapse -->
-  </div>
+    </div>
 </nav>

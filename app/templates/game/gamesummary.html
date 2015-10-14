@@ -2,25 +2,26 @@
 {% from "macros.html" import create_dropdown %}
 
 {% block content_header %}
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<div class="col-md-12">
-    <div class="header">
-        <div class="game-meta">
-            <h1 class="team away"><span>Lightning</span></h1
-            ><img src="{{ url_for('static', filename='img/team/T.B.png') }}"
-            ><h1 class="score away"><span>4</span></h1
-            ><div class="date">
-                <p><span>Final</span></p>
-                <p><span>Sep 25, 2015</span></p>
-            </div
-            ><h1 class="score home"><span>2</span></h1
-            ><img src="{{ url_for('static', filename='img/team/BOS.png') }}"
-            ><h1 class="team home"><span>Bruins</span></h1>
-        </div>
-        <div class="header-bg">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <div class="col-md-12">
+        <div class="header">
+            <div class="game-meta">
+                <h1 class="team away"><span>Lightning</span></h1>
+
+                <img src="{{ url_for('static', filename='img/team/T.B.png') }}">
+                <h1 class="score away"><span>4</span></h1>
+                <div class="date">
+                    <p><span>Final</span></p>
+                    <p><span>Sep 25, 2015</span></p>
+                </div>
+                <h1 class="score home"><span>2</span></h1>
+                <img src="{{ url_for('static', filename='img/team/BOS.png') }}">
+                <h1 class="team home"><span>Bruins</span></h1>
+            </div>
+            <div class="header-bg">
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 
@@ -31,11 +32,9 @@
                 <li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
                 <li role="presentation"><a href="#event-charts">Event Charts</a></li>
                 <li role="presentation"><a href="#player-usage">Player Usage</a></li>
-                <li role="presentation"><a href="#win-probs">Win Probabilities</a></li>
+{#                <li role="presentation"><a href="#win-probs">Win Probabilities</a></li>#}
             </ul>
-            <div class="tab-content">
-                <div id="event-tables" class="tab-pane fade in active">
-                    <form class="table-opts">
+            <form class="table-opts">
 
                         <div class="row">
                             <div class="col-sm-4">
@@ -55,7 +54,7 @@
                                     <label class="control-label" for="test-input">Table columns</label>
                                     <div class="dropdown">
                                         <button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                        Prime
+                                            Prime
                                             <span class="pull-right">&nbsp;
                                                 <span class="caret"></span>
                                             </span>
@@ -73,14 +72,15 @@
                                     </label>
                                 </div>
                             </div>
-                             <div class="col-sm-4">
+                            <div class="col-sm-4">
                                 <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
                             </div>
                         </div>
 
-
-
                     </form>
+            <div class="tab-content">
+                <div id="event-tables" class="tab-pane fade in active">
+
                     <h3>Teams</h3>
                     <div class="row datatable">
                         <div class="col-sm-12">
@@ -92,143 +92,162 @@
                     <h3>Skaters – Bruins</h3>
                 </div>
                 <div id="event-charts" class="tab-pane fade">
-                    <h3>Event charts</h3>
-                    <p>Event chart content</p>
+                    <h3>Running Shot Attempts</h3>
+                    <p>Create data retrieval function to pass data out from Flask<br>
+                        Use Kevin's chart</p>
+                    <h3>Running Scoring Chance</h3>
+                    <p>Use same data retrieval function as above with different parameters, Kevin's chart</p>
+                    <h3>Shot Attempt Charts</h3>
+                    <p>Create data retrieval function to pass data out from Flask<br>
+                        Use Alexandra's chart (potentially modified)</p>
+                    <div class="row">
+                        <div class="span6" id="shAway"></div>
+                        <div class="span6" id="shHome"></div>
+                    </div>
+                    <h3>Player Corsi Events</h3>
+                    <p>Create data retrieval function to pass data out from Flask<br>
+                        Use Alexandra's chart (potentially modified)</p>
                 </div>
                 <div id="player-usage" class="tab-pane fade">
                     <h3>Matchup Charts</h3>
-                    <p>Matchup charts go here</p>
+                    <p>Create data retreival function from coplayer table. Use current WOI or Kevin's -- Group can decide.</p>
                     <h3>Line Charts</h3>
-                    <p>Line charts go here</p>
+                    <p>Create data retrieval function from Manny's data.<br>
+                        Kevin's visualization.</p>
+                    <h3>Shift Charts</h3>
+                    <p>Create data retrieval function -- From what data?
+                        We could use actual shift data from NHL, if we wanted, instead of interpolated.<br>
+                    Kevin's viz.</p>
                 </div>
-                <div id="win-probs" class="tab-pane fade">
-                    <p>Win probabilities</p>
-                </div>
+{#                <div id="win-probs" class="tab-pane fade">#}
+{#                    <p>Win probabilities</p>#}
+{#                </div>#}
             </div>
         </div>
     </div>
 {% endblock %}
 
 {% block page_js %}
-<script>
-var currentHeaderWidth;
-var counter;
+    <script>
+        var currentHeaderWidth;
+        var counter;
 
-$(document).ready(function() {
+        $(document).ready(function() {
 
-    // Handle tabs
-    $('.nav-tabs a').click(function(){
-        $(this).tab('show');
-    });
+            // Handle tabs
+            $('.nav-tabs a').click(function(){
+                $(this).tab('show');
+            });
 
-    // Initialize DataTable
-    $(document).ready(function() {
-        $('table.dataTable').DataTable({
-            "paging": false,
-            "filter": false,
-            "sDom": '<"top">rt<"bottom"flp><"clear">',
-            "columnDefs": [
-                { className: "right", "targets": [ 3 ] }
-            ]
+            // Initialize DataTable
+            $(document).ready(function() {
+                $('table.dataTable').DataTable({
+                    "paging": false,
+                    "filter": false,
+                    "sDom": '<"top">rt<"bottom"flp><"clear">',
+                    "columnDefs": [
+                        { className: "right", "targets": [ 3 ] }
+                    ]
+                });
+            });
+
+            // Draw header banner
+            drawMesh();
+
+            // Update on resize - wait 500ms before redrawing the mesh
+            currentHeaderWidth = $(".header-bg").width();
+            doneResizing(); // Initialize layout
+            $(window).resize(function() {
+                clearTimeout(counter);
+                counter = setTimeout(doneResizing, 500);
+            });
         });
-    });
 
-    // Draw header banner
-    drawMesh();
-
-    // Update on resize - wait 500ms before redrawing the mesh
-    currentHeaderWidth = $(".header-bg").width();
-    doneResizing(); // Initialize layout
-    $(window).resize(function() {
-        clearTimeout(counter);
-        counter = setTimeout(doneResizing, 500);
-    });
-});
-
-function doneResizing() {
-    // Check if header width has changed
-    var newHeaderWidth = $(".header-bg").width();
-    if (currentHeaderWidth !== newHeaderWidth) {
-        currentHeaderWidth = newHeaderWidth;
-        d3.select(".header-bg").select("svg").remove();
-        drawMesh();
-    }
-}
-
-// Draw hexagon mesh for header
-function drawMesh() {
-    var divH = $(".header").height();
-    var divW = $(".header").width();
-
-    var hexR = 12;
-    var hexH = hexR * 2;
-    var hexW = hexR * Math.sqrt(3);
-
-    var hexagonPoly=[[0,-1],[Math.sqrt(3)/2,0.5],[0,1],[-Math.sqrt(3)/2,0.5],[-Math.sqrt(3)/2,-0.5],[0,-1],[Math.sqrt(3)/2,-0.5]];
-    var hexagonPath = "m"+hexagonPoly.map(function(p){return [p[0]*hexR, p[1]*hexR].join(",")}).join("l")+"z";
-
-    var strokeWidth = 1;
-    var margin = {top: strokeWidth + 1, right: strokeWidth + 1, bottom: strokeWidth + 1, left: strokeWidth + 1};
-    var width = divW - margin.left - margin.right;
-    var height = divH - margin.top - margin.bottom;
-
-    // Colour scale
-    // blue: 1E91D6
-    // yellow: FFBC42
-    // green: 179054
-    // red: C5283D
-    // Alternate colours: dodgerblue, orange, crimson, teal
-    var colour = d3.scale.linear()
-        .domain([0 + hexR * 6, width - hexR * 6]) // Shrink domain so that there's more hexes of the "true" colours at each end of the mesh
-        .clamp(true)
-        .range(["#1E91D6", "#FFBC42"])
-        .interpolate(d3.interpolateLab);
-
-    var opacity = d3.scale.linear()
-        .domain([0, width / 2, width])
-        .range([0.4, 0.1, 0.4]);
-
-    // Create array of hex center coordinates
-    var numCols = Math.floor((width)/hexW);
-    var numRows = Math.floor(height/(0.75*hexH));
-    var points = [];
-    for (var i = 0; i < numCols; i++) {
-        for (var j = 0; j < numRows; j++) {
-            var thisY = hexH / 2 + (0.75 * hexH * j);
-
-            // Check if current row is odd - if it is, shift the row's hexagons to the left so they interlock with the row above
-            var thisX = hexW / 2 + (hexW * i);
-            if (j % 2) { thisX = thisX - hexW / 2; }
-
-            // If it's an odd row, then don't add the first hexagon that was shifted to the left, because it will be clipped
-            // Randomly skip some hexagons
-            if (j % 2 && i > 0 || !(j % 2)) {
-                if (Math.random() <= 0.4) {
-                    points.push([thisX, thisY]);
-                }
+        function doneResizing() {
+            // Check if header width has changed
+            var newHeaderWidth = $(".header-bg").width();
+            if (currentHeaderWidth !== newHeaderWidth) {
+                currentHeaderWidth = newHeaderWidth;
+                d3.select(".header-bg").select("svg").remove();
+                drawMesh();
             }
         }
-    }
 
-    // Append svg and paths
-    var svg = d3.select(".header-bg").append("svg")
-        .attr("width", width + margin.left + margin.right)
-        .attr("height", height + margin.top + margin.bottom)
-        .append("g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-    var paths = svg.selectAll("path")
-        .data(points)
-        .enter().append("path")
-            .attr("d", function(d) { return "M" + d[0] + "," + d[1] + hexagonPath; })
-            .style("stroke-width", strokeWidth)
-            .style("stroke", "white")
-            .style("fill", function(d) { return colour(d[0]); })
-            .style("fill-opacity", function(d) { return opacity(d[0]); });
+        // Draw hexagon mesh for header
+        function drawMesh() {
+            var divH = $(".header").height();
+            var divW = $(".header").width();
 
-    // Center mesh in svg
-    var meshWidth = numCols * hexW - 0.25 * hexW;
-    var meshHeight = numRows * (0.75 * hexH);
-    svg.attr("transform", "translate(" + ((width - meshWidth)/2) + "," + ((height - meshHeight)/2) + ")");
-}
-</script>
+            var hexR = 12;
+            var hexH = hexR * 2;
+            var hexW = hexR * Math.sqrt(3);
+
+            var hexagonPoly=[[0,-1],[Math.sqrt(3)/2,0.5],[0,1],[-Math.sqrt(3)/2,0.5],[-Math.sqrt(3)/2,-0.5],[0,-1],[Math.sqrt(3)/2,-0.5]];
+            var hexagonPath = "m"+hexagonPoly.map(function(p){return [p[0]*hexR, p[1]*hexR].join(",")}).join("l")+"z";
+
+            var strokeWidth = 1;
+            var margin = {top: strokeWidth + 1, right: strokeWidth + 1, bottom: strokeWidth + 1, left: strokeWidth + 1};
+            var width = divW - margin.left - margin.right;
+            var height = divH - margin.top - margin.bottom;
+
+            // Colour scale
+            // blue: 1E91D6
+            // yellow: FFBC42
+            // green: 179054
+            // red: C5283D
+            // Alternate colours: dodgerblue, orange, crimson, teal
+            var colour = d3.scale.linear()
+                    .domain([0 + hexR * 6, width - hexR * 6]) // Shrink domain so that there's more hexes of the "true" colours at each end of the mesh
+                    .clamp(true)
+                    .range(["#1E91D6", "#FFBC42"])
+                    .interpolate(d3.interpolateLab);
+
+            var opacity = d3.scale.linear()
+                    .domain([0, width / 2, width])
+                    .range([0.4, 0.1, 0.4]);
+
+            // Create array of hex center coordinates
+            var numCols = Math.floor((width)/hexW);
+            var numRows = Math.floor(height/(0.75*hexH));
+            var points = [];
+            for (var i = 0; i < numCols; i++) {
+                for (var j = 0; j < numRows; j++) {
+                    var thisY = hexH / 2 + (0.75 * hexH * j);
+
+                    // Check if current row is odd - if it is, shift the row's hexagons to the left so they interlock with the row above
+                    var thisX = hexW / 2 + (hexW * i);
+                    if (j % 2) { thisX = thisX - hexW / 2; }
+
+                    // If it's an odd row, then don't add the first hexagon that was shifted to the left, because it will be clipped
+                    // Randomly skip some hexagons
+                    if (j % 2 && i > 0 || !(j % 2)) {
+                        if (Math.random() <= 0.4) {
+                            points.push([thisX, thisY]);
+                        }
+                    }
+                }
+            }
+
+            // Append svg and paths
+            var svg = d3.select(".header-bg").append("svg")
+                    .attr("width", width + margin.left + margin.right)
+                    .attr("height", height + margin.top + margin.bottom)
+                    .append("g")
+                    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+            var paths = svg.selectAll("path")
+                    .data(points)
+                    .enter().append("path")
+                    .attr("d", function(d) { return "M" + d[0] + "," + d[1] + hexagonPath; })
+                    .style("stroke-width", strokeWidth)
+                    .style("stroke", "white")
+                    .style("fill", function(d) { return colour(d[0]); })
+                    .style("fill-opacity", function(d) { return opacity(d[0]); });
+
+            // Center mesh in svg
+            var meshWidth = numCols * hexW - 0.25 * hexW;
+            var meshHeight = numRows * (0.75 * hexH);
+            svg.attr("transform", "translate(" + ((width - meshWidth)/2) + "," + ((height - meshHeight)/2) + ")");
+        }
+    </script>
+    <script src="{{ url_for('static', filename='js/rinkPlot.js') }}"></script>
 {% endblock %}
