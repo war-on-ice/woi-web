@@ -223,7 +223,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         color: #aaa;
         background: none;
         font-size: 13px;
-        font-weight: 500px;
+        font-weight: 500;
 
         height: 60px;
         line-height: 60px;
@@ -236,8 +236,9 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         color: #fff;
     }
 
-    .dropdown-cap {
+    .navbar-right .dropdown-menu.dropdown-cap {
         width: 500px;
+        right: auto;
     }
 }
 
