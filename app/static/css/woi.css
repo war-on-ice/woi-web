@@ -1,6 +1,8 @@
 body {
     color: #222;
     font-family: Roboto, sans-serif;
+
+    padding-top: 78px; /* To account for the fixed navigation bar */
 }
 
 .container {
@@ -19,7 +21,6 @@ nav.navbar {
     background: #222;
     border-radius: 0;
     border: none;
-    margin-bottom: 24px;
 }
 
 .navbar-toggle,
@@ -28,27 +29,32 @@ nav.navbar {
     color: #aaa;
     background: none;
     border-radius: 3px;
+    font-size: 13px;
 
     padding: 0 10px;
-    line-height: 36px;
+    line-height: 30px;
 
     /* Collapsed navbar height will be equal to height + v-margins */
-    height: 36px;
-    margin-top: 12px;
-    margin-bottom: 12px;
+    height: 30px;
+    margin-top: 15px;
+    margin-bottom: 15px;
 }
     .navbar-toggle:hover {
         color: #ccc;
     }
 
+.navbar-inverse .navbar-toggle {
+    border-color: #555;
+}
+
 nav.navbar .navbar-header .navbar-brand {
     color: #aaa;
-    font-size: 15px;
+    font-size: 13px;
     font-weight: 900;
     text-transform: uppercase;
 
-    padding-top: 0;
-    padding-bottom: 0;
+    padding: 0;
+    margin: 0;
 
     /* Set equal to .navbar-toggle height plus its v-margins */
     height: 60px;
@@ -59,12 +65,26 @@ nav.navbar .navbar-header .navbar-brand {
     }
 
     nav.navbar .navbar-header .navbar-brand.logo {
-        display: none;
         opacity: 0.7;
     }
         nav.navbar .navbar-header .navbar-brand.logo:hover {
             opacity: 0.9;
         }
+
+    /* Vertically center image */
+    nav.navbar .navbar-header .navbar-brand.logo:before {
+        content: " ";
+        display: inline-block;
+        vertical-align: middle;
+        height: 100%;
+    }
+    nav.navbar .navbar-header .navbar-brand.logo img {
+        display: inline-block;
+        vertical-align: middle;
+        height: 30px;
+        padding-right: 10px;
+    }
+    /* End: Vertically center image */
 
 nav.navbar ul.nav.navbar-nav>li>a,
 nav.navbar ul.nav.navbar-nav>li>a:focus {
@@ -132,6 +152,10 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         border-top: 2px solid #333;
     }
 
+    nav.navbar .navbar-header .navbar-brand.logo {
+        padding-left: 15px;
+    }
+
     nav.navbar ul.nav.navbar-nav>li>a,
     nav.navbar ul.nav.navbar-nav>li>a,
     .navbar-inverse .navbar-nav .open .dropdown-menu>li>a {
@@ -183,53 +207,14 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 /* Full navigation bar */
 @media (min-width: 768px) {
 
-    nav.navbar {
-        padding-top: 18px;
-        padding-bottom: 12px;
-        height: auto;
-    }
-
     nav.navbar .navbar-header {
         margin: 0;
         padding: 0;
         vertical-align: middle;
     }
 
-    nav.navbar .navbar-header .navbar-brand {
-        line-height: 84px;
-        height: 84px;
-        margin: 0;
-        padding: 0;
-    }
-
-        nav.navbar .navbar-header .navbar-brand.logo {
-            display: inline-block;
-            opacity: 0.7;
-        }
-
-        /* Vertically center image */
-        nav.navbar .navbar-header .navbar-brand.logo:before {
-            content: " ";
-            display: inline-block;
-            vertical-align: middle;
-            height: 100%;
-        }
-        nav.navbar .navbar-header .navbar-brand.logo img {
-            display: inline-block;
-            vertical-align: middle;
-            height: 40px;
-            padding-right: 10px;
-        }
-    /* End: Vertically center image */
-
-    nav.navbar ul.nav.navbar-nav {
-    /* Width = 4 items * (ul.nav.navbar-nav>li margin-left + ul.nav.navbar-nav>li>a width) */
-        width: 540px;
-    }
-
     nav.navbar ul.nav.navbar-nav>li {
-        margin: 0;
-        margin-left: 20px;
+        margin: 0 0 0 30px;
         padding: 0;
     }
 
@@ -240,20 +225,15 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
         font-size: 13px;
         font-weight: 500px;
 
-        width: 115px;
-        height: 30px;
-        line-height: 30px;
+        height: 60px;
+        line-height: 60px;
 
-        padding: 0px 0;
-        margin-bottom: 12px;
-
-        border-bottom: 1px solid #444;
+        padding: 0;
     }
 
     nav.navbar ul.nav.navbar-nav>li>a:hover,
     nav.navbar ul.nav.navbar-nav>li.dropdown.open>a {
-        border-bottom: 2px solid #2799e9;
-        color: #ccc;
+        color: #fff;
     }
 
     .dropdown-cap {

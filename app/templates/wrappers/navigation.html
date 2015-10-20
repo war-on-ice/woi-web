@@ -1,5 +1,5 @@
 <!-- Fixed navbar -->
-<nav class="navbar navbar-default navbar-inverse">
+<nav class="navbar navbar-default navbar-inverse navbar-fixed-top">
     <div class="container">
         <div class="navbar-header">
             <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -72,12 +72,13 @@
                     </ul>
                 </li>
 
-                <li><a href="#">Blog</a></li>
-
-                <li><a href="/glossary/">Glossary</a></li>
-
-                <li>
-                    <a href="/about/">About Us</a>
+                <li class="dropdown">
+                    <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false">More <span class="caret"></span></a>
+                    <ul class="dropdown-menu">
+                        <li><a href="/r/blog/">Blog</a></li>
+                        <li><a href="/r/glossary/">Glossary</a></li>
+                        <li><a href="/r/about/">About Us</a></li>
+                    </ul>
                 </li>
 
             </ul>
