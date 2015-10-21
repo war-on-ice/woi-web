@@ -658,6 +658,10 @@ form.table-opts {
 *
 */
 
+table.dataTable tbody tr.even {
+    background-color: #f7f7f7;
+}
+
 table.dataTable tbody tr:hover,
 table.dataTable thead th:hover {
     background-color: #eff8fd;
@@ -666,7 +670,7 @@ table.dataTable thead th:hover {
 .table>tbody>tr>td {
     font-size: 13px;
     line-height: 18px;
-    border-bottom: 1px solid #eee;
+    border-top: none;
     padding: 9px 10px
 }
 
