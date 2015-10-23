@@ -2,12 +2,13 @@
 {% from "macros.html" import create_dropdown %}
 
 {% block content_header %}
-    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <script src="//code.jquery.com/jquery-1.11.3.min.js"></script>
+    <script src="https://cdn.datatables.net/1.10.9/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.datatables.net/fixedcolumns/3.1.0/js/dataTables.fixedColumns.min.js"></script>
     <div class="col-md-12">
         <div class="header">
             <div class="game-meta">
                 <h1 class="team away"><span>Lightning</span></h1>
-
                 <img src="{{ url_for('static', filename='img/team/T.B.png') }}">
                 <h1 class="score away"><span>4</span></h1>
                 <div class="date">
@@ -32,7 +33,7 @@
                 <li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
                 <li role="presentation"><a href="#event-charts">Event Charts</a></li>
                 <li role="presentation"><a href="#player-usage">Player Usage</a></li>
-{#                <li role="presentation"><a href="#win-probs">Win Probabilities</a></li>#}
+                {# <li role="presentation"><a href="#win-probs">Win Probabilities</a></li> #}
             </ul>
             <form class="table-opts">
 
@@ -317,6 +318,8 @@
                     "filter": false,
                     "sDom": '<"top">rt<"bottom"flp><"clear">',
                     "scrollX": true,
+                    "fixedColumns": true,
+                    "scrollY": 300,
                     "columnDefs": [
                         { className: "right", "targets": [ 6 ] }
                     ]
