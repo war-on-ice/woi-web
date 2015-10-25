@@ -658,7 +658,7 @@ form.table-opts {
 *
 */
 
-table.dataTable tbody tr.even {
+/*table.dataTable tbody tr.even {
     background-color: #f7f7f7;
 }
 
@@ -690,10 +690,10 @@ table.dataTable thead th:hover {
 
 .table>thead>tr>th.right {
     text-align: right;
-}
+}*/
 
 /* Update sorting icons */
-table.dataTable thead .sorting:after {
+/*table.dataTable thead .sorting:after {
     display: none;
 }
 table.dataTable thead .sorting_asc:after,
@@ -706,10 +706,10 @@ table.dataTable thead .sorting_desc:after {
 }
 table.dataTable thead .sorting_desc:after {
     content: '↓';
-}
+}*/
 
 /* Update positioning of sorting icons */
-table.dataTable thead>tr>th.sorting {
+/*table.dataTable thead>tr>th.sorting {
     padding-right: 10px;
 }
 
@@ -727,4 +727,4 @@ table.dataTable thead>tr>th.sorting_desc:after {
 .table>tbody>tr>td.cur {
     text-align: right;
     font-family: 'Roboto Mono';
-}
+}*/
