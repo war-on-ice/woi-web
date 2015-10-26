@@ -70,11 +70,11 @@ def about():
     rd = setup_nav()
     return render_template("misc/about.html", rd = rd)
 
-from app.cap.views import mod as capModule
+#from app.cap.views import mod as capModule
 from app.gamesummary.views import mod as gameSummaryModule
 
 # Register blueprints
-app.register_blueprint(capModule)
+#app.register_blueprint(capModule)
 app.register_blueprint(gameSummaryModule)
 
 app.register_blueprint(filters.blueprint)
