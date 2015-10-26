@@ -698,9 +698,8 @@ table.dataTable tbody tr.odd {
 /* Update sorting icons */
 table.dataTable thead .sorting:after {
     content: '↕';
-    color: #1375b9;
-    opacity: 0.5;
-    margin-right: 10px;
+    color: #d1e9fa;
+    opacity: 1;
     top: 8px;
 }
 table.dataTable thead .sorting_asc:after,
@@ -708,7 +707,6 @@ table.dataTable thead .sorting_desc:after {
     content: '↑';
     color: #1375b9;
     opacity: 1;
-    margin-right: 10px;
     top: 8px;
 }
 table.dataTable thead .sorting_desc:after {
