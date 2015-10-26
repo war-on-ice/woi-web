@@ -7,3 +7,4 @@ venv/
 cred.py
 Vagrantfile
 bootstrap.sh
+sql/

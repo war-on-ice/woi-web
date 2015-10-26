@@ -1,4 +1,4 @@
-# from sqlalchemy import Table
+"""# from sqlalchemy import Table
 from sqlalchemy import Column, Integer, PrimaryKeyConstraint, Table, Float, SmallInteger
 from app import db#, metadata
 
@@ -62,4 +62,4 @@ class Team(db.Model):
     # __table__ = metadata.tables["Teams"]
 
     def __repr__(self):
-        return self.TeamId
+        return self.TeamId"""
