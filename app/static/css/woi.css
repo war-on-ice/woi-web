@@ -658,13 +658,16 @@ form.table-opts {
 *
 */
 
-/*table.dataTable tbody tr.even {
+table.dataTable {
+    margin: 0 !important;
+}
+
+table.dataTable tbody tr.even {
     background-color: #f7f7f7;
 }
 
-table.dataTable tbody tr:hover,
-table.dataTable thead th:hover {
-    background-color: #eff8fd;
+table.dataTable tbody tr.odd {
+    background-color: #fff;
 }
 
 .table>tbody>tr>td {
@@ -690,11 +693,15 @@ table.dataTable thead th:hover {
 
 .table>thead>tr>th.right {
     text-align: right;
-}*/
+}
 
 /* Update sorting icons */
-/*table.dataTable thead .sorting:after {
-    display: none;
+table.dataTable thead .sorting:after {
+    content: '↕';
+    color: #1375b9;
+    opacity: 0.5;
+    margin-right: 10px;
+    top: 8px;
 }
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc:after {
@@ -706,25 +713,15 @@ table.dataTable thead .sorting_desc:after {
 }
 table.dataTable thead .sorting_desc:after {
     content: '↓';
-}*/
-
-/* Update positioning of sorting icons */
-/*table.dataTable thead>tr>th.sorting {
-    padding-right: 10px;
 }
 
-table.dataTable thead>tr>th.right.sorting_asc,
-table.dataTable thead>tr>th.right.sorting_desc {
-    padding-right: 23px;
+.DTFC_LeftHeadWrapper,
+.DTFC_LeftBodyWrapper {
+    border-right: 1px solid #ddd;
 }
-
-table.dataTable thead>tr>th.sorting_asc:after,
-table.dataTable thead>tr>th.sorting_desc:after {
-    right: 0;
-}
-
 
 .table>tbody>tr>td.cur {
     text-align: right;
     font-family: 'Roboto Mono';
-}*/
+}
+
