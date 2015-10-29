@@ -5,16 +5,16 @@
     <div class="col-md-12">
         <div class="header">
             <div class="game-meta">
-                <h1 class="team away"><span>Lightning</span></h1>
-                <img src="{{ url_for('static', filename='img/team/T.B.png') }}">
-                <h1 class="score away"><span>4</span></h1>
+                <h1 class="team away"><span>{{ gamedata.awayteam|teamname }}</span></h1>
+                <img src="{{ url_for('static', filename='img/team/' + gamedata.awayteam + '.png') }}">
+                <h1 class="score away"><span>{{ gamedata.awayscore|int }}</span></h1>
                 <div class="date">
-                    <p><span>Final</span></p>
-                    <p><span>Sep 25, 2015</span></p>
+                    <p><span>{{ gamedata|get_status }}</span></p>
+                    <p><span>{{ gamedata.date }}</span></p>
                 </div>
-                <h1 class="score home"><span>2</span></h1>
-                <img src="{{ url_for('static', filename='img/team/BOS.png') }}">
-                <h1 class="team home"><span>Bruins</span></h1>
+                <h1 class="score home"><span>{{ gamedata.homescore|int }}</span></h1>
+                <img src="{{ url_for('static', filename='img/team/' + gamedata.hometeam + '.png') }}">
+                <h1 class="team home"><span>{{ gamedata.hometeam|teamname }}</span></h1>
             </div>
             <div class="header-bg">
             </div>

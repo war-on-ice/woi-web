@@ -1,7 +1,7 @@
 {% extends "wrappers/wrapper.html" %}
 
 {% block content_header %}
-    <h1 class="text-center">Links to Recent Game Summaries</h1>
+    <h1 class="text-center">Recent Game Summaries</h1>
 {% endblock %}
 
 {% block content %}
@@ -12,8 +12,8 @@
                     <tr>
                         <th>Game Date</th>
                         <th>Session</th>
-                        <th>Away Team</th>
                         <th>Home Team</th>
+                        <th>Away Team</th>
                         <th>Score</th>
                         <th>Corsi</th>
                         <th>Status</th>
@@ -30,8 +30,8 @@
                         <td>{{ game.date }}</td>
                         {% endif %}
                         <td>{{ game.session }}</td>
-                        <td>{{ game.awayteam|teamname }}</td>
                         <td>{{ game.hometeam|teamname }}</td>
+                        <td>{{ game.awayteam|teamname }}</td>
                         <td>{{ game.homescore|int }}-{{ game.awayscore|int }}</td>
                         <td>{{ game.homecorsi }}/{{ game.awaycorsi }}</td>
                         {% if game.status != 4 %}

@@ -21,7 +21,12 @@ mod = Blueprint('game', __name__, url_prefix='/game')
 def show_games():
     rd = setup_nav()
     cy = date.today()
-    games = GamesTest.query.filter(GamesTest.date<=cy).order_by(GamesTest.date.desc()).order_by(Base.metadata.tables['gamestest'].c["game.end"].desc()).limit(1000)
+    games = GamesTest.query.filter(GamesTest.date<=cy).\
+        order_by(GamesTest.date.desc()).\
+        order_by(Base.metadata.tables['gamestest'].c["game.end"]).\
+        order_by(Base.metadata.tables['gamestest'].c["game.start"]).\
+        order_by(Base.metadata.tables['gamestest'].c["status"]).\
+        limit(1000)
     return render_template('game/games.html',
         rd=rd,
         games=games,
@@ -33,6 +38,8 @@ def show_game_summary(gameId):
     rd = setup_nav()
     season = gameId[0:8]
     gcode = gameId[8:]
+    gamedata = GamesTest.query.filter_by(season=season,
+        gcode=int(gcode)).first()
     scorediffcat = constants.score_situations_dict["All"]["value"]
     gamestate = constants.strength_situations_dict["Even strength 5v5"]["value"]
     teamruns = TeamRun.query.filter_by(season=season,
@@ -145,4 +152,5 @@ def show_game_summary(gameId):
                            away = away,
                            home = home,
                            woiid = woiid,
-                           rostermaster = rostermaster)
+                           rostermaster = rostermaster,
+                           gamedata = gamedata)
