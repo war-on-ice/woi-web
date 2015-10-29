@@ -8,8 +8,9 @@ from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
 from app import constants
+from app import filters
 
-from models import TeamRun, GoalieRun, PlayerRun, RosterMaster
+from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest
 
 import math
 
@@ -19,10 +20,13 @@ mod = Blueprint('game', __name__, url_prefix='/game')
 @mod.route('/')
 def show_games():
     rd = setup_nav()
-    cy = date.today().year
-    print(cy)
-    #games = TeamRun.objects.filter()
-    return render_tempalte('game/games.html')
+    cy = date.today()
+    games = GamesTest.query.filter(GamesTest.date<=cy).order_by(GamesTest.date.desc()).order_by(Base.metadata.tables['gamestest'].c["game.end"].desc()).limit(1000)
+    return render_template('game/games.html',
+        rd=rd,
+        games=games,
+        teamname=filters.teamname)
+
 
 @mod.route('/<gameId>/')
 def show_game_summary(gameId):

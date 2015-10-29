@@ -42,6 +42,14 @@ class GameRoster(db.Model):
     }
 
 
+class GamesTest(db.Model):
+    __table__ = Base.metadata.tables['gamestest']
+    __mapper_args__ = {
+        'primary_key': [Base.metadata.tables['gamestest'].c.gcode,
+        Base.metadata.tables['gamestest'].c.season]
+    }
+
+
 class PlayerRun(db.Model):
     __table__ = Base.metadata.tables['playerrun']
     __mapper_args__ = {
