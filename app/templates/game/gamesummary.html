@@ -398,20 +398,38 @@
             var height = divH - margin.top - margin.bottom;
 
             // Colour scale
-            // blue: 1E91D6
-            // yellow: FFBC42
-            // green: 179054
-            // red: C5283D
-            // Alternate colours: dodgerblue, orange, crimson, teal
+            var awayColour = "#222";
+            var homeColour = "#222";
+
+            {% if gamedata.awayteam in ["DET", "FLA", "MTL", "OTT", "CAR", "N.J", "PHI", "WSH", "CHI", "COL", "ANA", "ARI", "PHX", "CGY"] %}
+                awayColour = "#c5283d"; // red
+            {% elif gamedata.awayteam in ["BUF", "T.B", "TOR", "CBJ", "NYI", "NYR", "STL", "WPG", "ATL", "EDM", "L.A", "VAN", "S.J"] %}
+                awayColour = "#1e91d6"; // blue
+            {% elif gamedata.awayteam in ["BOS", "PIT", "NSH"] %}
+                awayColour = "#ffbc42"; // yellow
+            {% elif gamedata.awayteam in ["DAL", "MIN"] %}
+                awayColour = "#179054"; // green
+            {% endif %}
+
+            {% if gamedata.hometeam in ["DET", "FLA", "MTL", "OTT", "CAR", "N.J", "PHI", "WSH", "CHI", "COL", "ANA", "ARI", "PHX", "CGY"] %}
+                homeColour = "#c5283d"; // red
+            {% elif gamedata.hometeam in ["BUF", "T.B", "TOR", "CBJ", "NYI", "NYR", "STL", "WPG", "ATL", "EDM", "L.A", "VAN", "S.J"] %}
+                homeColour = "#1e91d6"; // blue
+            {% elif gamedata.hometeam in ["BOS", "PIT", "NSH"] %}
+                homeColour = "#ffbc42"; // yellow
+            {% elif gamedata.hometeam in ["DAL", "MIN"] %}
+                homeColour = "#179054"; // green
+            {% endif %}
+
             var colour = d3.scale.linear()
                     .domain([0 + hexR * 6, width - hexR * 6]) // Shrink domain so that there's more hexes of the "true" colours at each end of the mesh
                     .clamp(true)
-                    .range(["#1E91D6", "#FFBC42"])
+                    .range([awayColour, homeColour])
                     .interpolate(d3.interpolateLab);
 
             var opacity = d3.scale.linear()
                     .domain([0, width / 2, width])
-                    .range([0.4, 0.1, 0.4]);
+                    .range([0.2, 0.1, 0.2]);
 
             // Create array of hex center coordinates
             var numCols = Math.floor((width)/hexW);
