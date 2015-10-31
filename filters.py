@@ -1,5 +1,7 @@
 import flask
+from datetime import datetime
 from app.constants import teamDict
+from app.constants import teamShortDict
 
 blueprint = flask.Blueprint('filters', __name__)
 
@@ -9,6 +11,10 @@ def format_currency(value):
     value = round(value,0)
     return "${:,.0f}".format(value)
 
+@blueprint.app_template_filter()
+def format_date(value):
+    dateObj = datetime.strptime(value, "%Y-%m-%d")
+    return dateObj.strftime('%b %-d, %Y')
 
 @blueprint.app_template_filter()
 def teamname(value):
@@ -17,13 +23,19 @@ def teamname(value):
             return team
     return value
 
+@blueprint.app_template_filter()
+def teamshortname(value):
+    for team in teamShortDict:
+        if teamShortDict[team] == value:
+            return team
+    return value
 
 @blueprint.app_template_filter()
 def get_status(value):
     if value.status == 3:
         if value.seconds > 3600:
-            return "Complete (OT)"
-        return "Complete"
+            return "Final (OT)"
+        return "Final"
     elif value.status == 4:
         return "Not Started"
     elif value.status == 2:

@@ -315,6 +315,7 @@ h3 {
     font-weight: 400;
     line-height: 30px;
     margin: 0;
+    margin-bottom: 6px;
 }
 
 h4 {
@@ -600,7 +601,15 @@ form.table-opts {
 }
 
 @media (min-width: 768px) {
-    .header .game-meta h1.team {
+    .header .game-meta h1.team.med {
+        display: inline-block;
+    }
+}
+@media (min-width: 1200px) {
+    .header .game-meta h1.team.med {
+        display: none;
+    }
+    .header .game-meta h1.team.long {
         display: inline-block;
     }
 }

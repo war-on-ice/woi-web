@@ -83,3 +83,21 @@ teamDict ={
   'Toronto Maple Leafs':'TOR', 'Vancouver Canucks':'VAN',
   'Washington Capitals':'WSH', 'Winnipeg Jets':'WPG'
 }
+
+teamShortDict ={
+  'Ducks': 'ANA', 'Coyotes': 'ARI',
+  'Bruins': 'BOS', 'Sabres':'BUF',
+  'Flames':'CGY', 'Hurricanes':'CAR',
+  'Blackhawks':'CHI', 'Avalanche':'COL',
+  'Blue Jackets':'CBJ', 'Stars':'DAL',
+  'Red Wings':'DET', 'Oilers':'EDM',
+  'Panthers':'FLA', 'Kings':'L.A',
+  'Wild':'MIN', 'Canadiens':'MTL',
+  'Predators':'NSH', 'Devils':'N.J',
+  'Islanders':'NYI', 'Rangers':'NYR',
+  'Flyers':'PHI', 'Penguins':'PIT',
+  'Senators':'OTT', 'Sharks':'S.J',
+  'Blues':'STL','Lightning':'T.B',
+  'Maple Leafs':'TOR', 'Canucks':'VAN',
+  'Capitals':'WSH', 'Jets':'WPG'
+}

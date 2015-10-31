@@ -5,16 +5,18 @@
     <div class="col-md-12">
         <div class="header">
             <div class="game-meta">
-                <h1 class="team away"><span>{{ gamedata.awayteam|teamname }}</span></h1>
+                <h1 class="team away long"><span>{{ gamedata.awayteam|teamname }}</span></h1>
+                <h1 class="team away med"><span>{{ gamedata.awayteam|teamshortname }}</span></h1>
                 <img src="{{ url_for('static', filename='img/team/' + gamedata.awayteam + '.png') }}">
                 <h1 class="score away"><span>{{ gamedata.awayscore|int }}</span></h1>
                 <div class="date">
                     <p><span>{{ gamedata|get_status }}</span></p>
-                    <p><span>{{ gamedata.date }}</span></p>
+                    <p><span>{{ gamedata.date|format_date }}</span></p>
                 </div>
                 <h1 class="score home"><span>{{ gamedata.homescore|int }}</span></h1>
                 <img src="{{ url_for('static', filename='img/team/' + gamedata.hometeam + '.png') }}">
-                <h1 class="team home"><span>{{ gamedata.hometeam|teamname }}</span></h1>
+                <h1 class="team home med"><span>{{ gamedata.hometeam|teamshortname }}</span></h1>
+                <h1 class="team home long"><span>{{ gamedata.hometeam|teamname }}</span></h1>
             </div>
             <div class="header-bg">
             </div>
@@ -162,7 +164,7 @@
 
                         </div>
                     </div>
-                    <h3>Away Player</h3>
+                    <h3>Skaters: {{ gamedata.awayteam|teamshortname }}</h3>
                     <div class="row datatable">
                         <div class="col-sm-12">
                             <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
@@ -227,7 +229,7 @@
                             </table>
                         </div>
                     </div>
-                    <h3>Home Player</h3>
+                    <h3>Skaters: {{ gamedata.hometeam|teamshortname }}</h3>
                     <div class="row datatable">
                         <div class="col-sm-12">
                             <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
@@ -349,7 +351,7 @@
                     "sDom": '<"top">rt<"bottom"flp><"clear">',
                     "scrollX": true,
                     "fixedColumns": true,
-                    "scrollY": 300,
+                    //"scrollY": 300,
                     "columnDefs": [
                         { className: "right", "targets": [ 6 ] }
                     ]
