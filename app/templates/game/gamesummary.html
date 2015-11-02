@@ -35,7 +35,6 @@
                 {# <li role="presentation"><a href="#win-probs">Win Probabilities</a></li> #}
             </ul>
             <form class="table-opts">
-
                         <div class="row">
                             <div class="col-sm-4">
                                 {{ create_dropdown('Team strengths', strength_situations) }}
@@ -66,14 +65,10 @@
                                 </div>
                             </div>
                             <div class="col-sm-4">
-                                <div class="checkbox beside-fields">
-                                    <label>
-                                        <input type="checkbox"> Automatically refresh tables
-                                    </label>
-                                </div>
+                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
                             </div>
                             <div class="col-sm-4">
-                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
+                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Submit Changes</a>
                             </div>
                         </div>
 
@@ -104,7 +99,7 @@
                                 <tbody>
                                     {% for teamrun in teamruns %}
                                     <tr>
-                                        <td>{{ teamrun.team }}</td>
+                                        <td>{{ teamrun.team|teamshortname }}</td>
                                         <td>{{ teamrun.gf }}</td>
                                         <td>{{ teamrun.sf }}</td>
                                         <td>{{ teamrun.msf }}</td>

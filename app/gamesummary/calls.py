@@ -18,6 +18,5 @@ def get_games(cs=None):
         order_by(GamesTest.date.desc()).\
         order_by(app.Base.metadata.tables['gamestest'].c["game.end"]).\
         order_by(app.Base.metadata.tables['gamestest'].c["game.start"]).\
-        order_by(app.Base.metadata.tables['gamestest'].c["status"]).\
-        limit(1000)
+        order_by(app.Base.metadata.tables['gamestest'].c["status"])
     return games

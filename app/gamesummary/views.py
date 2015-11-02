@@ -1,4 +1,4 @@
-from flask import Blueprint
+from flask import Blueprint, request
 
 from app import app, Base, constants, filters
 from flask import render_template
@@ -7,6 +7,7 @@ from app.navigation import setup_nav
 
 from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest
 from calls import get_games
+from forms import GameSummaryForm
 
 import math
 
@@ -23,8 +24,9 @@ def show_games():
         teamname=filters.teamname)
 
 
-@mod.route('/<gameId>/')
+@mod.route('/<gameId>/', methods=['GET', 'POST'])
 def show_game_summary(gameId):
+    form = GameSummaryForm(request.form)
     rd = setup_nav()
     season = gameId[0:8]
     gcode = gameId[8:]
@@ -140,4 +142,5 @@ def show_game_summary(gameId):
                            home = home,
                            woiid = woiid,
                            rostermaster = rostermaster,
-                           gamedata = gamedata)
+                           gamedata = gamedata,
+                           form = form)
