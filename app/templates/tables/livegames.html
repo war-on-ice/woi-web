@@ -1,20 +1,59 @@
 
 
-<table id="livegames" class="table table-striped table-bordered table-hover" cellspacing="0" width="100%">
-	<thead>
-		<tr>
-			<th>Game Date</th>
-			<th>Session</th>
-			<th>Away Team</th>
-			<th>Home Team</th>
-			<th>Score</th>
-			<th>Corsi</th>
-			<th>Status</th>
-			<th>Start Time</th>
-			<th>Finished</th>
-		</tr>
-	</thead>
-	<tbody>
+<div class="row datatable">
+    <div class="col-sm-12">
+        <table id="gametable" class="table dataTable table-striped no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
+            <thead>
+                <tr>
+                    <th>Game Date</th>
+                    <th>Session</th>
+                    <th>Home Team</th>
+                    <th>Away Team</th>
+                    <th>Score</th>
+                    <th>Corsi</th>
+                    <th>Status</th>
+                    <th>Start Time</th>
+                    <th>Finished</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for game in games %}
+                <tr>
+                    {% if game.status != 4 %}
+                    <td><a href="/game/{{ game.season }}{{ game.gcode }}">{{ game.date }}</a></td>
+                    {% else %}
+                    <td>{{ game.date }}</td>
+                    {% endif %}
+                    <td>{{ game.session }}</td>
+                    <td>{{ game.hometeam|teamname }}</td>
+                    <td>{{ game.awayteam|teamname }}</td>
+                    <td>{{ game.homescore|int }}-{{ game.awayscore|int }}</td>
+                    <td>{{ game.homecorsi }}/{{ game.awaycorsi }}</td>
+                    {% if game.status != 4 %}
+                    <td><a href="/game/{{ game.season }}{{ game.gcode }}">{{ game|get_status }}</a></td>
+                    {% else %}
+                    <td>{{ game|get_status }}</td>
+                    {% endif %}
+                    <td>{{ game["game.start"] }}</td>
+                    {% if game["game.end"] != None %}
+                    <td>{{ game["game.end"] }}</td>
+                    {% else %}
+                    <td></td>
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
 
-	</tbody>
-</table>
+
+{% block page_js %}
+    <script type="text/javascript">
+        $(document).ready(function() {
+            $("#gametable").DataTable({
+                "aaSorting": [],
+            });
+        })
+    </script>
+{% endblock %}

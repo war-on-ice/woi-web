@@ -1,16 +1,12 @@
 from flask import Blueprint
 
-from datetime import date
-
-from app import constants
-from app import app, Base
+from app import app, Base, constants, filters
 from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
-from app import constants
-from app import filters
 
 from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest
+from calls import get_games
 
 import math
 
@@ -20,13 +16,7 @@ mod = Blueprint('game', __name__, url_prefix='/game')
 @mod.route('/')
 def show_games():
     rd = setup_nav()
-    cy = date.today()
-    games = GamesTest.query.filter(GamesTest.date<=cy).\
-        order_by(GamesTest.date.desc()).\
-        order_by(Base.metadata.tables['gamestest'].c["game.end"]).\
-        order_by(Base.metadata.tables['gamestest'].c["game.start"]).\
-        order_by(Base.metadata.tables['gamestest'].c["status"]).\
-        limit(1000)
+    games = get_games()
     return render_template('game/games.html',
         rd=rd,
         games=games,
@@ -137,9 +127,6 @@ def show_game_summary(gameId):
         player["full_name"] = p.last.title() + ", " + p.first.title()
         rostermaster[p.numfirstlast] = player
         woiid[player["woi.id"]] = player
-
-    for a in away:
-        print woiid[str(a["name"])]
 
     return render_template('game/gamesummary.html',
                            gameId = gameId,
