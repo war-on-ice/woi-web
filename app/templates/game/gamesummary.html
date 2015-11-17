@@ -34,45 +34,31 @@
                 <li role="presentation"><a href="#player-usage">Player Usage</a></li>
                 {# <li role="presentation"><a href="#win-probs">Win Probabilities</a></li> #}
             </ul>
-            <form class="table-opts">
-                        <div class="row">
-                            <div class="col-sm-4">
-                                {{ create_dropdown('Team strengths', strength_situations) }}
-                            </div>
-                            <div class="col-sm-4">
-                                {{ create_dropdown('Score situations', score_situations) }}
-                            </div>
-                            <div class="col-sm-4">
-                                {{ create_dropdown('Period', periods) }}
-                            </div>
-                        </div>
+            {% from "_formhelpers.html" import render_field %}
+            <form class="table-opts" method="post" action="">
+                <div class="row">
+                    <div class="col-sm-4">
+                    {{ render_field(form.teamstrengths) }}
+                    </div>
+                    <div class="col-sm-4">
+                    {{ render_field(form.scoresituations) }}
+                    </div>
+                    <div class="col-sm-4">
+                    {{ render_field(form.period) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-sm-4">
+                        {{ render_field(form.tablecolumns) }}
+                    </div>
+                    <div class="col-sm-4">
 
-                        <div class="row">
-                            <div class="col-sm-4">
-                                <div class="form-group">
-                                    <label class="control-label" for="test-input">Table columns</label>
-                                    <div class="dropdown">
-                                        <button class="btn btn-default dropdown-toggle btn-block" type="button" id="dropdownMenu1" data-toggle="dropdown" aria-haspopup="true" aria-expanded="true">
-                                            Prime
-                                            <span class="pull-right">&nbsp;
-                                                <span class="caret"></span>
-                                            </span>
-                                        </button>
-                                        <ul class="dropdown-menu" aria-labelledby="dropdownMenu1">
-                                            <li><a href="#">Action</a></li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="col-sm-4">
-                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Download tables</a>
-                            </div>
-                            <div class="col-sm-4">
-                                <a class="btn btn-default beside-fields btn-block" href="#" role="button">Submit Changes</a>
-                            </div>
-                        </div>
-
-                    </form>
+                    </div>
+                    <div class="col-sm-4">
+                        <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+                    </div>
+                </div>
+            </form>
             <div class="tab-content">
                 <div id="event-tables" class="tab-pane fade in active">
                     <h3>Teams</h3>
@@ -347,9 +333,6 @@
                     "scrollX": true,
                     "fixedColumns": true,
                     //"scrollY": 300,
-                    "columnDefs": [
-                        { className: "right", "targets": [ 6 ] }
-                    ]
                 });
             });
 

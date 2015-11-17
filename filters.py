@@ -41,7 +41,10 @@ def get_status(value):
     elif value.status == 2:
         ps = 0
         period = "1st"
-        if value.seconds == 1200:
+        if value.seconds < 1200:
+            ps = value.seconds
+            period = "1st"
+        elif value.seconds == 1200:
             return "End of 1st"
         elif value.seconds > 1200 and value.seconds < 2400:
             ps = value.seconds - 1200

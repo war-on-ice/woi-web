@@ -62,7 +62,7 @@ periods_options = {"1": {'value': filter(lambda pd: pd == 1, all_periods), 'orde
            "2nd OT": {'value': filter(lambda pd: pd == 5, all_periods), 'order': 8, 'default': 0},
            "3rd OT": {'value': filter(lambda pd: pd == 6, all_periods), 'order': 9, 'default': 0},
            "4th OT": {'value': filter(lambda pd: pd == 7, all_periods), 'order': 10, 'default': 0},
-           "All": {'value': all_periods, 'order': 1, 'default': 1}}
+           "All": {'value': [0] + all_periods, 'order': 1, 'default': 1}}
 
 periods = create_dict(periods_options)
 

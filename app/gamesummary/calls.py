@@ -16,7 +16,6 @@ def get_games(cs=None):
         cs = cs.season
     games = GamesTest.query.filter(GamesTest.date<=cy).filter(GamesTest.season==cs).\
         order_by(GamesTest.date.desc()).\
-        order_by(app.Base.metadata.tables['gamestest'].c["game.end"]).\
-        order_by(app.Base.metadata.tables['gamestest'].c["game.start"]).\
-        order_by(app.Base.metadata.tables['gamestest'].c["status"])
+        order_by(app.Base.metadata.tables['gamestest'].c["status"].desc()).\
+        order_by(app.Base.metadata.tables['gamestest'].c["seconds"])
     return games

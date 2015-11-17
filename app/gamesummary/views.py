@@ -27,18 +27,44 @@ def show_games():
 @mod.route('/<gameId>/', methods=['GET', 'POST'])
 def show_game_summary(gameId):
     form = GameSummaryForm(request.form)
+    if request.method == "POST" and form.validate():
+        tablecolumns = form.tablecolumns.data
+        teamstrengths = form.teamstrengths.data
+        scoresituations = form.scoresituations.data
+        period = constants.periods_options[form.period.data]["value"]
+    else:
+        tablecolumns = "0"
+        teamstrengths = constants.strength_situations_dict[constants.strength_situations["default"]]["value"]
+        scoresituations = constants.score_situations_dict[constants.score_situations["default"]]["value"]
+        period = [0]
+        period.extend(constants.periods_options[constants.periods["default"]]["value"])
     rd = setup_nav()
     season = gameId[0:8]
     gcode = gameId[8:]
     gamedata = GamesTest.query.filter_by(season=season,
         gcode=int(gcode)).first()
-    scorediffcat = constants.score_situations_dict["All"]["value"]
-    gamestate = constants.strength_situations_dict["Even strength 5v5"]["value"]
+    scorediffcat = int(scoresituations)
+    gamestate = int(teamstrengths)
+    period = [int(x) for x in period]
     teamruns = TeamRun.query.filter_by(season=season,
         gcode=int(gcode),
         scorediffcat=scorediffcat,
-        gamestate=gamestate).order_by(TeamRun.TOI).all()
-    teamruns = teamruns[-2:]
+        gamestate=gamestate)\
+        .filter(Base.metadata.tables["teamrun"].c.period.in_(period))\
+        .order_by(TeamRun.TOI).all()
+    finalteams = []
+    teams = set()
+    examine = len(teamruns)
+    while len(finalteams) < 2:
+        if examine == 0:
+            break
+        examine -= 1
+        tr = teamruns[examine]
+        if tr.Team not in teams:
+            finalteams.append(tr)
+            teams.add(tr.Team)
+
+    teamruns = finalteams
     teamsummaries = []
     for td in teamruns:
         team = {}
@@ -60,7 +86,9 @@ def show_game_summary(gameId):
     goalieruns = GoalieRun.query.filter_by(season=season,
         gcode=int(gcode),
         scorediffcat=scorediffcat,
-        gamestate=gamestate).order_by(GoalieRun.TOI).all()
+        gamestate=gamestate)\
+        .filter(Base.metadata.tables["goalierun"].c.period.in_(period))\
+        .order_by(GoalieRun.TOI).all()
     goalies = []
     foundgoalies = set()
     for td in reversed(goalieruns):
@@ -83,7 +111,9 @@ def show_game_summary(gameId):
     playerruns = PlayerRun.query.filter_by(season=season,
         gcode=int(gcode),
         scorediffcat=scorediffcat,
-        gamestate=gamestate).order_by(PlayerRun.TOI).all()
+        gamestate=gamestate)\
+        .order_by(PlayerRun.TOI).all()
+    print "PLAYERS", len(playerruns)
     foundplayers = set()
     away = []
     home = []
