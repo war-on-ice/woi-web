@@ -1,0 +1,121 @@
+<h3>Skaters: {{ teamname|teamshortname }}</h3>
+    <div class="row datatable">
+        <div class="col-sm-12">
+            <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
+                <thead>
+                    <tr>
+                        <th>Name</th>
+                        <th>Pos</th>
+                        <th>G</th>
+                        <th>A1</th>
+                        <th>A2</th>
+                        <th>P</th>
+                        {% if tablecolumns == 3 or tablecolumns == 0 %}
+                        <th>iHSC</th>
+                        <th>iSC</th>
+                        <th>iCF</th>
+                        <th>C+/-</th>
+                        <th>F+/-</th>
+                        <th>G+/-</th>
+                        <th>CF</th>
+                        <th>FF</th>
+                        <th>ZSO</th>
+                        <th>ZSD</th>
+                        <th>AB</th>
+                        <th>FO_W</th>
+                        <th>FO_L</th>
+                        <th>HIT</th>
+                        <th>HIT-</th>
+                        <th>PN</th>
+                        <th>PN-</th>
+                        {% endif %}
+                        {% if tablecolumns == 3 or tablecolumns == 1 %}
+                        <th>CF60</th>
+                        <th>CA60</th>
+                        <th>CP60</th>
+                        <th>FF60</th>
+                        <th>FA60</th>
+                        <th>FP60</th>
+                        <th>SF60</th>
+                        <th>SA60</th>
+                        {% endif %}
+                        {% if tablecolumns == 3 or tablecolumns == 2 %}
+                        <th>BK</th>
+                        <th>AB</th>
+                        <th>MS</th>
+                        <th>SH</th>
+                        <th>SF</th>
+                        <th>SA</th>
+                        <th>GF</th>
+                        <th>GA</th>
+                        <th>FF</th>
+                        <th>FA</th>
+                        <th>CF</th>
+                        <th>CA</th>
+                        <th>SCF</th>
+                        <th>SCA</th>
+                        {% endif %}
+                        <th>TOI</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for player in team %}
+                    <tr>
+                        <td>{{ woiid[player["ID"]].full_name }}</td>
+                        <td>{{ woiid[player["ID"]].pos }}</td>
+                        <td>{{ player["G"]|int }}</td>
+                        <td>{{ player["ASSIST"]|int }}</td>
+                        <td>{{ player["ASSIST_2"]|int }}</td>
+                        <td>{{ (player["G"] + player["ASSIST"] + player["ASSIST_2"])|int }}</td>
+                        {% if tablecolumns == 3 or tablecolumns == 0 %}
+                        <td>{{ player["isSC"]|int }}</td>
+                        <td>{{ player["iSC"]|int }}</td>
+                        <td>{{ (player["SHOT"] + player["SHOT1"] + player["SHOT3"] + player["SHOT4"])|int }}</td>
+                        <td>{{ (player["CF"] - player["CA"])|int }}</td>
+                        <td>{{ (player["FF"] - player["FA"])|int }}</td>
+                        <td>{{ (player["GF"] - player["GA"])|int }}</td>
+                        <td>{{ player["CF"]|int }}</td>
+                        <td>{{ player["FF"]|int }}</td>
+                        <td>{{ player["ZSO"]|int }}</td>
+                        <td>{{ player["ZSD"]|int }}</td>
+                        <td>{{ (player["BLOCKED_SHOT"] + player["BLOCKED_SHOT1"] + player["BLOCKED_SHOT2"] + player["BLOCKED_SHOT3"] + player["BLOCKED_SHOT4"])|int }}</td>
+                        <td>{{ player["FAC_WIN"]|int }}</td>
+                        <td>{{ player["FAC_LOSE"]|int }}</td>
+                        <td>{{ player["HIT"]|int }}</td>
+                        <td>{{ player["HIT_TAKEN"]|int }}</td>
+                        <td>{{ player["PENL_TAKEN"]|int }}</td>
+                        <td>{{ player["PENL_DRAWN"]|int }}</td>
+                        {% endif %}
+                        {% if tablecolumns == 3 or tablecolumns == 1 %}
+                        <td>{{ "%0.1f" | format(player["CF"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["CA"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["CF"] / player["TOI"] * 60 + player["CA"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["FF"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["FA"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["FF"] / player["TOI"] * 60 + player["FA"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["SF"] / player["TOI"] * 60) }}</td>
+                        <td>{{ "%0.1f" | format(player["SA"] / player["TOI"] * 60) }}</td>
+                        {% endif %}
+                        {% if tablecolumns == 3 or tablecolumns == 2 %}
+                        <td>{{ player["BLOCKED_SHOT"]|int }}</td>
+                        <td>{{ player["BLOCK"]|int }}</td>
+                        <td>{{ player["MISS"]|int }}</td>
+                        <td>{{ player["SHOT"]|int }}</td>
+                        <td>{{ player["SF"]|int }}</td>
+                        <td>{{ player["SA"]|int }}</td>
+                        <td>{{ player["GF"]|int }}</td>
+                        <td>{{ player["GA"]|int }}</td>
+                        <td>{{ player["FF"]|int }}</td>
+                        <td>{{ player["FA"]|int }}</td>
+                        <td>{{ player["CF"]|int }}</td>
+                        <td>{{ player["CA"]|int }}</td>
+                        <td>{{ player["SCF"]|int }}</td>
+                        <td>{{ player["SCA"]|int }}</td>
+                        {% endif %}
+                        <td>{{ player["TOI"] }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>

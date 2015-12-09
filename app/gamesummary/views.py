@@ -5,11 +5,16 @@ from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
 
-from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest
+from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest, PlayByPlay
 from calls import get_games
 from forms import GameSummaryForm
 
 import math
+
+import urllib2
+from rpy2.robjects import r
+from rpy2.robjects import pandas2ri
+import pandas as pd
 
 mod = Blueprint('game', __name__, url_prefix='/game')
 
@@ -26,6 +31,7 @@ def show_games():
 
 @mod.route('/<gameId>/', methods=['GET', 'POST'])
 def show_game_summary(gameId):
+    # Get form results or default
     form = GameSummaryForm(request.form)
     if request.method == "POST" and form.validate():
         tablecolumns = form.tablecolumns.data
@@ -38,116 +44,93 @@ def show_game_summary(gameId):
         scoresituations = constants.score_situations_dict[constants.score_situations["default"]]["value"]
         period = [0]
         period.extend(constants.periods_options[constants.periods["default"]]["value"])
+    # Setup nav
     rd = setup_nav()
+    # Get game information from URL
     season = gameId[0:8]
     gcode = gameId[8:]
-    gamedata = GamesTest.query.filter_by(season=season,
-        gcode=int(gcode)).first()
+    
+    # Prepare form results for queries
     scorediffcat = int(scoresituations)
     gamestate = int(teamstrengths)
     period = [int(x) for x in period]
-    teamruns = TeamRun.query.filter_by(season=season,
-        gcode=int(gcode),
-        scorediffcat=scorediffcat,
-        gamestate=gamestate)\
-        .filter(Base.metadata.tables["teamrun"].c.period.in_(period))\
-        .order_by(TeamRun.TOI).all()
-    finalteams = []
+
+    # For testing, probably want to do this a different way in production TODO
+    response = urllib2.urlopen("http://war-on-ice.com/data/games/" + season + gcode + ".RData")
+    html = response.read()
+    fp = open("rdata/2015201620001.RData", "w")
+    fp.write(html)
+    fp.close()
+    robj = r.load("rdata/2015201620001.RData")
+
+    rdata = {}
+    keys = {}
+    for sets in robj:
+        myRData = pandas2ri.ri2py(r[sets])
+        rdata[sets] = []
+        keys[sets] = set()
+        # convert to DataFrame
+        if not isinstance(myRData, pd.DataFrame):
+            myRData = pd.DataFrame(myRData)
+        for element in myRData:
+            keys[sets].add(element)
+            counter = 0
+            for value in myRData[element]:
+                if counter >= len(rdata[sets]):
+                    rdata[sets].append({})
+                rdata[sets][counter][element] = value
+                counter += 1
+    rteamrun = rdata["teamrun"]
+    teamrun = []
     teams = set()
-    examine = len(teamruns)
-    while len(finalteams) < 2:
-        if examine == 0:
-            break
-        examine -= 1
-        tr = teamruns[examine]
-        if tr.Team not in teams:
-            finalteams.append(tr)
-            teams.add(tr.Team)
-
-    teamruns = finalteams
-    teamsummaries = []
-    for td in teamruns:
-        team = {}
-        team["team"] = td.Team
-        team["gf"] = int(td.GF)
-        team["sf"] = int(td.SF)
-        team["msf"] = int(td.FF) - int(td.SF)
-        team["cf"] = int(td.CF)
-        team["bsf"] = team["cf"] - team["msf"] - team["sf"]
-        team["scf"] = int(td.SCF)
-        team["hscf"] = int(td.sSCF)
-        team["zso"] = int(td.ZSO)
-        team["hit"] = int(td.HIT)
-        team["pn"] = int(td.PENL_TAKEN)
-        team["fo_w"] = int(td.FAC_WIN)
-        team["toi"] = round(float(td.TOI) / 60.0, 1)
-        teamsummaries.append(team)
-
-    goalieruns = GoalieRun.query.filter_by(season=season,
-        gcode=int(gcode),
-        scorediffcat=scorediffcat,
-        gamestate=gamestate)\
-        .filter(Base.metadata.tables["goalierun"].c.period.in_(period))\
-        .order_by(GoalieRun.TOI).all()
+    for tr in sorted(rteamrun, key=lambda x: x["TOI"], reverse=True):
+        if tr["period"] in period and tr["gamestate"] == gamestate:
+            if tr["Team"] not in teams:
+                tr["MSF"] = int(tr["FF"]) - int(tr["SF"])
+                tr["BSF"] = tr["CF"] - tr["MSF"] - tr["SF"]
+                tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                teamrun.append(tr)
+                teams.add(tr["Team"])
     goalies = []
-    foundgoalies = set()
-    for td in reversed(goalieruns):
-        if td.ID not in foundgoalies:
-            foundgoalies.add(td.ID)
-            goalie = {}
-            goalie["name"] = td.ID
-            goalie["team"] = td.Team
-            goalie["gu"] = td.__dict__["goals.0"]
-            goalie["su"] = td.__dict__["shots.0"]
-            goalie["gl"] = td.__dict__["goals.1"]
-            goalie["sl"] = td.__dict__["shots.1"]
-            goalie["gm"] = td.__dict__["goals.2"]
-            goalie["sm"] = td.__dict__["shots.2"]
-            goalie["gh"] = td.__dict__["goals.3"] + td.__dict__["goals.4"]
-            goalie["sh"] = td.__dict__["shots.3"] + td.__dict__["shots.4"]
-            goalie["toi"] = round(float(td.TOI) / 60.0, 1)
-            goalies.append(goalie)
-
-    playerruns = PlayerRun.query.filter_by(season=season,
-        gcode=int(gcode),
-        scorediffcat=scorediffcat,
-        gamestate=gamestate)\
-        .order_by(PlayerRun.TOI).all()
-    print "PLAYERS", len(playerruns)
+    rgoalies = rdata["goalierun"]
+    teams = set()
     foundplayers = set()
+    for tr in sorted(rgoalies, key=lambda x: x["TOI"], reverse=True):
+        if tr["period"] in period and tr["gamestate"] == gamestate:
+            if tr["Team"] not in teams:
+                tr["gu"] = tr["goals.0"]
+                tr["su"] = tr["shots.0"]
+                tr["gl"] = tr["goals.1"]
+                tr["sl"] = tr["shots.1"]
+                tr["gm"] = tr["goals.2"]
+                tr["sm"] = tr["shots.2"]
+                tr["gh"] = tr["goals.3"] + tr["goals.4"]
+                tr["sh"] = tr["shots.3"] + tr["shots.4"]
+                tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                goalies.append(tr)
+                teams.add(tr["Team"])
+                foundplayers.add(tr["ID"])
+
+    rplayerrun = rdata["playerrun"]
     away = []
     home = []
-    for td in reversed(playerruns):
-        if td.ID not in foundplayers:
-            foundplayers.add(td.ID)
-            player = {}
-            player["name"] = td.ID
-            player["g"] = int(td.GOAL1 + td.GOAL2 + td.GOAL3 + td.GOAL4)
-            player["a1"] = int(td.ASSIST)
-            player["a2"] = int(td.ASSIST_2)
-            player["p"] = player["g"] + player["a1"] + player["a2"]
-            player["ihsc"] = int(td.isSC)
-            player["isc"] = int(td.iSC)
-            player["icf"] = int(td.SHOT + td.SHOT1 + td.SHOT2 + td.SHOT3 + td.SHOT4)
-            player["cplusminus"] = int(td.CF - td.CA)
-            player["fplusminus"] = int(td.FF - td.FA)
-            player["gplusminus"] = int(td.GF - td.GA)
-            player["cf"] = int(td.CF)
-            player["ff"] = int(td.FF)
-            player["zso"] = int(td.ZSO)
-            player["zsd"] = int(td.ZSD)
-            player["ab"] = int(td.BLOCKED_SHOT + td.BLOCKED_SHOT1 + td.BLOCKED_SHOT2 + td.BLOCKED_SHOT3 + td.BLOCKED_SHOT4)
-            player["fo_w"] = int(td.FAC_WIN)
-            player["fo_l"] = int(td.FAC_LOSE)
-            player["hit"] = int(td.HIT)
-            player["hitminus"] = int(td.HIT_TAKEN)
-            player["pn"] = int(td.PENL_TAKEN)
-            player["pnminus"] = int(td.PENL_DRAWN)
-            player["toi"] = round(float(td.TOI) / 60.0, 1)
-            if td.home == 1:
-                home.append(player)
+    players = set()
+    for tr in sorted(rplayerrun, key=lambda x: x["TOI"], reverse=True):
+        if tr["ID"] not in foundplayers:
+            foundplayers.add(tr["ID"])
+        if tr["period"] in period and tr["gamestate"] == gamestate and tr["ID"] not in players:
+            players.add(tr["ID"])
+            tr["G"] = int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
+            tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+            if tr["home"] == 1:
+                home.append(tr)
             else:
-                away.append(player)
+                away.append(tr)
+
+
+    # Get GamesTest information
+    gamedata = GamesTest.query.filter_by(season=season,
+        gcode=int(gcode)).first()
 
     rostermaster = {}
     rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(foundplayers)).all()
@@ -161,16 +144,18 @@ def show_game_summary(gameId):
         woiid[player["woi.id"]] = player
 
     return render_template('game/gamesummary.html',
-                           gameId = gameId,
-                           strength_situations = constants.strength_situations,
-                           score_situations = constants.score_situations,
-                           periods = constants.periods,
-                           rd = rd,
-                           teamruns = teamsummaries,
-                           goalies = goalies,
-                           away = away,
-                           home = home,
-                           woiid = woiid,
-                           rostermaster = rostermaster,
+                           tablecolumns=int(tablecolumns),
+                           gameId=gameId,
+                           strength_situations=constants.strength_situations,
+                           score_situations=constants.score_situations,
+                           periods=constants.periods,
+                           rd=rd,
+                           gamestate=gamestate,
+                           period=period,
                            gamedata = gamedata,
-                           form = form)
+                           form = form,
+                           teamrun=teamrun,
+                           goalies=goalies,
+                           woiid=woiid,
+                           away=away,
+                           home=home)

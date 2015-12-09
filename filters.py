@@ -60,5 +60,8 @@ def get_status(value):
             ps = value.seconds - 3600
             period = "OT"
         minutes, seconds = divmod(ps, 60)
-        return str(int(19 - minutes)) + ":" + str(int(60 - seconds)) + ", " + period
+        seconds = str(int(60 - seconds))
+        if len(seconds) == 1:
+            seconds = "0" + seconds
+        return str(int(19 - minutes)) + ":" + seconds + ", " + period
     return value.status

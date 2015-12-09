@@ -83,21 +83,21 @@
                                     </tr>
                                 </thead>
                                 <tbody>
-                                    {% for teamrun in teamruns %}
+                                    {% for teamrun in teamrun %}
                                     <tr>
-                                        <td>{{ teamrun.team|teamshortname }}</td>
-                                        <td>{{ teamrun.gf }}</td>
-                                        <td>{{ teamrun.sf }}</td>
-                                        <td>{{ teamrun.msf }}</td>
-                                        <td>{{ teamrun.bsf }}</td>
-                                        <td>{{ teamrun.cf }}</td>
-                                        <td>{{ teamrun.scf }}</td>
-                                        <td>{{ teamrun.hscf }}</td>
-                                        <td>{{ teamrun.zso }}</td>
-                                        <td>{{ teamrun.hit }}</td>
-                                        <td>{{ teamrun.pn }}</td>
-                                        <td>{{ teamrun.fo_w }}</td>
-                                        <td>{{ teamrun.toi }}</td>
+                                        <td>{{ teamrun["Team"]|teamshortname }}</td>
+                                        <td>{{ teamrun["GF"] }}</td>
+                                        <td>{{ teamrun["SF"]|int }}</td>
+                                        <td>{{ teamrun["MSF"]|int }}</td>
+                                        <td>{{ teamrun["BSF"]|int }}</td>
+                                        <td>{{ teamrun["CF"]|int }}</td>
+                                        <td>{{ teamrun["SCF"] }}</td>
+                                        <td>{{ teamrun["sSCF"] }}</td>
+                                        <td>{{ teamrun["ZSO"] }}</td>
+                                        <td>{{ teamrun["HIT"] }}</td>
+                                        <td>{{ teamrun["PENL_TAKEN"] }}</td>
+                                        <td>{{ teamrun["FAC_WIN"] }}</td>
+                                        <td>{{ teamrun["TOI"] }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -127,17 +127,17 @@
                                 <tbody>
                                     {% for goalie in goalies %}
                                     <tr>
-                                        <td>{{ woiid[goalie.name].full_name }}</td>
-                                        <td>{{ goalie.team }}</td>
-                                        <td>{{ goalie.gu }}</td>
-                                        <td>{{ goalie.su }}</td>
-                                        <td>{{ goalie.gl }}</td>
-                                        <td>{{ goalie.sl }}</td>
-                                        <td>{{ goalie.gm }}</td>
-                                        <td>{{ goalie.sm }}</td>
-                                        <td>{{ goalie.gh }}</td>
-                                        <td>{{ goalie.sh }}</td>
-                                        <td>{{ goalie.toi }}</td>
+                                        <td>{{ woiid[goalie["ID"]].full_name }}</td>
+                                        <td>{{ goalie["Team"] }}</td>
+                                        <td>{{ goalie["gu"] }}</td>
+                                        <td>{{ goalie["su"] }}</td>
+                                        <td>{{ goalie["gl"] }}</td>
+                                        <td>{{ goalie["sl"] }}</td>
+                                        <td>{{ goalie["gm"] }}</td>
+                                        <td>{{ goalie["sm"] }}</td>
+                                        <td>{{ goalie["gh"] }}</td>
+                                        <td>{{ goalie["sh"] }}</td>
+                                        <td>{{ goalie["TOI"] }}</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
@@ -145,136 +145,12 @@
 
                         </div>
                     </div>
-                    <h3>Skaters: {{ gamedata.awayteam|teamshortname }}</h3>
-                    <div class="row datatable">
-                        <div class="col-sm-12">
-                            <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Pos</th>
-                                        <th>G</th>
-                                        <th>A1</th>
-                                        <th>A2</th>
-                                        <th>P</th>
-                                        <th>iHSC</th>
-                                        <th>iSC</th>
-                                        <th>iCF</th>
-                                        <th>C+/-</th>
-                                        <th>F+/-</th>
-                                        <th>G+/-</th>
-                                        <th>CF</th>
-                                        <th>FF</th>
-                                        <th>ZSO</th>
-                                        <th>ZSD</th>
-                                        <th>AB</th>
-                                        <th>FO_W</th>
-                                        <th>FO_L</th>
-                                        <th>HIT</th>
-                                        <th>HIT-</th>
-                                        <th>PN</th>
-                                        <th>PN-</th>
-                                        <th>TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for player in away %}
-                                    <tr>
-                                        <td>{{ woiid[player.name].full_name }}</td>
-                                        <td>{{ woiid[player.name].pos }}</td>
-                                        <td>{{ player.g }}</td>
-                                        <td>{{ player.a1 }}</td>
-                                        <td>{{ player.a2 }}</td>
-                                        <td>{{ player.p }}</td>
-                                        <td>{{ player.ihsc }}</td>
-                                        <td>{{ player.isc }}</td>
-                                        <td>{{ player.icf }}</td>
-                                        <td>{{ player.cplusminus }}</td>
-                                        <td>{{ player.fplusminus }}</td>
-                                        <td>{{ player.gplusminus }}</td>
-                                        <td>{{ player.cf }}</td>
-                                        <td>{{ player.ff }}</td>
-                                        <td>{{ player.zso }}</td>
-                                        <td>{{ player.zsd }}</td>
-                                        <td>{{ player.ab }}</td>
-                                        <td>{{ player.fo_w }}</td>
-                                        <td>{{ player.fo_l }}</td>
-                                        <td>{{ player.hit }}</td>
-                                        <td>{{ player.hitminus }}</td>
-                                        <td>{{ player.pn }}</td>
-                                        <td>{{ player.pnminus }}</td>
-                                        <td>{{ player.toi }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
-                    <h3>Skaters: {{ gamedata.hometeam|teamshortname }}</h3>
-                    <div class="row datatable">
-                        <div class="col-sm-12">
-                            <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Pos</th>
-                                        <th>G</th>
-                                        <th>A1</th>
-                                        <th>A2</th>
-                                        <th>P</th>
-                                        <th>iHSC</th>
-                                        <th>iSC</th>
-                                        <th>iCF</th>
-                                        <th>C+/-</th>
-                                        <th>F+/-</th>
-                                        <th>G+/-</th>
-                                        <th>CF</th>
-                                        <th>FF</th>
-                                        <th>ZSO</th>
-                                        <th>ZSD</th>
-                                        <th>AB</th>
-                                        <th>FO_W</th>
-                                        <th>FO_L</th>
-                                        <th>HIT</th>
-                                        <th>HIT-</th>
-                                        <th>PN</th>
-                                        <th>PN-</th>
-                                        <th>TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for player in home %}
-                                    <tr>
-                                        <td>{{ woiid[player.name].full_name }}</td>
-                                        <td>{{ woiid[player.name].pos }}</td>
-                                        <td>{{ player.g }}</td>
-                                        <td>{{ player.a1 }}</td>
-                                        <td>{{ player.a2 }}</td>
-                                        <td>{{ player.p }}</td>
-                                        <td>{{ player.ihsc }}</td>
-                                        <td>{{ player.isc }}</td>
-                                        <td>{{ player.icf }}</td>
-                                        <td>{{ player.cplusminus }}</td>
-                                        <td>{{ player.fplusminus }}</td>
-                                        <td>{{ player.gplusminus }}</td>
-                                        <td>{{ player.cf }}</td>
-                                        <td>{{ player.ff }}</td>
-                                        <td>{{ player.zso }}</td>
-                                        <td>{{ player.zsd }}</td>
-                                        <td>{{ player.ab }}</td>
-                                        <td>{{ player.fo_w }}</td>
-                                        <td>{{ player.fo_l }}</td>
-                                        <td>{{ player.hit }}</td>
-                                        <td>{{ player.hitminus }}</td>
-                                        <td>{{ player.pn }}</td>
-                                        <td>{{ player.pnminus }}</td>
-                                        <td>{{ player.toi }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
+                    {% with team=away, teamname=gamedata.awayteam %}
+                        {% include "game/playertable.html" %}
+                    {% endwith %}
+                    {% with team=home, teamname=gamedata.hometeam %}
+                        {% include "game/playertable.html" %}
+                    {% endwith %}
                 </div>
                 <div id="event-charts" class="tab-pane fade">
                     <h3>Running Shot Attempts</h3>

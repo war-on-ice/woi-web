@@ -8,3 +8,4 @@ cred.py
 Vagrantfile
 bootstrap.sh
 sql/
+rdata/

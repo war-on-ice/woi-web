@@ -16,6 +16,16 @@ class TeamRun(db.Model):
     }
 
 
+class PlayByPlay(db.Model):
+    __table__ = Base.metadata.tables['playbyplay']
+    __mapper_args__ = {
+        'primary_key': [Base.metadata.tables['playbyplay'].c.gcode,
+        Base.metadata.tables['playbyplay'].c.season,
+        Base.metadata.tables['playbyplay'].c.seconds,
+        Base.metadata.tables['playbyplay'].c.period]
+    }
+
+
 class GoalieRun(db.Model):
     __table__ = Base.metadata.tables['goalierun']
     __mapper_args__ = {
