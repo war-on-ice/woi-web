@@ -2,26 +2,10 @@
 {% from "macros.html" import create_dropdown %}
 
 {% block content_header %}
-    <div class="col-md-12">
-        <div class="header">
-            <div class="game-meta">
-                <h1 class="team away long"><span>{{ gamedata.awayteam|teamname }}</span></h1>
-                <h1 class="team away med"><span>{{ gamedata.awayteam|teamshortname }}</span></h1>
-                <img src="{{ url_for('static', filename='img/team/' + gamedata.awayteam + '.png') }}">
-                <h1 class="score away"><span>{{ gamedata.awayscore|int }}</span></h1>
-                <div class="date">
-                    <p><span>{{ gamedata|get_status }}</span></p>
-                    <p><span>{{ gamedata.date|format_date }}</span></p>
-                </div>
-                <h1 class="score home"><span>{{ gamedata.homescore|int }}</span></h1>
-                <img src="{{ url_for('static', filename='img/team/' + gamedata.hometeam + '.png') }}">
-                <h1 class="team home med"><span>{{ gamedata.hometeam|teamshortname }}</span></h1>
-                <h1 class="team home long"><span>{{ gamedata.hometeam|teamname }}</span></h1>
-            </div>
-            <div class="header-bg">
-            </div>
-        </div>
-    </div>
+    <div id="gamesummaryheader"></div>
+    {% if live == True %}
+    <h4 class="text-center">*Live games will auto-update every minute</h4>
+    {% endif %}
 {% endblock %}
 
 
@@ -59,130 +43,8 @@
                     </div>
                 </div>
             </form>
-            <div class="tab-content">
-                <div id="event-tables" class="tab-pane fade in active">
-                    <h3>Teams</h3>
-                    <div class="row datatable">
-                        <div class="col-sm-12">
-                            <table class="table dataTable table-striped no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Team</th>
-                                        <th>GF</th>
-                                        <th>SF</th>
-                                        <th>MSF</th>
-                                        <th>BSF</th>
-                                        <th>CF</th>
-                                        <th>SCF</th>
-                                        <th>HSCF</th>
-                                        <th>ZSO</th>
-                                        <th>HIT</th>
-                                        <th>PN</th>
-                                        <th>FO_W</th>
-                                        <th>TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for teamrun in teamrun %}
-                                    <tr>
-                                        <td>{{ teamrun["Team"]|teamshortname }}</td>
-                                        <td>{{ teamrun["GF"] }}</td>
-                                        <td>{{ teamrun["SF"]|int }}</td>
-                                        <td>{{ teamrun["MSF"]|int }}</td>
-                                        <td>{{ teamrun["BSF"]|int }}</td>
-                                        <td>{{ teamrun["CF"]|int }}</td>
-                                        <td>{{ teamrun["SCF"] }}</td>
-                                        <td>{{ teamrun["sSCF"] }}</td>
-                                        <td>{{ teamrun["ZSO"] }}</td>
-                                        <td>{{ teamrun["HIT"] }}</td>
-                                        <td>{{ teamrun["PENL_TAKEN"] }}</td>
-                                        <td>{{ teamrun["FAC_WIN"] }}</td>
-                                        <td>{{ teamrun["TOI"] }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                    <h3>Goalies</h3>
-                    <div class="row datatable">
-                        <div class="col-sm-12">
-                            <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
-                                <thead>
-                                    <tr>
-                                        <th>Name</th>
-                                        <th>Team</th>
-                                        <th>GU</th>
-                                        <th>SU</th>
-                                        <th>G.L</th>
-                                        <th>S.L</th>
-                                        <th>G.M</th>
-                                        <th>S.M</th>
-                                        <th>G.H</th>
-                                        <th>S.H</th>
-                                        <th>TOI</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {% for goalie in goalies %}
-                                    <tr>
-                                        <td>{{ woiid[goalie["ID"]].full_name }}</td>
-                                        <td>{{ goalie["Team"] }}</td>
-                                        <td>{{ goalie["gu"] }}</td>
-                                        <td>{{ goalie["su"] }}</td>
-                                        <td>{{ goalie["gl"] }}</td>
-                                        <td>{{ goalie["sl"] }}</td>
-                                        <td>{{ goalie["gm"] }}</td>
-                                        <td>{{ goalie["sm"] }}</td>
-                                        <td>{{ goalie["gh"] }}</td>
-                                        <td>{{ goalie["sh"] }}</td>
-                                        <td>{{ goalie["TOI"] }}</td>
-                                    </tr>
-                                    {% endfor %}
-                                </tbody>
-                            </table>
-
-                        </div>
-                    </div>
-                    {% with team=away, teamname=gamedata.awayteam %}
-                        {% include "game/playertable.html" %}
-                    {% endwith %}
-                    {% with team=home, teamname=gamedata.hometeam %}
-                        {% include "game/playertable.html" %}
-                    {% endwith %}
-                </div>
-                <div id="event-charts" class="tab-pane fade">
-                    <h3>Running Shot Attempts</h3>
-                    <p>Create data retrieval function to pass data out from Flask<br>
-                        Use Kevin's chart</p>
-                    <h3>Running Scoring Chance</h3>
-                    <p>Use same data retrieval function as above with different parameters, Kevin's chart</p>
-                    <h3>Shot Attempt Charts</h3>
-                    <p>Create data retrieval function to pass data out from Flask<br>
-                        Use Alexandra's chart (potentially modified)</p>
-                    <div class="row">
-                        <div class="span6" id="shAway"></div>
-                        <div class="span6" id="shHome"></div>
-                    </div>
-                    <h3>Player Corsi Events</h3>
-                    <p>Create data retrieval function to pass data out from Flask<br>
-                        Use Alexandra's chart (potentially modified)</p>
-                </div>
-                <div id="player-usage" class="tab-pane fade">
-                    <h3>Matchup Charts</h3>
-                    <p>Create data retreival function from coplayer table. Use current WOI or Kevin's -- Group can decide.</p>
-                    <h3>Line Charts</h3>
-                    <p>Create data retrieval function from Manny's data.<br>
-                        Kevin's visualization.</p>
-                    <h3>Shift Charts</h3>
-                    <p>Create data retrieval function -- From what data?
-                        We could use actual shift data from NHL, if we wanted, instead of interpolated.<br>
-                    Kevin's viz.</p>
-                </div>
-{#                <div id="win-probs" class="tab-pane fade">#}
-{#                    <p>Win probabilities</p>#}
-{#                </div>#}
+            <div id="gameSummaryTables" class="tab-content">
+                
             </div>
         </div>
     </div>
@@ -194,26 +56,11 @@
         var counter;
 
         $(document).ready(function() {
-
+            updateLive();
             // Handle tabs
             $('.nav-tabs a').click(function(){
                 $(this).tab('show');
             });
-
-            // Initialize DataTable
-            $(document).ready(function() {
-                $('table.dataTable').DataTable({
-                    "paging": false,
-                    "filter": false,
-                    "sDom": '<"top">rt<"bottom"flp><"clear">',
-                    "scrollX": true,
-                    "fixedColumns": true,
-                    //"scrollY": 300,
-                });
-            });
-
-            // Draw header banner
-            drawMesh();
 
             // Update on resize - wait 500ms before redrawing the mesh
             currentHeaderWidth = $(".header-bg").width();
@@ -327,6 +174,37 @@
             var meshHeight = numRows * (0.75 * hexH);
             svg.attr("transform", "translate(" + ((width - meshWidth)/2) + "," + ((height - meshHeight)/2) + ")");
         }
+
+        function updateLive() {
+            $.ajax({url: "header",
+                success: function(result) {
+                    $("#gamesummaryheader").html(result);
+                    drawMesh();
+                },
+            });
+            var teamstrengths = $("#teamstrengths").val();
+            var scoresituation = $("#scoresituations").val();
+            var period = $("#period").val();
+            var tablecolumns = $("#tablecolumns").val();
+            var url = "tables?teamstrengths=" + teamstrengths + "&scoresituation=" + scoresituation + "&period=" + period + "&tablecolumns=" + tablecolumns;
+            // Get form values
+            $.ajax({url: url,
+                success: function(result) {
+                    $("#gameSummaryTables").html(result);
+                    $('table.dataTable').DataTable({
+                        "paging": false,
+                        "filter": false,
+                        "sDom": '<"top">rt<"bottom"flp><"clear">',
+                        "scrollX": true,
+                        "fixedColumns": true,
+                        //"scrollY": 300,
+                    });
+                },
+            });
+        }
+        {% if live == True %}
+        setInterval(updateLive, 60000);
+        {% endif %}
     </script>
     <script src="{{ url_for('static', filename='js/rinkPlot.js') }}"></script>
 {% endblock %}

@@ -29,23 +29,22 @@ def show_games():
         teamname=filters.teamname)
 
 
-@mod.route('/<gameId>/', methods=['GET', 'POST'])
-def show_game_summary(gameId):
-    # Get form results or default
-    form = GameSummaryForm(request.form)
-    if request.method == "POST" and form.validate():
-        tablecolumns = form.tablecolumns.data
-        teamstrengths = form.teamstrengths.data
-        scoresituations = form.scoresituations.data
-        period = constants.periods_options[form.period.data]["value"]
+@mod.route('/<gameId>/tables', methods=['GET'])
+def show_game_summary_tables(gameId):
+    rd = setup_nav()
+
+    if request.method == "GET":
+        tablecolumns = request.args.get("tablecolumns")
+        teamstrengths = request.args.get("teamstrengths")
+        scoresituations = request.args.get("scoresituation")
+        period = constants.periods_options[request.args.get("period")]["value"]
     else:
         tablecolumns = "0"
         teamstrengths = constants.strength_situations_dict[constants.strength_situations["default"]]["value"]
         scoresituations = constants.score_situations_dict[constants.score_situations["default"]]["value"]
         period = [0]
         period.extend(constants.periods_options[constants.periods["default"]]["value"])
-    # Setup nav
-    rd = setup_nav()
+
     # Get game information from URL
     season = gameId[0:8]
     gcode = gameId[8:]
@@ -58,10 +57,10 @@ def show_game_summary(gameId):
     # For testing, probably want to do this a different way in production TODO
     response = urllib2.urlopen("http://war-on-ice.com/data/games/" + season + gcode + ".RData")
     html = response.read()
-    fp = open("rdata/2015201620001.RData", "w")
+    fp = open("rdata/" + season + gcode + ".RData", "w")
     fp.write(html)
     fp.close()
-    robj = r.load("rdata/2015201620001.RData")
+    robj = r.load("rdata/" + season + gcode + ".RData")
 
     rdata = {}
     keys = {}
@@ -127,7 +126,6 @@ def show_game_summary(gameId):
             else:
                 away.append(tr)
 
-
     # Get GamesTest information
     gamedata = GamesTest.query.filter_by(season=season,
         gcode=int(gcode)).first()
@@ -143,6 +141,65 @@ def show_game_summary(gameId):
         rostermaster[p.numfirstlast] = player
         woiid[player["woi.id"]] = player
 
+    return render_template('game/gamesummarytables.html',
+        tablecolumns=int(tablecolumns),
+        home=home,
+        away=away,
+        gamedata=gamedata,
+        goalies=goalies,
+        woiid=woiid,
+        teamrun=teamrun)
+
+@mod.route('/<gameId>/header')
+def show_game_summary_header(gameId):
+    rd = setup_nav()
+    season = gameId[0:8]
+    gcode = gameId[8:]
+    # Get GamesTest information
+    gamedata = GamesTest.query.filter_by(season=season,
+        gcode=int(gcode)).first()
+    return render_template('game/gamesummaryheader.html',
+        gamedata=gamedata)
+
+
+@mod.route('/<gameId>/', methods=['GET', 'POST'])
+def show_game_summary(gameId):
+
+    # Get game information from URL
+    season = gameId[0:8]
+    gcode = gameId[8:]
+
+    # Get form results or default
+    form = GameSummaryForm(request.form)
+    if request.method == "POST" and form.validate():
+        tablecolumns = form.tablecolumns.data
+        teamstrengths = form.teamstrengths.data
+        scoresituations = form.scoresituations.data
+        period = constants.periods_options[form.period.data]["value"]
+    else:
+        tablecolumns = "0"
+        teamstrengths = constants.strength_situations_dict[constants.strength_situations["default"]]["value"]
+        scoresituations = constants.score_situations_dict[constants.score_situations["default"]]["value"]
+        period = [0]
+        period.extend(constants.periods_options[constants.periods["default"]]["value"])
+    
+    # Prepare form results for queries
+    scorediffcat = int(scoresituations)
+    gamestate = int(teamstrengths)
+    period = [int(x) for x in period]
+
+    # Setup nav
+    rd = setup_nav()
+
+    # Get GamesTest information
+    gamedata = GamesTest.query.filter_by(season=season,
+        gcode=int(gcode)).first()
+
+    if gamedata.status == 3:
+        live = False
+    else:
+        live = True
+
     return render_template('game/gamesummary.html',
                            tablecolumns=int(tablecolumns),
                            gameId=gameId,
@@ -154,8 +211,4 @@ def show_game_summary(gameId):
                            period=period,
                            gamedata = gamedata,
                            form = form,
-                           teamrun=teamrun,
-                           goalies=goalies,
-                           woiid=woiid,
-                           away=away,
-                           home=home)
+                           live=live)
