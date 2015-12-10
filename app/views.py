@@ -2,7 +2,9 @@ from app.navigation import setup_nav
 from flask import Blueprint, render_template
 
 
-from gamesummary import calls
+from gamesummary import calls, models
+
+import constants
 
 
 mod = Blueprint('app', __name__)
@@ -11,9 +13,25 @@ mod = Blueprint('app', __name__)
 @mod.route("/")
 def index():
     rd = setup_nav()
+    teamDict = constants.teamDict
+    teamDict["Atlanta Thrashers"] = "ATL"
+
+    search = []
+    for team in teamDict:
+        line = [team, teamDict[team]]
+        search.append(line)
+
+    players = models.RosterMaster.query.all()
+    count = 0
+    for player in players:
+        count += 1
+        line = [player.last.title() + ", " + player.first.title(), player.__dict__["woi.id"]]
+        search.append(line)
+
     games = calls.get_games()
     return render_template("index.html", rd=rd,
-        games=games)
+        games=games,
+        search=search)
 
 
 @mod.route("/iframe")

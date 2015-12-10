@@ -2,19 +2,37 @@
 {% block title %}Home{% endblock %}
 {% block content %}
 <div class="row">
+    <div class="col-md-12">
+        <div class="well">
+            <h3 class="text-center">Game Table</h3>
+            {% include "tables/livegames.html" %}
+        </div>
+    </div>
+</div>
+<div class="row">
 	<div class="col-md-4 col-sm-12">
 		<img src="{{ url_for('static', filename='img/LogoLightBlue1.png') }}" alt="logo" class="img-responsive">
 	</div>
 	<div class="col-md-8 col-sm-12">
 		<div class="well">
-			<iframe id="searchframe" style="border:none;" height="300px" width="100%" src="http://war-on-ice.com/search.html" onload="iframeLoaded()"></iframe>
-		</div>
-	</div>
-</div>
-<div class="row">
-	<div class="col-md-12">
-		<div class="well">
-			{% include "tables/livegames.html" %}
+			<table id="search" class="table table-striped table-condensed table-hover">
+                <thead>
+                    <th>Player/Team</th>
+                    <th>Statistics</th>
+                    <th>Contracts</th>
+                    <th>Hextally</th>
+                </thead>
+                <tbody>
+                    {% for line in search %}
+                    <tr>
+                        <td>{{ line.0 }}</td>
+                        <td><a href="statistics?search={{ line.1 }}">Statistics</a></td>
+                        <td><a href="contracts?search={{ line.1 }}">Contracts</a></td>
+                        <td><a href="hextally?search={{ line.1 }}">Hextally</a></td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
 		</div>
 	</div>
 </div>
@@ -40,5 +58,12 @@
 {% endblock %}
 
 {% block page_js %}
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#search").DataTable({
+            "aaSorting": [],
+            "pagingType": "full"
+        });
+    })
+</script>
 {% endblock %}
