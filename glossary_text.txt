@@ -1,0 +1,223 @@
+AAV: Average Annual Value.
+AdSv%: Adjusted save percentage; The weighted-average of Sv%H, Sv%M, and Sv%L, where the weights correspond to the league-average percentage of shots from each of those areas.
+ 
+C+/-: Corsi plus-minus; plus-minus for shot attempts (on goal, missed, or blocked). For players, calculated using on-ice events.
+ 
+CA: Corsi Against; The number of shot attempts (on goal, missed, or blocked) taken by the opposing team. For players, calculated using on-ice events.
+ 
+CA60: Corsi Against per 60; The rate of shot attempts (on goal, missed, or blocked) taken by the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+cCA60: CA60 Quality of Competition; The TOI-weighted CA60 for a player's competition.
+ 
+cCF60: CF60 Quality of Competition; The TOI-weighted CF60 for a player's competition.
+ 
+CF: Corsi For; The number of shot attempts (on goal, missed, or blocked) taken by the team. For players, calculated using on-ice events.
+ 
+CF%: Corsi percentage; The percentage of total shot attempts (on goal, missed, or blocked) taken by the team. For players, calculated using on-ice events.
+ 
+CF%Rel: Relative Corsi percentage; The player's on-ice CF% minus the player's off-ice CF%.
+ 
+CF60: Corsi For per 60; The rate of shot attempts (on goal, missed, or blocked) taken by the team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+Close: Refers to situations when teams are within 1 goal of one another in the 1st and 2nd periods or tied in the 3rd period or overtime.
+
+
+Color By Statistical Significance: If checked, colors will be adjusted on to a scale of 0 +/- 8. Dark red colors mean that (e.g.) the player's team's shot rate is significantly better than league-average with the player on the ice. Dark blue colors mean that (e.g.) the player's team's shot rate is significantly worse than league-average with that player on the ice.
+ 
+CorC%: Corsi Quality of Competition; The TOI-weighted CF% for a player's competition.
+ 
+CorT%: Corsi Quality of Teammates; The TOI-weighted CF% for a player's teammates.
+ 
+CP60: Corsi Pace per 60; The sum of CF60 and CA60. For players, calculated using on-ice events.
+ 
+F+/-: Fenwick plus-minus; plus-minus for unblocked shot attempts (on goal or missed). For players, calculated using on-ice events.
+ 
+FA: Fenwick Against; The number of unblocked shot attempts (on goal or missed) taken by the opposing team. For players, calculated using on-ice events.
+ 
+FA60: Fenwick Against per 60; The rate of unblocked shot attempts (on goal or missed) taken by the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+FenSh%: Fenwick Shooting percentage; The percentage of unblocked shot attempts (on goal or missed) that are goals.
+ 
+FenSv%: Fenwick Save percentage; The percentage of unblocked shot attempts (on goal or missed) that are saved by the goaltender or miss the net.
+ 
+FF: Fenwick For; The number of unblocked shot attempts (on goal or missed) taken by the team. For players, calculated using on-ice events.
+ 
+FF%: Fenwick percentage; The percentage of total unblocked shot attempts (on goal or missed) taken by the team. For players, calculated using on-ice events.
+ 
+FF%Rel: Relative Fenwick percentage; The player's on-ice FF% minus the player's off-ice FF%.
+ 
+FF60: Fenwick For per 60; The rate of unblocked shot attempts (on goal or missed) taken by the team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+FP60: Fenwick Pace per 60; The sum of FF60 and FA60. For players, calculated using on-ice events.
+ 
+G+/-: Goal plus-minus; plus-minus for goals. For players, calculated using on-ice events.
+ 
+GA: Goals Against; The number of goals scored by the opposing team. For players, calculated using on-ice events.
+ 
+GA60: Goals Against per 60; The rate of goals scored by the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+GAB.Defense: Goals against above baseline; for more information, see Andrew's Road to War blog post.
+ 
+GAB.Net: Net goals above baseline (GAB.Offense - GAB.Defense + GAB.PPNet + GAB.SHNet); for more information, see Andrew's Road to War blog post.
+ 
+GAB.Offense: Goals for above baseline; for more information, see Andrew's Road to War blog post.
+ 
+GAB.PPNet: Net power-play goals above baseline (power-play goals scored - short-handed goals allowed); for more information, see Andrew's Road to War blog post.
+ 
+GAB.SHNet: Net short-handed goals above baseline (short-handed goals scored - power-play goals allowed); for more information, see Andrew's Road to War blog post.
+ 
+GF: Goals For; The number of goals scored by the team. For players, calculated using on-ice events.
+ 
+GF%: Goal percentage; The percentage of total goals scored by the team. For players, calculated using on-ice events.
+ 
+GF%Rel: Relative Goal percentage; The player's on-ice GF% minus the player's off-ice GF%.
+ 
+GF60: Goals For per 60; The rate of goals scored by the eam per 60 minutes of play. For players, calculated using on-ice events.
+ 
+Goals.All: The number of goals scored on the goalie on shots from all zones in Hextally.
+ 
+Goals.HomePlate: The number of goals scored on the goalie on shots from the home plate zones in Hextally.
+ 
+Goals.Perimeter: The number of goals scored on the goalie on shots from the perimeter zones in Hextally.
+Goals.Slot: The number of goals scored on the goalie on shots from the slot zones in Hextally.
+Hextally: A system for visualizing the locations and success rates shot attempts for players and teams using hexagonal bin plots. See Andrew's blog post for more.
+
+
+High-danger Scoring Chance: Please refer to the definition here: http://blog.war-on-ice.com/new-defining-scoring-chances/ 
+
+
+HSC+/-: Scoring Chance plus-minus; Plus-minus for High-danger Scoring Chances. For players, calculated using on-ice events. Scoring Chance definitions here: 
+ 
+HSCA: High-danger Scoring Chances Against; The number of High-danger Scoring Chances for the opposing team. For players, calculated using on-ice events.
+ 
+HSCA60: High-danger Scoring Chances Against per 60; The rate of High-danger Scoring Chances for the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+HSCF: High-danger Scoring Chances For; The number of High-danger Scoring Chances for the team. For players, calculated using on-ice events.
+ 
+HSCF%: Scoring Chance percentage; The percentage of total High-danger Scoring Chances belonging to the team. For players, calculated using on-ice events.
+ 
+HSCF%Rel: Relative Scoring Chance percentage; The player’s on-ice HSCF% minus the player’s off-ice HSCF%.
+ 
+HSCF60: High-danger Scoring Chances For per 60; The rate of High-danger Scoring Chances for the team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+HSCP60: Scoring Chance Pace per 60; The sum of HSCF60 and HSCA60. For players, calculated using on-ice events.
+ 
+iCF: Individual Corsi For; The number of shot attempts (on goal, missed, or blocked) taken by an individual player.
+ 
+iFF: Individual Fenwick For; The number of unblocked shot attempts (on goal or missed) taken by an individual player.
+ 
+iSC: Individual Scoring Chances; The number of Scoring Chances recorded by an individual player.
+ 
+iSF: Individual Shots For; The number of shots on goal taken by an individual player.
+ 
+League-Wide Success Rate: The league-wide shooting percentage from that area of the ice in the time frame selected.
+ 
+Net Shots Against: The number of on-ice shots on goal for the opposing team.
+ 
+Net Shots For: The number of on-ice shots on goal for that player/team.
+ 
+nhlscrapr: An open-source R package, written by Andrew and Sam, that can be used to compile NHL RTSS data from 2002 through present. For more, see Andrew's original blog post about nhlscrapr or the nhlscrapr package on CRAN. For instructions on how to use the package, see Andrew's more recent blog post.
+ 
+Numbers On Plot: Adds statistical significance test statistics to the plot. Regardless of whether "Color By Statistical Significance" is checked, these numbers are test statistics for the following two-sided hypothesis test: Null Hypothesis = Shot rate is average from that location; Alternative Hypothesis = Shot rate is different from average from that location.
+ 
+OCAOn%: On-ice Corsi Against On-goal percentage; The percentage of on-ice shot attempts (on goal, missed, or blocked) by the opposing team that are shots on goal.
+ 
+OCOn%: On-ice Corsi On-goal percentage; The percentage of on-ice shot attempts (on goal, missed, or blocked) that are shots on goal.
+ 
+OFAOn%: On-ice Fenwick Against On-goal percentage; The percentage of on-ice unblocked shot attempts (on goal or missed) by the opposing team that are shots on goal.
+ 
+OFOn%: On-ice Fenwick On-goal percentage; The percentage of on-ice unblocked shot attempts (on goal or missed) that are shots on goal.
+ 
+PDO: The sum of shooting percentage and save percentage. For players, calculated using on-ice events.
+ 
+PenD: Penalty Differential; Penalties drawn minus penalties taken.
+ 
+PenD60: Penalty Differential per 60; Penalties drawn per 60 minutes of play minus penalties taken per 60 minutes of play.
+ 
+Player Shooting % For Goal: The player's personal shooting percentage for goal from that area of the ice.
+ 
+S+/-: Shot plus-minus; plus-minus for shots on goal. For players, calculated using on-ice events.
+ 
+SA: Shots Against; The number of shots on goal taken by the opposing team. For players, calculated using on-ice events.
+ 
+SA60: Shots Against per 60; The rate of shots on goal taken by the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+SA60: Shots Against per 60; The rate of shots on goal taken by the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+Save Percentage Zones: blue = high percentage shots (Sv%H), red = medium percentage shots (Sv%M), yellow = low-percentage shots (Sv%L).
+ 
+Saves.All: The number of saves made by the goalie on shots from all zones in Hextally.
+ 
+Saves.HomePlate: The number of saves made by the goalie on shots from the home plate zones in Hextally.
+ 
+Saves.Perimeter: The number of saves made by the goalie on shots from the perimeter zones in Hextally.
+ 
+Saves.Slot: The number of saves made by the goalie on shots from the slot zones in Hextally.
+ 
+SC+/-: Scoring Chance plus-minus; Plus-minus for Scoring Chances. For players, calculated using on-ice events.
+ 
+SCA: Scoring chances Against; The number of scoring chances for the opposing team. For players, calculated using on-ice events.
+ 
+SCA60: Scoring chances Against per 60; The rate of scoring chances for the opposing team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+SCF: Scoring chances For; The number of scoring chances for the team. For players, calculated using on-ice events.
+ 
+SCF%: Scoring Chance percentage; The percentage of total scoring chances belonging to the team. For players, calculated using on-ice events.
+ 
+SCF%Rel: Relative Scoring Chance percentage; The player’s on-ice SCF% minus the player’s off-ice SCF%.
+ 
+SCF60: Scoring chances For per 60; The rate of scoring chances for the team per 60 minutes of play. For players, calculated using on-ice events.
+
+
+Scoring Chance: Please refer to the definition here: http://blog.war-on-ice.com/new-defining-scoring-chances/ 
+
+
+SCP60: Scoring Chance Pace per 60; The sum of SCF60 and SCA60. For players, calculated using on-ice events.
+ 
+SF: Shots For; The number of shots on goal taken by the team. For players, calculated using on-ice events.
+ 
+SF%: Shot percentage; The percentage of total shots on goal taken by the team. For players, calculated using on-ice events.
+ 
+SF%Rel: Relative Shot percentage; The player's on-ice SF% minus the player's off-ice SF%.
+ 
+SF60: Shots For per 60; The rate of shots on goal taken by the team per 60 minutes of play. For players, calculated using on-ice events.
+ 
+Sh%: Shooting percentage; The percentage of shots on goal that are goals.
+ 
+Shooting % For Goal (Absolute): A team's shooting percentage for goal in that area of the ice, unadjusted for the league-wide success rate.
+ 
+Shooting % For Goal (Relative): A team's shooting percetance for goal relative to the league-wide success rate in that area of the ice. Values above 0 are better than average, while values below 0 are worse than average.
+ 
+Shooting Rate (Relative): A team's rate of shots on goal from that area of the ice relative to league-average.
+ 
+Shot Rate Differential: The difference between Team Shot Rate For and Team Shot Rate Against.
+ 
+Shots.All: The number of shots faced by the goalie from all zones in Hextally.
+ 
+Sv%: Save percentage; The percentage of shots on goal saved by the goaltender.
+ 
+Sv%H: High-Danger Save Percentage; Save percentage on high-percentage shots.
+ 
+Sv%L: Low-Danger Save Percentage; Save percentage on low-percentage shots.
+ 
+Sv%M: Medium-Danger Save Percentage; Save percentage on medium-percentage shots.
+ 
+tCA60: CA60 Quality of Teammates; The TOI-weighted CA60 for a player's teammates.
+ 
+tCF60: CF60 Quality of Teammates; The TOI-weighted CF60 for a player's teammates.
+ 
+Team Shot Rate Against (Relative): For players: The rate of shots on goal by the opposing team when the player is on the ice, relative to league-average.
+ 
+Team Shot Rate For (Relative): For players: The rate of shots on goal by the player's team when the player is on the ice, relative to league-average.
+ 
+TOI: Time On Ice.
+ 
+TOIC%: TOI Quality of Competition; The TOI-weighted TOI% for a player's competition. (This is confusing)
+ 
+TOIT%: TOI Quality of Teammates; The TOI-weighted TOI% for a player's teammates.
+ 
+Use Only Three Blocks: The default Hextally setting divides the rink into 9 areas of the ice (see graphic at bottom of the page). "Use Only Three Blocks" divides the ice into three areas, which correspond to high, medium, and low probabilities of shot success (shooting percentages).
+ 
+ZSO%: Offensive Zone Start percentage; The percentage of all non-neutral zone faceoffs taken in the offensive zone.
+ 
+ZSO%Rel: Relative Offensive Zone Start percentage; The player’s on-ice ZSO% minus the player’s off-ice ZSO%.

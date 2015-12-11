@@ -1,4 +1,4 @@
-"""from flask import Blueprint
+from flask import Blueprint
 
 from app import app
 from app.cap.models import Contract, Player, Team
@@ -7,6 +7,13 @@ from sqlalchemy import desc
 from app.navigation import setup_nav
 
 mod = Blueprint('cap', __name__, url_prefix='/cap')
+
+
+@mod.route('')
+def show_team_cap():
+  rd = setup_nav()
+  return render_template('cap/teamscap.html',
+    rd=rd)
 
 @mod.route('/player/<playerId>/')
 def show_player_contract(playerId):
@@ -31,4 +38,4 @@ def show_team_current(teamId):
 # def show_team_historical(teamId, seasonId):
 #     selectedTeam = models.Teams.query.filter_by(TeamId=teamId).first()
 #     return render_template('teamcap.html',
-#                             team = selectedTeam)"""
+#                             team = selectedTeam)

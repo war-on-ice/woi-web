@@ -55,7 +55,7 @@ def show_game_summary_tables(gameId):
     period = [int(x) for x in period]
 
     # For testing, probably want to do this a different way in production TODO
-    response = urllib2.urlopen("http://war-on-ice.com/data/games/" + season + gcode + ".RData")
+    response = urllib2.urlopen("http://data.war-on-ice.net/games/" + season + gcode + ".RData")
     html = response.read()
     fp = open("rdata/" + season + gcode + ".RData", "w")
     fp.write(html)

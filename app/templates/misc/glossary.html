@@ -3,14 +3,36 @@
 {% block content %}
 <div class="row">
 	<div class="col-md-12">
-		<h1>Glossary Information</h1>
-        Should we put this in .json format and read out?<br>
+		<h1 class="text-center">Glossary Information</h1>
+        <!--Should we put this in .json format and read out?<br>
         https://docs.google.com/document/d/1ZkZpLfhYa1wBxyogh9BHU_sdtTmbwuUcS222pxD2koA/edit<br>
-        Thinking here --- It'd be nice to connect to the columns we display on each page and show description in a tooltip or something?
+        Thinking here --- It'd be nice to connect to the columns we display on each page and show description in a tooltip or something?-->
+        <table id="glossary" class="table table-striped table-hover">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Definition</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for key in text %}
+                <tr>
+                    <th>{{ key }}</th>
+                    <td>{{ text[key] }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 	</div>
 </div>
 {% endblock %}
 
 {% block page_js %}
-
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#glossary").DataTable({
+            "aaSorting": [[0, "asc"]],
+        });
+    })
+</script>
 {% endblock %}
