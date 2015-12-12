@@ -1,0 +1,38 @@
+{% extends "wrappers/wrapper.html" %}
+
+{% block content_header %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Team Statistics, By Game and Season</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <h3></h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="teamstandings" class="table table-striped table-hover table-condensed">
+            <thead>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#teamstandings").DataTable({
+            "aaSorting": [[12, "desc"]],
+            "bPaginate": false,
+        });
+    })
+</script>
+{% endblock %}

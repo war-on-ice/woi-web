@@ -1,0 +1,113 @@
+{% extends "wrappers/wrapper.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block page_css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='multi-select/css/multi-select.css') }}"/>
+{% endblock %}
+
+
+{% block content_header %}
+<div class="row">
+    <div class="col-md-12">
+        <h1 class="text-center">Enhanced NHL Conference Standings</h1>
+    </div>
+</div>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form class="table-opts" method="post" action="">
+            {{ csrf_token }}
+            <select class="form-control" id="seasons" multiple name="seasons">
+                {% for season in allseasons %}
+                {% if season[0] in seasons %}
+                <option value="{{ season[0] }}" selected>{{ season[1] }}</option>
+                {% else %}
+                <option value="{{ season[0] }}">{{ season[1] }}</option>
+                {% endif %}
+                {% endfor %}
+            </select>
+            {% for error in form.seasons.errors %}
+              <li>{{ error }}</li>
+            {% endfor %}
+            <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <h3>All NHL</h3>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <table id="teamstandings" class="table table-striped table-hover table-condensed">
+            <thead>
+                <tr>
+                    <th>Team</th>
+                    <th>Gm</th>
+                    <th>RW</th>
+                    <th>OW</th>
+                    <th>SW</th>
+                    <th>RL</th>
+                    <th>OL</th>
+                    <th>SL</th>
+                    <th>GF</th>
+                    <th>GA</th>
+                    <th>CF</th>
+                    <th>CA</th>
+                    <th>PNow</th>
+                    <th>P3</th>
+                    <th>PTie</th>
+                    <th>PNL</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for team in seasongames %}
+                <tr>
+                    <td>
+                        <a href="team/bygame?team={{ team }}">
+                            <img alt="{{ team }} Logo" src="{{ url_for('static', filename='img/team/' + team + '.png') }}" height="20" width="20"/>
+                            {{ team|teamname }}
+                        </a>
+                    </td>
+                    {% set data = seasongames[team] %}
+                    <td>{{ data.Gm|int }}</td>
+                    <td>{{ data.RW|int }}</td>
+                    <td>{{ data.OW|int }}</td>
+                    <td>{{ data.SW|int }}</td>
+                    <td>{{ data.RL|int }}</td>
+                    <td>{{ data.OL|int }}</td>
+                    <td>{{ data.SL|int }}</td>
+                    <td>{{ data.GF|int }}</td>
+                    <td>{{ data.GA|int }}</td>
+                    <td>{{ data.CF|int }}</td>
+                    <td>{{ data.CA|int }}</td>
+                    <td>{{ data.PNow|int }}</td>
+                    <td>{{ data.P3|int }}</td>
+                    <td>{{ data.PTie|int }}</td>
+                    <td>{{ data.PNL|int }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script type="text/javascript" src="{{ url_for('static', filename='multi-select/js/jquery.multi-select.js') }}"></script>
+<script type="text/javascript">
+    $(document).ready(function() {
+        $("#teamstandings").DataTable({
+            "aaSorting": [[12, "desc"]],
+            "bPaginate": false,
+        });
+        $("#seasons").multiSelect({
+            selectableHeader: "<div style='color:#fff;border-top-right-radius: 3px;border-top-left-radius: 3px;' class='navbar-default navbar-inverse text-center'>Available Years</div>",
+            selectionHeader: "<div style='color:#fff;border-top-right-radius: 3px;border-top-left-radius: 3px;' class='navbar-default navbar-inverse text-center'>Selected Years</div>"
+        });
+    })
+</script>
+{% endblock %}

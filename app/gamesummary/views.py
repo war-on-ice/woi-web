@@ -11,10 +11,7 @@ from forms import GameSummaryForm
 
 import math
 
-import urllib2
-from rpy2.robjects import r
-from rpy2.robjects import pandas2ri
-import pandas as pd
+from helper import get_rdata
 
 mod = Blueprint('game', __name__, url_prefix='/game')
 
@@ -54,31 +51,9 @@ def show_game_summary_tables(gameId):
     gamestate = int(teamstrengths)
     period = [int(x) for x in period]
 
-    # For testing, probably want to do this a different way in production TODO
-    response = urllib2.urlopen("http://data.war-on-ice.net/games/" + season + gcode + ".RData")
-    html = response.read()
-    fp = open("rdata/" + season + gcode + ".RData", "w")
-    fp.write(html)
-    fp.close()
-    robj = r.load("rdata/" + season + gcode + ".RData")
+    rdata = get_rdata("http://data.war-on-ice.net/games/" + season + gcode + ".RData")
 
-    rdata = {}
-    keys = {}
-    for sets in robj:
-        myRData = pandas2ri.ri2py(r[sets])
-        rdata[sets] = []
-        keys[sets] = set()
-        # convert to DataFrame
-        if not isinstance(myRData, pd.DataFrame):
-            myRData = pd.DataFrame(myRData)
-        for element in myRData:
-            keys[sets].add(element)
-            counter = 0
-            for value in myRData[element]:
-                if counter >= len(rdata[sets]):
-                    rdata[sets].append({})
-                rdata[sets][counter][element] = value
-                counter += 1
+    
     rteamrun = rdata["teamrun"]
     teamrun = []
     teams = set()

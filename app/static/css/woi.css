@@ -672,11 +672,15 @@ table.dataTable {
 }
 
 table.dataTable tbody tr.even {
-    background-color: #f7f7f7;
+    background-color: #e6e6e6;
 }
 
 table.dataTable tbody tr.odd {
     background-color: #fff;
+}
+
+table.dataTable tbody tr:hover {
+    background-color: #ccc;
 }
 
 .table>tbody>tr>td {

@@ -24,8 +24,12 @@ CapBase.metadata.reflect(bind=capengine, views=True)
 
 from app.cap.views import mod as capModule
 from app.gamesummary.views import mod as gameSummaryModule
+from app.players.views import mod as playerModule
+from app.teams.views import mod as teamModule
 from views import mod as appModule
 app.register_blueprint(capModule)
 app.register_blueprint(appModule)
+app.register_blueprint(playerModule)
+app.register_blueprint(teamModule)
 app.register_blueprint(gameSummaryModule)
 app.register_blueprint(filters.blueprint)
