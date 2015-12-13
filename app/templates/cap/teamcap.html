@@ -1,7 +1,40 @@
 {% extends "wrappers/wrapper.html" %}
+{% block title %}{{ teamId }} Contracts{% endblock %}
 {% block content %}
-    <h2>{{ team.LongName }}</h2>
-    <h3>Salary Forecast</h3>
-    {#    #}
+    <h2 class="text-center">{{ teamId|teamname }}</h2>
+    <h3 class="text-center">Salary Forecast</h3>
+    <table class="table table-striped table-condensed table-hover">
+        <thead>
+            <tr>
+                <th>Forwards</th>
+                <th>Pos</th>
+                <th>Status</th>
+                {% for year in years %}
+                    {% if loop.first %}
+                <th>{{ year }}-{{ year -1999 }} Cap Hit</th>
+                    {% else %}
+                <th>{{ year }}-{{ year -1999 }}</th>
+                    {% endif %}
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for player in forwards %}
+            {% set curr = forwards[player] %}
+            <tr>
+                <td>{{ woiid[curr["ID"]].full_name }}</td>
+                <td>{{ woiid[curr["ID"]].pos }}</td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    
 
 {% endblock %}

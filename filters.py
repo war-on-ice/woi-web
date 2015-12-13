@@ -32,36 +32,71 @@ def teamshortname(value):
 
 @blueprint.app_template_filter()
 def get_status(value):
-    if value.status == 3:
-        if value.seconds > 3600:
-            return "Final (OT)"
-        return "Final"
-    elif value.status == 4:
-        return "Not Started"
-    elif value.status == 2:
-        ps = 0
-        period = "1st"
-        if value.seconds < 1200:
-            ps = value.seconds
+    try:
+        if value.status == 3:
+            if value.seconds > 3600:
+                return "Final (OT)"
+            return "Final"
+        elif value.status == 4:
+            return "Not Started"
+        elif value.status == 2:
+            ps = 0
             period = "1st"
-        elif value.seconds == 1200:
-            return "End of 1st"
-        elif value.seconds > 1200 and value.seconds < 2400:
-            ps = value.seconds - 1200
-            period = "2nd"
-        elif value.seconds == 2400:
-            return "End of 2nd"
-        elif value.seconds > 2400 and value.seconds < 3600:
-            ps = value.seconds - 2400
-            period = "3rd"
-        elif value.seconds == "3600":
-            return "End of 3rd"
-        else:
-            ps = value.seconds - 3600
-            period = "OT"
-        minutes, seconds = divmod(ps, 60)
-        seconds = str(int(60 - seconds))
-        if len(seconds) == 1:
-            seconds = "0" + seconds
-        return str(int(19 - minutes)) + ":" + seconds + ", " + period
-    return value.status
+            if value.seconds < 1200:
+                ps = value.seconds
+                period = "1st"
+            elif value.seconds == 1200:
+                return "End of 1st"
+            elif value.seconds > 1200 and value.seconds < 2400:
+                ps = value.seconds - 1200
+                period = "2nd"
+            elif value.seconds == 2400:
+                return "End of 2nd"
+            elif value.seconds > 2400 and value.seconds < 3600:
+                ps = value.seconds - 2400
+                period = "3rd"
+            elif value.seconds == "3600":
+                return "End of 3rd"
+            else:
+                ps = value.seconds - 3600
+                period = "OT"
+            minutes, seconds = divmod(ps, 60)
+            seconds = str(int(60 - seconds))
+            if len(seconds) == 1:
+                seconds = "0" + seconds
+            return str(int(19 - minutes)) + ":" + seconds + ", " + period
+        return value.status
+    except:
+        if value["status"] == 3:
+            if value["seconds"] > 3600:
+                return "Final (OT)"
+            return "Final"
+        elif value["status"] == 4:
+            return "Not Started"
+        elif value["status"] == 2:
+            ps = 0
+            period = "1st"
+            if value["seconds"] < 1200:
+                ps = value["seconds"]
+                period = "1st"
+            elif value["seconds"] == 1200:
+                return "End of 1st"
+            elif value["seconds"] > 1200 and value["seconds"] < 2400:
+                ps = value["seconds"] - 1200
+                period = "2nd"
+            elif value["seconds"] == 2400:
+                return "End of 2nd"
+            elif value["seconds"] > 2400 and value["seconds"] < 3600:
+                ps = value["seconds"] - 2400
+                period = "3rd"
+            elif value["seconds"] == "3600":
+                return "End of 3rd"
+            else:
+                ps = value["seconds"] - 3600
+                period = "OT"
+            minutes, seconds = divmod(ps, 60)
+            seconds = str(int(60 - seconds))
+            if len(seconds) == 1:
+                seconds = "0" + seconds
+            return str(int(19 - minutes)) + ":" + seconds + ", " + period
+        return value["status"]

@@ -1,5 +1,3 @@
-
-
 <div class="row datatable">
     <div class="col-sm-12">
         <table id="gametable" class="table dataTable table-striped no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
@@ -19,24 +17,28 @@
             <tbody>
                 {% for game in games %}
                 <tr>
-                    {% if game.status != 4 %}
-                    <td><a href="/game/{{ game.season }}{{ game.gcode }}">{{ game.date }}</a></td>
+                    {% if game["status"] != 4 %}
+                    <td><a href="/game/{{ game["season"] }}{{ game["gcode"] }}">{{ game.date }}</a></td>
                     {% else %}
                     <td>{{ game.date }}</td>
                     {% endif %}
                     <td>{{ game.session }}</td>
-                    <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + game.hometeam + '.png') }}" height="20" width="20"/>{{ game.hometeam|teamname }}</td>
-                    <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + game.awayteam + '.png') }}" height="20" width="20"/>{{ game.awayteam|teamname }}</td>
-                    <td>{{ game.homescore|int }}-{{ game.awayscore|int }}</td>
-                    <td>{{ game.homecorsi }}/{{ game.awaycorsi }}</td>
-                    {% if game.status != 4 %}
-                    <td><a href="/game/{{ game.season }}{{ game.gcode }}">{{ game|get_status }}</a></td>
+                    <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + game["hometeam"] + '.png') }}" height="20" width="20"/>{{ game["hometeam"]|teamname }}{% if game["homeafterhome"] == True or game["homeafteraway"] == True %}*{% endif %}</td>
+                    <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + game["awayteam"] + '.png') }}" height="20" width="20"/>{{ game["awayteam"]|teamname }}{% if game["awayafterhome"] == True or game["awayafteraway"] == True %}*{% endif %}</td>
+                    <td>{{ game["homescore"]|int }}-{{ game["awayscore"]|int }}</td>
+                    <td>{{ game["homecorsi"] }}/{{ game["awaycorsi"] }}</td>
+                    {% if game["status"] != 4 %}
+                    <td><a href="/game/{{ game["season"] }}{{ game["gcode"] }}">{{ game|get_status }}</a></td>
                     {% else %}
                     <td>{{ game|get_status }}</td>
                     {% endif %}
                     <td>{{ game["game.start"] }}</td>
                     {% if game["game.end"] != None %}
+                        {% if game["game.end"] == "NA" %}
+                    <td>In Progress</td>
+                        {% else %}
                     <td>{{ game["game.end"] }}</td>
+                        {% endif %}
                     {% else %}
                     <td></td>
                     {% endif %}
@@ -44,6 +46,11 @@
                 {% endfor %}
             </tbody>
         </table>
+    </div>
+</div>
+<div class="row">
+    <div class="col-sm-12">
+        <h4 class="text-center"><b>*Teams are on second half of back-to-back</b></h4>
     </div>
 </div>
 

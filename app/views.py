@@ -28,7 +28,8 @@ def index():
         line = [player.last.title() + ", " + player.first.title(), player.__dict__["woi.id"]]
         search.append(line)
 
-    games = calls.get_games()
+    games = calls.get_r_games()
+    #games = calls.get_games()
     return render_template("index.html", rd=rd,
         games=games,
         search=search)

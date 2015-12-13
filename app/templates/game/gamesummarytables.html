@@ -23,7 +23,7 @@
                 <tbody>
                     {% for teamrun in teamrun %}
                     <tr>
-                        <td>{{ teamrun["Team"]|teamshortname }}</td>
+                        <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + teamrun["Team"] + '.png') }}" height="20" width="20"/>{{ teamrun["Team"]|teamshortname }}</td>
                         <td>{{ teamrun["GF"] }}</td>
                         <td>{{ teamrun["SF"]|int }}</td>
                         <td>{{ teamrun["MSF"]|int }}</td>

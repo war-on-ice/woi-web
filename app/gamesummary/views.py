@@ -6,7 +6,7 @@ from sqlalchemy import desc
 from app.navigation import setup_nav
 
 from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest, PlayByPlay
-from calls import get_games
+from calls import get_r_games
 from forms import GameSummaryForm
 
 import math
@@ -19,7 +19,7 @@ mod = Blueprint('game', __name__, url_prefix='/game')
 @mod.route('/')
 def show_games():
     rd = setup_nav()
-    games = get_games()
+    games = get_r_games()
     return render_template('game/games.html',
         rd=rd,
         games=games,
