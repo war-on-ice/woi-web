@@ -16,6 +16,14 @@ class Player(db.Model):
     def __repr__(self):
         return self.woiid
 
+
+class PlayerCap(db.Model):
+    __bind_key__ = 'contracts'
+    __table__ = CapBase.metadata.tables["PlayerCap"]
+
+    def __repr__(self):
+        return self.PlayerId
+
 class ContractHeader(db.Model):
     __bind_key__ = 'contracts'
     __table__ = CapBase.metadata.tables["ContractHeader"]

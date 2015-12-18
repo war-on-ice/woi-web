@@ -10,6 +10,14 @@ import datetime
 CORE_DATA = "http://data.war-on-ice.net/nhlscrapr-core.RData"
 
 
+def row2dict(row):
+    d = {}
+    for column in row.__table__.columns:
+        d[column.name] = str(getattr(row, column.name))
+
+    return d
+
+
 def get_games(cs=None):
     cy = date.today()
     if cs is None:
@@ -34,6 +42,42 @@ def get_r_seasons():
             teamgames[game["season"]] = []
         teamgames[game["season"]].append(game)
     return teamgames
+
+
+def compiled_teams(season, years):
+    teams = {}
+    for game in season:
+        hometeam = game["hometeam"]
+        awayteam = game["awayteam"]
+        if hometeam != "" and awayteam != "":
+            if hometeam not in teams:
+                teams[hometeam] = {}
+            if awayteam not in teams:
+                teams[awayteam] = {}
+            if game["status"] != 1 and game["status"] != 4:
+                if "Gm" not in teams[hometeam]:
+                    teams[hometeam] = prepare_team_comparisons()
+                    teams[hometeam]["Team"] = hometeam
+                    teams[hometeam]["Season"] = years
+                if "Gm" not in teams[awayteam]:
+                    teams[awayteam] = prepare_team_comparisons()
+                    teams[awayteam]["Team"] = awayteam
+                    teams[awayteam]["Season"] = years
+                # Collect data
+                # ["Gm", "b2b", "corsi", "seconds", "GF", "GA"]
+                teams[hometeam]["Gm"] += 1
+                teams[awayteam]["Gm"] += 1
+                if game["homeafteraway"] == True or game["homeafterhome"] == True:
+                    teams[hometeam]["b2b"] += 1
+                if game["awayafteraway"] == True or game["awayafterhome"] == True:
+                    teams[awayteam]["b2b"] += 1
+                teams[hometeam]["GF"] += game["homescore"]
+                teams[awayteam]["GF"] += game["awayscore"]
+                teams[hometeam]["GA"] += game["awayscore"]
+                teams[awayteam]["GA"] += game["homescore"]
+    return teams
+
+
 
 
 def get_r_games():
@@ -133,6 +177,14 @@ def get_r_standings(teamgames, seasons=None):
                             seasongames[loser]["PTie"] += 1
                             seasongames[winner]["PNL"] += 2
     return seasongames
+
+
+def prepare_team_comparisons():
+    keys = ["Gm", "b2b", "corsi", "seconds", "GF", "GA"]
+    dic = {}
+    for key in keys:
+        dic[key] = 0
+    return dic
 
 
 def prepare_team():

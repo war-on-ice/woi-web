@@ -71,7 +71,7 @@ def show_game_summary_tables(gameId):
     foundplayers = set()
     for tr in sorted(rgoalies, key=lambda x: x["TOI"], reverse=True):
         if tr["period"] in period and tr["gamestate"] == gamestate:
-            if tr["Team"] not in teams:
+            if tr["ID"] not in foundplayers:
                 tr["gu"] = tr["goals.0"]
                 tr["su"] = tr["shots.0"]
                 tr["gl"] = tr["goals.1"]

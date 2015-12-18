@@ -2,7 +2,7 @@ from flask import Blueprint
 
 from app import app
 from app import CapBase, Base
-from app.cap.models import Contract, Player, Team
+from app.cap.models import Contract, Player, PlayerCap, Team
 from app.gamesummary.models import RosterMaster
 from flask import render_template
 from sqlalchemy import desc
@@ -16,7 +16,8 @@ import datetime
 mod = Blueprint('cap', __name__, url_prefix='/cap')
 
 
-@mod.route('')
+#TODO: All of this will change in future, abandon for now
+@mod.route('/')
 def show_team_cap():
   rd = setup_nav()
   return render_template('cap/teamscap.html',
@@ -36,16 +37,27 @@ def show_player_contract(playerId):
 @mod.route('/team/<teamId>/')
 def show_team_current(teamId):
     rd = setup_nav()
-    caps = ContractHeader.query.filter(ContractHeader.ContractTeamID==teamId).order_by(desc(ContractHeader.EffectiveSeason))
+    #caps = ContractHeader.query.filter(ContractHeader.ContractTeamID==teamId).order_by(desc(ContractHeader.EffectiveSeason))
+    #players = {}
+    #playerids = set()
+    #for cap in caps:
+    #    if cap.PlayerID not in players:
+    #        players[cap.PlayerID] = cap
+    #        playerids.add(cap.PlayerID)
+    caps = PlayerCap.query.filter(PlayerCap.Team==teamId).order_by(desc(PlayerCap.Date))
     players = {}
-    playerids = set()
+    maxdate = None
     for cap in caps:
-        if cap.PlayerID not in players:
-            players[cap.PlayerID] = cap
-            playerids.add(cap.PlayerID)
+        if maxdate is None:
+            maxdate = cap.Date
+        elif maxdate > cap.Date:
+            break
+        players[cap.PlayerId] = cap
+
+
 
     rostermaster = {}
-    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(playerids)).all()
+    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(players.keys())).all()
     woiid = {}
     for p in rosterquery:
         player = {}
@@ -72,21 +84,27 @@ def show_team_current(teamId):
         cy += 1
 
     for player in players:
-        if player in woiid and int(players[player].EffectiveSeason) + int(players[player].ContractLength) > years[0]:
+        if player in woiid:
             currplayer = {}
             currplayer["ID"] = player
             position = woiid[player]["pos"]
-            if position == "D":
-                defensemen[player] = currplayer
-            elif position == "G":
-                goalies[player] = currplayer
-            else:
-                forwards[player] = currplayer
+            if players[player].DayStatus == "Major":
+                if position == "D":
+                    defensemen[player] = currplayer
+                elif position == "G":
+                    goalies[player] = currplayer
+                else:
+                    forwards[player] = currplayer
+            elif players[player].DayStatus == "Minor":
+                its[player] = currplayer
     return render_template('cap/teamcap.html',
         teamId=teamId,
         rd=rd,
         woiid=woiid,
         forwards=forwards,
+        defensemen=defensemen,
+        goalies=goalies,
+        its=its,
         years=years)
 #
 # @app.route('/team/<teamId>/<seasonId>/')

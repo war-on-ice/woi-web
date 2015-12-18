@@ -1,0 +1,32 @@
+<table class="table table-striped table-condensed table-hover">
+    <thead>
+        <tr>
+            <th>{{ position }}</th>
+            <th>Pos</th>
+            <th>Status</th>
+            {% for year in years %}
+                {% if loop.first %}
+            <th>{{ year }}-{{ year -1999 }} Cap Hit</th>
+                {% else %}
+            <th>{{ year }}-{{ year -1999 }}</th>
+                {% endif %}
+            {% endfor %}
+        </tr>
+    </thead>
+    <tbody>
+        {% for player in unit %}
+        {% set curr = unit[player] %}
+        <tr>
+            <td>{{ woiid[curr["ID"]].full_name }}</td>
+            <td>{{ woiid[curr["ID"]].pos }}</td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td></td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>

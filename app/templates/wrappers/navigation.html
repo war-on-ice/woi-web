@@ -19,9 +19,6 @@
                         <li><a href="/r/buyout-recap/">Buyout and Recapture Calculator</a></li>
                         <li><a href="#">CBA FAQ</a></li>
                         <li role="separator" class="divider"></li>
-                        <!--{% for team, url in rd.teamDict.iteritems()|sort(attribute=0) %}
-                      <li><a href="/cap/team/{{ url }}/">{{ team }}</a></li>
-                      {% endfor %}-->
                         {% include "wrappers/teams.html" %}
                     </ul>
                 </li>
@@ -46,7 +43,7 @@
                     <ul class="dropdown-menu">
                         <li><a href="/team/">Team Standings</a></li>
                         <li role="separator" class="divider"></li>
-                        <li><a href="/r/teamtable/">Team Statistics</a></li>
+                        <li><a href="/team/comparisons/">Team Statistics</a></li>
                         <li><a href="/r/teamtime/">Team History</a></li>
                         <li><a href="/r/hextally-teams/">Team Hextally</a></li>
                         <li><a href="/r/teamGAB/">Team Goals Above Baseline</a></li>
