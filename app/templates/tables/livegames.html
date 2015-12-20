@@ -1,9 +1,9 @@
 <div class="row datatable">
     <div class="col-sm-12">
-        <table id="gametable" class="table dataTable table-striped no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
-            <thead>
+        <table id="gametable" class="table table-striped table-hover table-condensed rt cf" role="grid">
+            <thead class="cf">
                 <tr>
-                    <th>Game Date</th>
+                    <th class="left-rounded">Game Date</th>
                     <th>Session</th>
                     <th>Home Team</th>
                     <th>Away Team</th>
@@ -11,7 +11,7 @@
                     <th>Corsi</th>
                     <th>Status</th>
                     <th>Start Time</th>
-                    <th>Finished</th>
+                    <th class="right-rounded">Finished</th>
                 </tr>
             </thead>
             <tbody>
@@ -60,6 +60,7 @@
         $(document).ready(function() {
             $("#gametable").DataTable({
                 "aaSorting": [],
+                "autoWidth": false
             });
         })
     </script>

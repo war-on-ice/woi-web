@@ -1,3 +1,48 @@
+/*
+ *
+ * Mobile Table Changes
+ *
+ */
+.cf:after { visibility: hidden; display: block; font-size: 0; content: " "; clear: both; height: 0; }
+* html .cf { zoom: 1; }
+*:first-child+html .cf { zoom: 1; }
+
+.rt { width: 100%; border-collapse: collapse; border-spacing: 0; }
+.dataTables_filter { padding-bottom: 10px; }
+.dataTables_length { padding-bottom: 10px; }
+.rt th,
+.rt td { margin: 0; padding: 0.4166em;/*10*/ vertical-align: top; }
+.rt th { text-align: left; }
+.left-rounded { border-radius: 5px 0px 0px 0px;}
+.right-rounded { border-radius: 0px 5px 0px 0px;}
+.scroll { overflow-x: scroll; }
+.team { min-width:100px; }
+
+
+@media only screen and (max-width: 40em) { /*640*/
+
+    .rt { display: block; position: relative; width: 100%; }
+    .rt thead { display: block; float: left; }
+    .rt tbody { display: block; width: auto; position: relative; overflow-x: auto; white-space: nowrap; }
+    .rt thead tr { display: block; }
+    .rt th { display: block; }
+    .rt tbody tr { display: inline-block; vertical-align: top; }
+    .rt td { display: block; min-height: 1.25em; height:20px; }
+    .team { min-width: 0px; }
+
+    /* sort out borders */
+
+    .rt th { border-bottom: 0; }
+    .rt td { border-left: 0; border-right: 0; border-bottom: 0; text-align: center; }
+    .rt tbody tr { border-right: 1px solid #babcbf; }
+    .rt th:last-child,
+    .rt td:last-child { border-bottom: 1px solid #babcbf; }
+    .right-rounded { border-radius: 0px 0px 0px 5px;}
+    .full-fixed { position: default; }
+
+}
+
+
 body {
     color: #222;
     font-family: Roboto, sans-serif;
@@ -18,7 +63,7 @@ body {
 */
 
 nav.navbar {
-    background: #222;
+    background: #262626;
     border-radius: 0;
     border: none;
 }
@@ -134,7 +179,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
 
 .row.team a {
 	text-decoration: none;
-	color: #222;
+	color: #262626;
 }
 
 .row.team img {
@@ -265,7 +310,7 @@ nav.navbar ul.nav.navbar-nav>li>a:focus {
     font-size: 13px;
     line-height: 24px;
     padding: 6px 20px;
-    color: #222;
+    color: #262626;
 }
 
 .dropdown-menu>li>a:hover {
@@ -466,7 +511,7 @@ a.btn,
 a.btn:focus {
     border: none;
     background: #d1e9fa;
-    color: #222;
+    color: #262626;
 
     height: 36px;
     line-height: 36px;
@@ -686,17 +731,19 @@ table.dataTable tbody tr:hover {
 .table>tbody>tr>td {
     font-size: 13px;
     line-height: 18px;
-    border-top: none;
-    padding: 9px 10px
+    border-bottom: 1px solid #2799e9;
+    border-top: 0px;
+    padding: 9px 10px;
 }
 
 .table>thead>tr>th {
     font-size: 13px;
-    line-height: 18px;
+    line-height: 20px;
     border-bottom: 1px solid #2799e9;
     padding: 9px 10px;
     font-weight: 400;
-    color: #1375b9;
+    color: #fff;
+    background: #262626;
 }
 
 .table>tbody>tr>td.right {
@@ -711,19 +758,20 @@ table.dataTable tbody tr:hover {
 /* Update sorting icons */
 table.dataTable thead .sorting:after {
     content: '↕';
-    color: #d1e9fa;
+    color: #aaa;
     opacity: 1;
     top: 8px;
 }
 table.dataTable thead .sorting_asc:after,
 table.dataTable thead .sorting_desc:after {
     content: '↑';
-    color: #1375b9;
+    color: #ccc;
     opacity: 1;
     top: 8px;
 }
 table.dataTable thead .sorting_desc:after {
     content: '↓';
+    color: #ccc;
 }
 
 .DTFC_LeftHeadWrapper,

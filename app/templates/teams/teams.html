@@ -42,10 +42,10 @@
 </div>
 <div class="row">
     <div class="col-md-12">
-        <table id="teamstandings" class="table table-striped table-hover table-condensed">
+        <table id="teamstandings" class="table table-striped table-hover table-condensed rt cf">
             <thead>
                 <tr>
-                    <th>Team</th>
+                    <th class="left-rounded full-fixed">Team</th>
                     <th>Gm</th>
                     <th>RW</th>
                     <th>OW</th>
@@ -60,13 +60,13 @@
                     <th>PNow</th>
                     <th>P3</th>
                     <th>PTie</th>
-                    <th>PNL</th>
+                    <th class="right-rounded">PNL</th>
                 </tr>
             </thead>
             <tbody>
                 {% for team in seasongames %}
                 <tr>
-                    <td>
+                    <td class="full-fixed">
                         <a href="team/bygame?team={{ team }}">
                             <img alt="{{ team }} Logo" src="{{ url_for('static', filename='img/team/' + team + '.png') }}" height="20" width="20"/>
                             {{ team|teamname }}
@@ -103,6 +103,7 @@
         $("#teamstandings").DataTable({
             "aaSorting": [[12, "desc"]],
             "bPaginate": false,
+            "autoWidth": false
         });
         $("#seasons").multiSelect({
             selectableHeader: "<div style='color:#fff;border-top-right-radius: 3px;border-top-left-radius: 3px;' class='navbar-default navbar-inverse text-center'>Available Years</div>",

@@ -3,10 +3,8 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <div class="well">
-            <h3 class="text-center">Game Table</h3>
-            {% include "tables/livegames.html" %}
-        </div>
+        <h3 class="text-center">Game Table</h3>
+        {% include "tables/livegames.html" %}
     </div>
 </div>
 <div class="row">
@@ -17,10 +15,10 @@
 		<div class="well">
 			<table id="search" class="table table-striped table-condensed table-hover">
                 <thead>
-                    <th>Player/Team</th>
+                    <th class="left-rounded">Player/Team</th>
                     <th>Statistics</th>
                     <th>Contracts</th>
-                    <th>Hextally</th>
+                    <th class="right-rounded">Hextally</th>
                 </thead>
                 <tbody>
                     {% for line in search %}
