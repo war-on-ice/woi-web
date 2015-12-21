@@ -1,7 +1,6 @@
 import flask
 from datetime import datetime
-from app.constants import teamDict
-from app.constants import teamShortDict
+from app.constants import teamDict, teamShortDict, comparisonchoices
 
 blueprint = flask.Blueprint('filters', __name__)
 
@@ -10,6 +9,16 @@ blueprint = flask.Blueprint('filters', __name__)
 def format_currency(value):
     value = round(value,0)
     return "${:,.0f}".format(value)
+
+
+@blueprint.app_template_filter()
+def tooltip(column):
+    for choice in comparisonchoices:
+        if choice[0] == column:
+            return choice[1]
+    print column
+    return column
+
 
 @blueprint.app_template_filter()
 def format_date(value):

@@ -1,5 +1,28 @@
 /*
  *
+ * Chart Changes
+ *
+ */
+
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
+
+.legend {
+    font-size: 12px;
+}
+rect {
+    stroke-width: 2;
+} 
+
+
+/*
+ *
  * Mobile Table Changes
  *
  */

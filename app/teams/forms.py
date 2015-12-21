@@ -53,3 +53,18 @@ class ComparisonForm(Form):
     splitgame = BooleanField(u'Split by Game')
     #daterange = BooleanField(u'Use Date Range')
     divideSeason = BooleanField(u'Divide Data By Season', default=True)
+
+
+class ComparisonGraphForm(Form):
+    xaxis = SelectField(u'X Axis Variable',
+        choices=constants.comparisonchoices,
+        default="Fraction of Off vs Def Zone Starts")
+    yaxis = SelectField(u'Y Axis Variable',
+        choices=constants.comparisonchoices,
+        default="On-Ice Goal Differential")
+    caxis = SelectField(u'Color Variable',
+        choices=constants.comparisonchoices,
+        default="PDO (On-Ice SvPct plus On-Ice ShPct)")
+    saxis = SelectField(u'Size Variable',
+        choices=constants.comparisonchoices,
+        default="Faceoffs Won")

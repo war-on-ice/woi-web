@@ -16,313 +16,503 @@
 {% endblock %}
 
 {% block content %}
-<form class="table-opts" method="post" action="">
-    {{ csrf_token }}
+<div>
     <div class="row">
-        <div class="row">
-            <div class="col-md-3">
-                {{ render_field(form.teamstrengths) }}
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.scoresituations) }}
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.homeAway) }}
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.startingSeason) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-                {{ render_field(form.tablecolumns) }}
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.period) }}
-            </div>
-            <div class="col-md-3">
+        <div class="col-md-12">
+            <form class="table-opts" method="post" action="">
+                {{ csrf_token }}
+                <div class="row">
+                    <div class="row">
+                        <div class="col-md-3">
+                            {{ render_field(form.teamstrengths) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.scoresituations) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.homeAway) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.startingSeason) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                            {{ render_field(form.tablecolumns) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.period) }}
+                        </div>
+                        <div class="col-md-3">
 
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.endingSeason) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3">
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.splitgame) }}
-            </div>
-            <div class="col-md-3">
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.endingSeason) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3">
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.splitgame) }}
+                        </div>
+                        <div class="col-md-3">
 
-            </div>
-            <div class="col-md-3">
-                {{ render_field(form.divideSeason) }}
-            </div>
-        </div>
-        <div class="row">
-            <div class="col-md-3 col-md-offset-9">
-                <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
-            </div>
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.divideSeason) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-3 col-md-offset-9">
+                            <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+                        </div>
+                    </div>
+                </div>
+            </form>
         </div>
     </div>
-</form>
-<div class="row">
-    <div class="col-md-12 scroll">
-        <table id="comparisons" class="table table-striped table-condensed rt cf">
-            <thead>
-                <tr>
-                    <th class="left-rounded team">Team</th>
-                    {% if form.splitgame.data == True %}
-                    <th>Date</th>
-                    {% else %}
-                    <th>Gm</th>
-                    {% endif %}
-                    <th>Season</th>
-                    {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
-                    {% set headers = ["GF", "GA", "G+/-", "CF%", "CP60", "OFOn%", "OSh%", "OSv%", "FO%", "PDO", "ZSO%"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
+    <div class="row">
+        <div class="col-md-12" id="info-container">
+            <!-- Nav tabs -->
+            <ul class="nav nav-tabs" role="tablist">
+                <li role="presentation" class="active"><a href="#tabular" aria-controls="tabular" role="tab" data-toggle="tab">Tabular View</a></li>
+                <li role="presentation"><a href="#graphical" aria-controls="graphical" role="tab" data-toggle="tab">Graphical View</a></li>
+            </ul>
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
-                    {% set headers = ["HSCF%", "HSC+/-", "HSCF", "HSCA", "HSCF60", "HSCA60", "HSCP60"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
+            <!-- Tab panes -->
+            <div class="tab-content">
+                <div role="tabpanel" class="tab-pane active" id="tabular">
+                    <div class="row">
+                        <div class="col-md-12 scroll">
+                            <table id="comparisons" class="table table-striped table-condensed rt cf">
+                                <thead>
+                                    <tr>
+                                        <th class="left-rounded team">Team</th>
+                                        {% if form.splitgame.data == True %}
+                                        <th>Date</th>
+                                        {% else %}
+                                        <th>Gm</th>
+                                        {% endif %}
+                                        <th>Season</th>
+                                        {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
+                                        {% set headers = ["GF", "GA", "G+/-", "CF%", "CP60", "OFOn%", "OSh%", "OSv%", "FO%", "PDO", "ZSO%"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
-                    {% set headers = ["SCF%", "SC+/-", "SCF", "SCA", "SCF60", "SCA60", "SCP60"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
+                                        {% set headers = ["HSCF%", "HSC+/-", "HSCF", "HSCA", "HSCF60", "HSCA60", "HSCP60"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
-                    {% set headers = ["CF%", "C+/-", "CF", "CA", "CF60", "CA60", "CP60", "FF%", "F+/-", "FF", "FA", "FF60", "FA60", "FP60", "MSF", "MSA", "BSF", "BSA"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
+                                        {% set headers = ["SCF%", "SC+/-", "SCF", "SCA", "SCF60", "SCA60", "SCP60"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
-                    {% set headers = ["SF%", "S+/-", "SF60", "SA60", "SF", "SA", "GF60", "GA60", "GF%", "OSh%", "OFenSh%", "OSv%", "OCOn%", "OFOn%"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
+                                        {% set headers = ["CF%", "C+/-", "CF", "CA", "CF60", "CA60", "CP60", "FF%", "F+/-", "FF", "FA", "FF60", "FA60", "FP60", "MSF", "MSA", "BSF", "BSA"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
-                    {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
-                    {% for header in headers %}
-                    <th>{{ header }}</th>
-                    {% endfor %}
-                    {% endif %}
-                </tr>
-            </thead>
-            <tbody>
-                {% for summary in summaries %}
-                <tr>
-                    <td><img alt="{{ summary["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + summary["Team"] + '.png') }}" height="20" width="20"/>{{ summary["Team"]|teamshortname }}</td>
-                    {% if form.splitgame.data == True %}
-                    <td>{{ summary["Date"] }}</td>
-                    {% else %}
-                    <td>{{ summary["Gm"] }}</td>
-                    {% endif %}
-                    <td>{{ summary["season"] }}</td>
-                    {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
-                    <td>{{ summary["GF"]|int }}</td>
-                    <td>{{ summary["GA"]|int }}</td>
-                    <td>{{ (summary["GF"] - summary["GA"])|int }}</td>
-                    <td>{{ summary["CF%"] }}</td>
-                    <td>{{ summary["CP60"] }}</td>
-                    <td>{{ summary["OFOn%"] }}</td>
-                    <td>{{ summary["OSh%"] }}</td>
-                    <td>{{ summary["OSv%"] }}</td>
-                    <td>{{ summary["FO%"] }}</td>
-                    <td>{{ summary["OSv%"] + summary["OSh%"] }}</td>
-                    {% if summary["ZSO"] + summary["ZSD"] != 0 %}
-                    <td>{{ (summary["ZSO"] / (summary["ZSO"] + summary["ZSD"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
+                                        {% set headers = ["SF%", "S+/-", "SF60", "SA60", "SF", "SA", "GF60", "GA60", "GF%", "OSh%", "OFenSh%", "OSv%", "OCOn%", "OFOn%"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
-                    {% if summary["HSCA"] + summary["HSCF"] != 0 %}
-                    <td>{{ (summary["HSCF"] / (summary["HSCA"] + summary["HSCF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ (summary["HSCF"] - summary["HSCA"])|int }}</td>
-                    <td>{{ summary["HSCF"]|int }}</td>
-                    <td>{{ summary["HSCA"]|int }}</td>
-                    <td>{{ summary["HSCF60"] }}</td>
-                    <td>{{ summary["HSCA60"] }}</td>
-                    <td>{{ summary["HSCF60"] + summary["HSCA60"] }}</td>
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
+                                        {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
+                                        {% for header in headers %}
+                                        <th data-original-title="{{ header|tooltip }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for summary in summaries %}
+                                    <tr>
+                                        <td><img alt="{{ summary["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + summary["Team"] + '.png') }}" height="20" width="20"/>{{ summary["Team"]|teamshortname }}</td>
+                                        {% if form.splitgame.data == True %}
+                                        <td>{{ summary["Date"] }}</td>
+                                        {% else %}
+                                        <td>{{ summary["Gm"] }}</td>
+                                        {% endif %}
+                                        <td>{{ summary["season"] }}</td>
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
-                    {% if summary["SCA"] + summary["SCF"] != 0 %}
-                    <td>{{ (summary["SCF"] / (summary["SCA"] + summary["SCF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ (summary["SCF"] - summary["SCA"])|int }}</td>
-                    <td>{{ summary["SCF"]|int }}</td>
-                    <td>{{ summary["SCA"]|int }}</td>
-                    <td>{{ summary["SCF60"] }}</td>
-                    <td>{{ summary["SCA60"] }}</td>
-                    <td>{{ summary["SCF60"] + summary["SCA60"] }}</td>
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
+                                        {% set headers = ["GF", "GA", "G+/-", "CF%", "CP60", "OFOn%", "OSh%", "OSv%", "FO%", "PDO", "ZSO%"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
-                    {% if summary["CA"] + summary["CF"] != 0 %}
-                    <td>{{ (summary["CF"] / (summary["CA"] + summary["CF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ (summary["CF"] - summary["CA"])|int }}</td>
-                    <td>{{ summary["CF"]|int }}</td>
-                    <td>{{ summary["CA"]|int }}</td>
-                    <td>{{ summary["CF60"] }}</td>
-                    <td>{{ summary["CA60"] }}</td>
-                    <td>{{ summary["CF60"] + summary["CA60"] }}</td>
-                    {% if summary["FA"] + summary["FF"] != 0 %}
-                    <td>{{ (summary["FF"] / (summary["FA"] + summary["FF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ (summary["FF"] - summary["FA"])|int }}</td>
-                    <td>{{ summary["FF"]|int }}</td>
-                    <td>{{ summary["FA"]|int }}</td>
-                    <td>{{ summary["FF60"] }}</td>
-                    <td>{{ summary["FA60"] }}</td>
-                    <td>{{ summary["FF60"] + summary["FA60"] }}</td>
-                    <td>{{ summary["MSF"]|int }}</td>
-                    <td>{{ summary["MSA"]|int }}</td>
-                    <td>{{ summary["BSF"]|int }}</td>
-                    <td>{{ summary["BSA"]|int }}</td>
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
+                                        {% set headers = ["HSCF%", "HSC+/-", "HSCF", "HSCA", "HSCF60", "HSCA60", "HSCP60"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
-                    {% if summary["SA"] + summary["SF"] != 0 %}
-                    <td>{{ (summary["SF"] / (summary["SA"] + summary["SF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ (summary["SF"] - summary["SA"])|int }}</td>
-                    <td>{{ summary["SF60"]|round(2) }}</td>
-                    <td>{{ summary["SA60"]|round(2) }}</td>
-                    <td>{{ summary["SF"]|int }}</td>
-                    <td>{{ summary["SA"]|int }}</td>
-                    <td>{{ summary["GF60"]|round(2) }}</td>
-                    <td>{{ summary["GA60"]|round(2) }}</td>
-                    {% if summary["GA"] + summary["GF"] != 0 %}
-                    <td>{{ (summary["GF"] / (summary["GA"] + summary["GF"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% if summary["SF"] != 0 %}
-                    <td>{{ (summary["GF"] / summary["SF"] * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% if summary["FF"] != 0 %}
-                    <td>{{ (summary["GF"] / summary["FF"] * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% if summary["SA"] != 0 %}
-                    <td>{{ 100 - (summary["GA"] / summary["SA"] * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% if summary["CF"] != 0 %}
-                    <td>{{ (summary["SF"] / summary["CF"] * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% if summary["FF"] != 0 %}
-                    <td>{{ (summary["SF"] / summary["FF"] * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    {% endif %}
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
+                                        {% set headers = ["SCF%", "SC+/-", "SCF", "SCA", "SCF60", "SCA60", "SCP60"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
 
-                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
-                    {% if summary["FAC_LOSE"] + summary["FAC_WIN"] != 0 %}
-                    <td>{{ (summary["FAC_WIN"] / (summary["FAC_LOSE"] + summary["FAC_WIN"]) * 100)|round(2) }}</td>
-                    {% else %}
-                    <td>0</td>
-                    {% endif %}
-                    <td>{{ summary["FAC_WIN"]|int }}</td>
-                    <td>{{ summary["FAC_LOSE"]|int }}</td>
-                    <td>{{ summary["ZSO"]|int }}</td>
-                    <td>{{ summary["ZSN"]|int }}</td>
-                    <td>{{ summary["ZSD"]|int }}</td>
-                    <td>{{ summary["HIT"]|int }}</td>
-                    <td>{{ summary["HIT_TAKEN"]|int }}</td>
-                    <td>{{ summary["PENL_TAKEN"]|int }}</td>
-                    <td>{{ summary["PENL_DRAWN"]|int }}</td>
-                    <td>{{ summary["PENL_DRAWN"]|int - summary["PENL_TAKEN"]|int }}</td>
-                    <td>{{ summary["TOI"] }}</td>
-                    {% endif %}
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
+                                        {% set headers = ["CF%", "C+/-", "CF", "CA", "CF60", "CA60", "CP60", "FF%", "F+/-", "FF", "FA", "FF60", "FA60", "FP60", "MSF", "MSA", "BSF", "BSA"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
+                                        {% set headers = ["SF%", "S+/-", "SF60", "SA60", "SF", "SA", "GF60", "GA60", "GF%", "OSh%", "OFenSh%", "OSv%", "OCOn%", "OFOn%"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
+
+                                        {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
+                                        {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
+                                        {% for header in headers %}
+                                        <td>{{ summary[header] }}</td>
+                                        {% endfor %}
+                                        {% endif %}
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                <div role="tabpanel" class="tab-pane" id="graphical">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="row">
+                                <div class="row">
+                                    <div class="col-md-3">
+                                        {{ render_field(cpg.xaxis) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ render_field(cpg.yaxis) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ render_field(cpg.caxis) }}
+                                    </div>
+                                    <div class="col-md-3">
+                                        {{ render_field(cpg.saxis) }}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div id="comparison-graph">
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
+
 {% endblock %}
 
 {% block page_js %}
 <script type="text/javascript">
-    var tableContents = $("#comparisons").html();
+var tableContents = $("#comparisons").html();
 
-    $(document).ready(function() {
-        $("th:last").addClass("right-rounded");
-        checkWidth();
-    });
+$(document).ready(function() {
+    $("th:last").addClass("right-rounded");
+    checkWidth();
+});
 
-    var resizeTimer;
-    $(window).on('resize', function(e) {
+var resizeTimer;
+$(window).on('resize', function(e) {
 
-      clearTimeout(resizeTimer);
-      resizeTimer = setTimeout(function() {
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function() {
 
-        $("#comparisons").dataTable().fnDestroy();
-        checkWidth();
-                
-      }, 250);
+    $("#comparisons").dataTable().fnDestroy();
+    checkWidth();
+            
+  }, 250);
 
-    });
+});
 
-    function checkWidth() {
-        if ($(window).width() <= 640) {
-            $("#comparisons").html(tableContents);
-            $('#comparisons').DataTable({
-                {% if form.splitgame.data == True %}
-                "aaSorting": [[1, "desc"]],
-                {% else %}
-                "paging": false,
-                {% endif %}
-                "autoWidth": false
-            });
-        } else {
-            $('#comparisons').DataTable({
-                {% if form.splitgame.data == True %}
-                "aaSorting": [[1, "desc"]],
-                {% else %}
-                "paging": false,
-                {% endif %}
-                "scrollX": true,
-                "fixedColumns": true,
-                "autoWidth": false
-            });
-        }
+function checkWidth() {
+    if ($(window).width() <= 640) {
+        $("#comparisons").html(tableContents);
+        $('#comparisons').DataTable({
+            {% if form.splitgame.data == True %}
+            "aaSorting": [[1, "desc"]],
+            {% else %}
+            "paging": false,
+            {% endif %}
+            "autoWidth": false
+        });
+    } else {
+        $('#comparisons').DataTable({
+            {% if form.splitgame.data == True %}
+            "aaSorting": [[1, "desc"]],
+            {% else %}
+            "paging": false,
+            {% endif %}
+            "scrollX": true,
+            "fixedColumns": true,
+            "autoWidth": false
+        });
     }
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+}
+</script>
+<!-- Team Comparison Graphical View -->
+<script type="text/javascript">
+var margin = {top: 20, right: 20, bottom: 30, left: 30};
+var width = $("#info-container").width() - margin.left - margin.right,
+    height = width / 1.5 - margin.top - margin.bottom;
+
+$("#graphical").height(height + margin.top + margin.bottom + 20);
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var dataset = [
+    {% for summary in summaries %}
+    {
+        teamname: "{{ summary["Team"]|teamshortname }}",
+        offdefstarts: {{ (summary["ZSO"] / (summary["ZSO"] + summary["ZSD"]) * 100)|round(2) }},
+        goaldiff: {{ (summary["GF"] - summary["GA"])|int }},
+        pdo: {{ summary["OSv%"] + summary["OSh%"] }},
+        faceoffs: {{ summary["TOI"] }},
+        season: "{{ summary["season"] }}",
+    },
+    {% endfor %}
+];
+
+var maxradius = 0,
+    maxheight = 0,
+    minheight = 100000000,
+    minwidth = 100000000,
+    maxwidth = 0,
+    mincolor = 100000000,
+    maxcolor = 0;
+
+for (var i=0; i<dataset.length; i++) {
+    var row = dataset[i];
+    row.x = row.offdefstarts;
+    row.y = row.goaldiff;
+    row.color = row.pdo;
+    row.size = row.faceoffs
+    if (row.size > maxradius) {
+        maxradius = row.size;
+    }
+    if (row.y > maxheight) {
+        maxheight = row.y;
+    } else if (row.y < minheight) {
+        minheight = row.y;
+    }
+    if (row.x > maxwidth) {
+        maxwidth = row.x;
+    } else if (row.x < minwidth) {
+        minwidth = row.x;
+    }
+    if (row.color > maxcolor) {
+        maxcolor = row.color;
+    } else if (row.color < mincolor) {
+        mincolor = row.color;
+    }
+}
+
+var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF0000", "#FFFFFF", "#0000FF"])
+var maxallowed = 35,
+    minallowed = 2;
+var rr = maxallowed / maxradius;
+
+var svg = d3.select("#comparison-graph")
+    .append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+.append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+svg.selectAll("circle")
+    .data(dataset)
+    .enter()
+    .append("circle")
+    .attr("class", "circle")
+    .attr("cx", function(d) {
+        return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+    })
+    .attr("cy", function(d) {
+        return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+    })
+    .attr("r", function(d) {
+        return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0);
+    })
+    .style("fill", function(d) {
+        return color(d.color);
+    })
+    .style("stroke", "black")
+
+svg.selectAll("text")
+    .data(dataset)
+    .enter()
+    .append("text")
+    .html(function(d) {
+        return d.teamname;
+    })
+    .attr("x", function(d) {
+        return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+    })
+    .attr("y", function(d) {
+        return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+    })
+    .attr("font-family", "sans-serif")
+    .attr("font-size", "12px")
+    .style("text-anchor", "middle")
+
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom")
+    .ticks(10)
+    .tickFormat(function(d) { return d + "%"; });
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left")
+    .ticks(10)
+    .tickFormat(function(d) { return d; });
+
+x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
+y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
+
+svg.append("g")
+  .attr("class", "x axis")
+  .attr("transform", "translate(0," + height + ")")
+  .call(xAxis)
+.append("text")
+  .attr("x", width - 50)
+  .attr("dy", "-.71em")
+  .style("text-anchor", "end")
+  .text("Fraction of Off vs Def Zone Starts");
+
+svg.append("g")
+  .attr("class", "y axis")
+  .call(yAxis)
+.append("text")
+  .attr("transform", "rotate(-90)")
+  .attr("y", 6)
+  .attr("dy", ".71em")
+  .style("text-anchor", "end")
+  .text("Goal Differential");
+
+var legendRectSize = 18;
+var legendSpacing = 4;
+
+var legend = svg.selectAll('.legend')
+  .data(color.domain().reverse())
+  .enter()
+  .append('g')
+  .attr('class', 'legend')
+  .attr('transform', function(d, i) {
+    var height = legendRectSize + legendSpacing;
+    var offset =  height * color.domain().length / 2;
+    var horz = -2 * legendRectSize;
+    var vert = i * height + offset;
+    return 'translate(' + horz + ',' + vert + ')';
+  });
+
+legend.append('rect')
+  .attr('x', legendRectSize + margin.left + margin.right + 15)
+  .attr('y', legendRectSize + margin.top)
+  .attr('width', legendRectSize)
+  .attr('height', legendRectSize)
+  .style('fill', color)
+  .style('stroke', color)
+  .style("stroke", "black");
+
+legend.append('text')
+  .attr('x', legendRectSize + margin.left + margin.right + 60)
+  .attr('y', legendRectSize + margin.top + legendRectSize / 1.5)
+  .style("text-anchor", "end")
+  .text(function(d) { return d; });
+
+svg.append("g")
+  .attr("class", "x axis")
+.append("text")
+  .attr("x", legendRectSize + margin.left + margin.right + 15)
+  .attr("dy", "4em")
+  .style("text-anchor", "end")
+  .text("PDO");
+
+arrangeLabels();
+
+function cpos(val, minval, maxval, distance, maxallowed) {
+    return (val - minval) / (maxval - minval) * (distance - maxallowed * 2) + maxallowed;
+}
+
+function arrangeLabels() {
+  var move = 1;
+  while(move > 0) {
+    move = 0;
+    svg.selectAll("text")
+       .each(function() {
+         var that = this,
+             a = this.getBoundingClientRect();
+         svg.selectAll("text")
+            .each(function() {
+              if(this != that) {
+                var b = this.getBoundingClientRect();
+                if((Math.abs(a.left - b.left) * 2 < (a.width + b.width)) &&
+                   (Math.abs(a.top - b.top) * 2 < (a.height + b.height))) {
+                  // overlap, move labels
+                  var dx = (Math.max(0, a.right - b.left) +
+                           Math.min(0, a.left - b.right)) * 0.01,
+                      dy = (Math.max(0, a.bottom - b.top) +
+                           Math.min(0, a.top - b.bottom)) * 0.02,
+                      tt = d3.transform(d3.select(this).attr("transform")),
+                      to = d3.transform(d3.select(that).attr("transform"));
+                  move += Math.abs(dx) + Math.abs(dy);
+                
+                  to.translate = [ to.translate[0] + dx, to.translate[1] + dy ];
+                  tt.translate = [ tt.translate[0] - dx, tt.translate[1] - dy ];
+                  d3.select(this).attr("transform", "translate(" + tt.translate + ")");
+                  d3.select(that).attr("transform", "translate(" + to.translate + ")");
+                  a = this.getBoundingClientRect();
+                }
+              }
+            });
+       });
+  }
+}
+
 </script>
 {% endblock %}

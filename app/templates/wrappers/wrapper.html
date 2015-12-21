@@ -36,7 +36,9 @@
 
 	<!-- Full width content -->
 	<div class="row">
-		{% block content_header %}{% endblock %}
+        <div class="col-md-10">
+    		{% block content_header %}{% endblock %}
+        </div>
 	</div>
 
 	<!-- Content with ad side bar -->
@@ -62,6 +64,7 @@
 <script type="text/javascript" src="{{ url_for('static', filename='DataTables/js/jquery.dataTables.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='DataTables/js/dataTables.bootstrap.min.js') }}"></script>
 <script type="text/javascript" src="{{ url_for('static', filename='DataTables/js/dataTables.fixedColumns.min.js') }}"></script>
+<script type="text/javascript" src="{{ url_for('static', filename='js/d3.min.js') }}"></script>
 {% block page_js %}{% endblock %}
 </body>
 </html>
