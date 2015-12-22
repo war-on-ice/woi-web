@@ -384,7 +384,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
     var y = d3.scale.linear()
         .range([height, 0]);
 
-    var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF0000", "#FFFFFF", "#0000FF"])
+    var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF2400", "#FFFFFF", "#0042FF"])
     var maxallowed = 35,
         minallowed = 2;
     var rr = maxallowed / maxradius;
