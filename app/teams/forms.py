@@ -58,13 +58,13 @@ class ComparisonForm(Form):
 class ComparisonGraphForm(Form):
     xaxis = SelectField(u'X Axis Variable',
         choices=constants.comparisonchoices,
-        default="Fraction of Off vs Def Zone Starts")
+        default="ZSO%")
     yaxis = SelectField(u'Y Axis Variable',
         choices=constants.comparisonchoices,
-        default="On-Ice Goal Differential")
+        default="G+/-")
     caxis = SelectField(u'Color Variable',
         choices=constants.comparisonchoices,
-        default="PDO (On-Ice SvPct plus On-Ice ShPct)")
+        default="PDO")
     saxis = SelectField(u'Size Variable',
         choices=constants.comparisonchoices,
-        default="Faceoffs Won")
+        default="FO%")

@@ -204,26 +204,30 @@
                     </div>
                 </div>
                 <div role="tabpanel" class="tab-pane" id="graphical">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <div class="row">
-                                <div class="row">
-                                    <div class="col-md-3">
-                                        {{ render_field(cpg.xaxis) }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        {{ render_field(cpg.yaxis) }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        {{ render_field(cpg.caxis) }}
-                                    </div>
-                                    <div class="col-md-3">
-                                        {{ render_field(cpg.saxis) }}
-                                    </div>
-                                </div>
+                    <form id="cpg">
+                        <div class="row">
+                            <div class="col-md-3">
+                                {{ render_field(cpg.xaxis) }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ render_field(cpg.yaxis) }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ render_field(cpg.caxis) }}
+                            </div>
+                            <div class="col-md-3">
+                                {{ render_field(cpg.saxis) }}
                             </div>
                         </div>
-                    </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph()">Generate Chart</button>
+                            </div>
+                            <div class="col-md-6">
+                                <button type="button" class="btn btn-primary center-block beside-fields" onclick="createPNG()">Create PNG from Current Chart</button>
+                            </div>
+                        </div>
+                    </form>
                     <div class="row">
                         <div class="col-md-12">
                             <div id="comparison-graph">
@@ -236,6 +240,29 @@
         </div>
     </div>
 </div>
+
+<div id="png-modal" class="modal fade" tabindex="-1" role="dialog">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+        <h4 class="modal-title">PNG Below (right-click to save)</h4>
+      </div>
+      <div class="modal-body">
+        <div class="row">
+            <div class="col-md-12">
+                <div id="png-graph">
+
+                </div>
+            </div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+      </div>
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal -->
 
 {% endblock %}
 
@@ -297,222 +324,281 @@ var width = $("#info-container").width() - margin.left - margin.right,
 
 $("#graphical").height(height + margin.top + margin.bottom + 20);
 
-var x = d3.scale.linear()
-    .range([0, width]);
-
-var y = d3.scale.linear()
-    .range([height, 0]);
-
 var dataset = [
     {% for summary in summaries %}
     {
-        teamname: "{{ summary["Team"]|teamshortname }}",
-        offdefstarts: {{ (summary["ZSO"] / (summary["ZSO"] + summary["ZSD"]) * 100)|round(2) }},
-        goaldiff: {{ (summary["GF"] - summary["GA"])|int }},
-        pdo: {{ summary["OSv%"] + summary["OSh%"] }},
-        faceoffs: {{ summary["TOI"] }},
-        season: "{{ summary["season"] }}",
+        {% for key in summary %}
+        {% if key == "Team" %}
+        "{{ key }}": "{{ summary[key]|teamshortname }}",
+        {% elif summary[key] is number %}
+        "{{ key }}": {{ summary[key] }},
+        {% else %}
+        "{{ key }}": "{{ summary[key] }}",
+        {% endif %}
+        {% endfor %}
     },
     {% endfor %}
 ];
 
-var maxradius = 0,
-    maxheight = 0,
-    minheight = 100000000,
-    minwidth = 100000000,
-    maxwidth = 0,
-    mincolor = 100000000,
-    maxcolor = 0;
+createGraph("ZSO%", "G+/-", "PDO", "FO%", "Fraction of Off vs Def Zone Starts",
+    "Goal Differential", "PDO", "Faceoff Winning Percentage");
 
-for (var i=0; i<dataset.length; i++) {
-    var row = dataset[i];
-    row.x = row.offdefstarts;
-    row.y = row.goaldiff;
-    row.color = row.pdo;
-    row.size = row.faceoffs
-    if (row.size > maxradius) {
-        maxradius = row.size;
+function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
+    $("#comparison-graph").html("");
+    var maxradius = 0,
+        maxheight = 0,
+        minheight = 100000000,
+        minwidth = 100000000,
+        maxwidth = 0,
+        mincolor = 100000000,
+        maxcolor = 0;
+
+    for (var i=0; i<dataset.length; i++) {
+        var row = dataset[i];
+        row.x = row[x];
+        row.y = row[y];
+        row.color = row[color];
+        row.size = row[size];
+        if (row.size > maxradius) {
+            maxradius = row.size;
+        }
+        if (row.y > maxheight) {
+            maxheight = row.y;
+        } else if (row.y < minheight) {
+            minheight = row.y;
+        }
+        if (row.x > maxwidth) {
+            maxwidth = row.x;
+        } else if (row.x < minwidth) {
+            minwidth = row.x;
+        }
+        if (row.color > maxcolor) {
+            maxcolor = row.color;
+        } else if (row.color < mincolor) {
+            mincolor = row.color;
+        }
     }
-    if (row.y > maxheight) {
-        maxheight = row.y;
-    } else if (row.y < minheight) {
-        minheight = row.y;
-    }
-    if (row.x > maxwidth) {
-        maxwidth = row.x;
-    } else if (row.x < minwidth) {
-        minwidth = row.x;
-    }
-    if (row.color > maxcolor) {
-        maxcolor = row.color;
-    } else if (row.color < mincolor) {
-        mincolor = row.color;
-    }
-}
+    var x = d3.scale.linear()
+        .range([0, width]);
 
-var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF0000", "#FFFFFF", "#0000FF"])
-var maxallowed = 35,
-    minallowed = 2;
-var rr = maxallowed / maxradius;
+    var y = d3.scale.linear()
+        .range([height, 0]);
 
-var svg = d3.select("#comparison-graph")
-    .append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-.append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF0000", "#FFFFFF", "#0000FF"])
+    var maxallowed = 35,
+        minallowed = 2;
+    var rr = maxallowed / maxradius;
 
-svg.selectAll("circle")
-    .data(dataset)
-    .enter()
-    .append("circle")
-    .attr("class", "circle")
-    .attr("cx", function(d) {
-        return cpos(d.x, minwidth, maxwidth, width, maxallowed);
-    })
-    .attr("cy", function(d) {
-        return height - cpos(d.y, minheight, maxheight, height, maxallowed);
-    })
-    .attr("r", function(d) {
-        return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0);
-    })
-    .style("fill", function(d) {
-        return color(d.color);
-    })
-    .style("stroke", "black")
+    var svg = d3.select("#comparison-graph")
+        .insert("svg", "svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-svg.selectAll("text")
-    .data(dataset)
-    .enter()
+    svg.selectAll("circle")
+        .data(dataset)
+        .enter()
+        .append("circle")
+        .attr("class", "circle")
+        .attr("cx", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+        })
+        .attr("cy", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+        })
+        .attr("r", function(d) {
+            return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0);
+        })
+        .style("fill", function(d) {
+            return color(d.color);
+        })
+        .style("stroke", "black")
+
+    svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .html(function(d) {
+            return d["Team"];
+        })
+        .attr("x", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+        })
+        .attr("y", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+        })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .style("text-anchor", "middle")
+
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom")
+        .ticks(10)
+        .tickFormat(function(d) { return d + "%"; });
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left")
+        .ticks(10)
+        .tickFormat(function(d) { return d; });
+
+    x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
+    y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
     .append("text")
-    .html(function(d) {
-        return d.teamname;
-    })
-    .attr("x", function(d) {
-        return cpos(d.x, minwidth, maxwidth, width, maxallowed);
-    })
-    .attr("y", function(d) {
-        return height - cpos(d.y, minheight, maxheight, height, maxallowed);
-    })
-    .attr("font-family", "sans-serif")
-    .attr("font-size", "12px")
-    .style("text-anchor", "middle")
+      .attr("x", width - 50)
+      .attr("dy", "-.71em")
+      .style("text-anchor", "end")
+      .text(xtext);
 
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(ytext);
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom")
-    .ticks(10)
-    .tickFormat(function(d) { return d + "%"; });
+    var legendRectSize = 18;
+    var legendSpacing = 4;
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left")
-    .ticks(10)
-    .tickFormat(function(d) { return d; });
+    var legend = svg.selectAll('.legend')
+      .data(color.domain().reverse())
+      .enter()
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', function(d, i) {
+        var height = legendRectSize + legendSpacing;
+        var offset =  height * color.domain().length / 2;
+        var horz = -2 * legendRectSize;
+        var vert = i * height + offset;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
 
-x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
-y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
+    legend.append('rect')
+      .attr('x', legendRectSize + margin.left + margin.right + 15)
+      .attr('y', legendRectSize + margin.top)
+      .attr('width', legendRectSize)
+      .attr('height', legendRectSize)
+      .style('fill', color)
+      .style('stroke', color)
+      .style("stroke", "black");
 
-svg.append("g")
-  .attr("class", "x axis")
-  .attr("transform", "translate(0," + height + ")")
-  .call(xAxis)
-.append("text")
-  .attr("x", width - 50)
-  .attr("dy", "-.71em")
-  .style("text-anchor", "end")
-  .text("Fraction of Off vs Def Zone Starts");
+    legend.append('text')
+      .attr('x', legendRectSize + margin.left + margin.right + 60)
+      .attr('y', legendRectSize + margin.top + legendRectSize / 1.5)
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
 
-svg.append("g")
-  .attr("class", "y axis")
-  .call(yAxis)
-.append("text")
-  .attr("transform", "rotate(-90)")
-  .attr("y", 6)
-  .attr("dy", ".71em")
-  .style("text-anchor", "end")
-  .text("Goal Differential");
+    var texts = colortext.split(",");
 
-var legendRectSize = 18;
-var legendSpacing = 4;
+    for (var i=0; i<texts.length; i++) {
+        var text = texts[i];
+        if (i != texts.length - 1) {
+            text = text + ",";
+        }
+        svg.append("g")
+          .attr("class", "x axis")
+        .append("text")
+          .attr("dx", "4em")
+          .attr("dy", (11 + i) + "em")
+          .style("text-anchor", "left")
+          .text(text)
+    }
 
-var legend = svg.selectAll('.legend')
-  .data(color.domain().reverse())
-  .enter()
-  .append('g')
-  .attr('class', 'legend')
-  .attr('transform', function(d, i) {
-    var height = legendRectSize + legendSpacing;
-    var offset =  height * color.domain().length / 2;
-    var horz = -2 * legendRectSize;
-    var vert = i * height + offset;
-    return 'translate(' + horz + ',' + vert + ')';
-  });
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 4))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(xtext + " vs " + ytext + ",");
 
-legend.append('rect')
-  .attr('x', legendRectSize + margin.left + margin.right + 15)
-  .attr('y', legendRectSize + margin.top)
-  .attr('width', legendRectSize)
-  .attr('height', legendRectSize)
-  .style('fill', color)
-  .style('stroke', color)
-  .style("stroke", "black");
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 18 - (margin.top / 4))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Colored by " + colortext + ", Sized by " + sizetext);
 
-legend.append('text')
-  .attr('x', legendRectSize + margin.left + margin.right + 60)
-  .attr('y', legendRectSize + margin.top + legendRectSize / 1.5)
-  .style("text-anchor", "end")
-  .text(function(d) { return d; });
-
-svg.append("g")
-  .attr("class", "x axis")
-.append("text")
-  .attr("x", legendRectSize + margin.left + margin.right + 15)
-  .attr("dy", "4em")
-  .style("text-anchor", "end")
-  .text("PDO");
-
-arrangeLabels();
+    svg.append("text")
+        .attr("x", margin.left)
+        .attr("y", height - margin.bottom)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+}
 
 function cpos(val, minval, maxval, distance, maxallowed) {
     return (val - minval) / (maxval - minval) * (distance - maxallowed * 2) + maxallowed;
 }
 
-function arrangeLabels() {
-  var move = 1;
-  while(move > 0) {
-    move = 0;
-    svg.selectAll("text")
-       .each(function() {
-         var that = this,
-             a = this.getBoundingClientRect();
-         svg.selectAll("text")
-            .each(function() {
-              if(this != that) {
-                var b = this.getBoundingClientRect();
-                if((Math.abs(a.left - b.left) * 2 < (a.width + b.width)) &&
-                   (Math.abs(a.top - b.top) * 2 < (a.height + b.height))) {
-                  // overlap, move labels
-                  var dx = (Math.max(0, a.right - b.left) +
-                           Math.min(0, a.left - b.right)) * 0.01,
-                      dy = (Math.max(0, a.bottom - b.top) +
-                           Math.min(0, a.top - b.bottom)) * 0.02,
-                      tt = d3.transform(d3.select(this).attr("transform")),
-                      to = d3.transform(d3.select(that).attr("transform"));
-                  move += Math.abs(dx) + Math.abs(dy);
-                
-                  to.translate = [ to.translate[0] + dx, to.translate[1] + dy ];
-                  tt.translate = [ tt.translate[0] - dx, tt.translate[1] - dy ];
-                  d3.select(this).attr("transform", "translate(" + tt.translate + ")");
-                  d3.select(that).attr("transform", "translate(" + to.translate + ")");
-                  a = this.getBoundingClientRect();
-                }
-              }
-            });
-       });
-  }
+function addGraph() {
+    var x = $("#xaxis").val(),
+        y = $("#yaxis").val(),
+        color = $("#caxis").val(),
+        size = $("#saxis").val(),
+        xtext = $("#xaxis option[value='" + x + "']").text(),
+        ytext = $("#yaxis option[value='" + y + "']").text(),
+        colortext = $("#caxis option[value='" + color + "']").text(),
+        sizetext = $("#saxis option[value='" + size + "']").text();
+    xtext = xtext.replace(/ *\([^)]*\) */g, "");
+    ytext = ytext.replace(/ *\([^)]*\) */g, "");
+    colortext = colortext.replace(/ *\([^)]*\) */g, "");
+    sizetext = sizetext.replace(/ *\([^)]*\) */g, "");
+    createGraph(x, y, color, size, xtext, ytext, colortext, sizetext);
+
+};
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).style("text-anchor", "right").append("tspan").attr("x", "80").attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").style("text-anchor", "right").attr("x", "80").attr("y", y).attr("dy", "1em").text(word);
+      }
+    }
+  });
 }
+
+function createPNG(){
+  var html = d3.select("svg")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+  //console.log(html);
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  var img = '<img class="img-responsive" src="'+imgsrc+'">'; 
+  d3.select("#png-graph").html(img);
+  $("#png-text").show();
+  $("#png-modal").modal();
+
+}
+
 
 </script>
 {% endblock %}
