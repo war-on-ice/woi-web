@@ -325,6 +325,12 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
     .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
+    svg.append("rect")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
+        .attr("fill", "white");
+
     svg.selectAll("circle")
         .data(dataset)
         .enter()
@@ -585,13 +591,13 @@ d3.select("#savePNG").on("click", function(){
   image.onload = function() {
       context.drawImage(image, 0, 0);
 
-      var canvasdata = canvas.toDataURL("image/png");
+      var canvasdata = canvas.toDataURL("image/jpeg");
 
       var pngimg = '<img src="'+canvasdata+'">'; 
       d3.select("#pngdataurl").html(pngimg);
 
       var a = document.createElement("a");
-      a.download = "sample.png";
+      a.download = "sample.jpeg";
       a.href = canvasdata;
           document.body.appendChild(a);
       a.click();
