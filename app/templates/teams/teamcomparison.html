@@ -128,7 +128,7 @@
                                 <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph()">Generate Chart</button>
                             </div>
                             <div class="col-md-6">
-                                <button type="button" class="btn btn-primary center-block beside-fields" onclick="createPNG()">Create PNG from Current Chart</button>
+                                <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG">Create PNG from Current Chart</button>
                             </div>
                         </div>
                     </form>
@@ -160,9 +160,9 @@
       <div class="modal-body">
         <div class="row">
             <div class="col-md-12">
-                <div id="png-graph">
+                <div id="pngdataurl"></div>
+                <canvas width="960" height="500" style="display:none"></canvas>
 
-                </div>
             </div>
         </div>
       </div>
@@ -549,7 +549,7 @@ function wrap(text, width) {
   });
 }
 
-function createPNG(){
+/*function createPNG(){
   var html = d3.select("svg")
         .attr("version", 1.1)
         .attr("xmlns", "http://www.w3.org/2000/svg")
@@ -562,7 +562,43 @@ function createPNG(){
   $("#png-text").show();
   $("#png-modal").modal();
 
-}
+}*/
+
+d3.select("#savePNG").on("click", function(){
+  var html = d3.select("svg")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+  //console.log(html);
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  var img = '<img src="'+imgsrc+'">'; 
+
+
+  var canvas = document.querySelector("canvas"),
+      context = canvas.getContext("2d");
+  canvas.width = width + margin.left + margin.right;
+  canvas.height = height + margin.top + margin.bottom;
+
+  var image = new Image;
+  image.src = imgsrc;
+  image.onload = function() {
+      context.drawImage(image, 0, 0);
+
+      var canvasdata = canvas.toDataURL("image/png");
+
+      var pngimg = '<img src="'+canvasdata+'">'; 
+      d3.select("#pngdataurl").html(pngimg);
+
+      var a = document.createElement("a");
+      a.download = "sample.png";
+      a.href = canvasdata;
+          document.body.appendChild(a);
+      a.click();
+  };
+
+});
+
 
 
 </script>
