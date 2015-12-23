@@ -503,13 +503,15 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .scale(x)
         .orient("bottom")
         .ticks(10)
-        .tickFormat(function(d) { return d + "%"; });
+        .tickFormat(function(d) {
+            return formatAxisText(d, xtext);
+        });
 
     var yAxis = d3.svg.axis()
         .scale(y)
         .orient("left")
         .ticks(10)
-        .tickFormat(function(d) { return d; });
+        .tickFormat(function(d) { return formatAxisText(d, ytext); });
 
     x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
     y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
@@ -603,6 +605,14 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .attr("text-anchor", "left")
         .style("font-size", "12px")
         .text("war-on-ice.com")
+}
+
+function formatAxisText(d, text) {
+    if (text.indexOf("Fraction") >= 0 || text.indexOf("Percentage") >= 0) {
+        return d + "%";
+    } else {
+        return d;
+    }
 }
 
 function toggleText(circleid) {
