@@ -1,4 +1,5 @@
-from wtforms import Form, SelectMultipleField, SelectField, BooleanField
+from wtforms import Form, SelectMultipleField, SelectField, BooleanField, validators
+from wtforms.fields.html5 import DateField
 
 from operator import itemgetter
 
@@ -25,6 +26,8 @@ class ComparisonForm(Form):
         choices=[(20152015, 20152016), (20142015, 20142015),
                 (20132014, 20142014)],
         default=[20152016])
+    startingDate = DateField(u'Starting Date', validators=[validators.optional(),])
+    endingDate = DateField(u'Ending Date', validators=[validators.optional(),])
     homeAway = SelectField(u'Home/Away Situation',
         choices=[("1", "Home"), ("0", "Away"), ("all", "All")],
         default="all")
@@ -51,8 +54,10 @@ class ComparisonForm(Form):
                 ("7", "Faceoffs"), ("9", "All")],
         default="0")
     splitgame = BooleanField(u'Split by Game')
-    #daterange = BooleanField(u'Use Date Range')
+    bydate = BooleanField(u'Use Date Range')
     divideSeason = BooleanField(u'Divide Data By Season', default=True)
+    filterTeams = SelectMultipleField(u'Filter By Teams',
+        choices=sorted([(constants.teamDict[key], key) for key in constants.teamDict]))
 
 
 class ComparisonGraphForm(Form):

@@ -16,6 +16,7 @@ SQLALCHEMY_BINDS = {
     "waronice": connStr,
     "contracts": contractConnStr
 }
+SQLALCHEMY_TRACK_MODIFICATIONS = False
 DATABASE_CONNECT_OPTIONS = {}
 
 THREADS_PER_PAGE = 8

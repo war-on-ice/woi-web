@@ -59,6 +59,11 @@ def show_team_comparisons():
     form = ComparisonForm(request.form)
     form.startingSeason.choices = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
     form.endingSeason.choices = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
+    filterteams = form.filterTeams.data
+    if filterteams is None:
+        filterteams = []
+    allteams = form.filterTeams.choices
+
     try:
         oldStart = form.startingSeason.data
         oldEnd = form.endingSeason.data
@@ -66,26 +71,39 @@ def show_team_comparisons():
         form.endingSeason.data = int(form.endingSeason.data)
     except:
         pass
+    print form.startingDate.data
     allseasons = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
+    usedates = False
+
     if request.method == "POST" and form.validate():
         startingSeason = form.startingSeason.data
         endingSeason = form.endingSeason.data
         form.startingSeason.data = oldStart
         form.endingSeason.data = oldEnd
-        if endingSeason > startingSeason:
-            begin = startingSeason
-            end = endingSeason
+        startingDate = form.startingDate.data
+        endingDate = form.endingDate.data
+        usedates = form.bydate.data
+        if not usedates:
+            if endingSeason > startingSeason:
+                begin = startingSeason
+                end = endingSeason
+            else:
+                begin = endingSeason
+                end = startingSeason
+            currSeason = begin
+            seasons = [begin, ]
+            # TODO: Error check this?
+            while begin != end:
+                bsplit = str(begin)[0:4]
+                begin = int(bsplit) * 10000 + 10001 + int(bsplit) + 1
+                seasons.append(begin)
         else:
-            begin = endingSeason
-            end = startingSeason
-        currSeason = begin
-        seasons = [begin, ]
-        # TODO: Error check this?
-        while begin != end:
-            bsplit = str(begin)[0:4]
-            begin = int(bsplit) * 10000 + 10001 + int(bsplit) + 1
-            seasons.append(begin)
+            if endingDate < startingDate:
+                temp = endingDate
+                endingDate = startingDate
+                startingDate = temp
     else:
+        print form.errors
         smax = max(teamgames.keys())
         seasons = [smax, ]
     # Filter teamrun based on form data
@@ -110,11 +128,30 @@ def show_team_comparisons():
     if 7 in teamstrengths:
         teamstrengths = [7, ]
 
-    teamrun = TeamRun.query.filter(TeamRun.season.in_(seasons), TeamRun.gamestate.in_(teamstrengths),
-        TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
-        TeamRun.period.in_(periods)).all()
+    if not usedates:
+        if len(filterteams) == 0:
+            teamrun = TeamRun.query.filter(TeamRun.season.in_(seasons), TeamRun.gamestate.in_(teamstrengths),
+                TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
+                TeamRun.period.in_(periods)).all()
+        else:
+            teamrun = TeamRun.query.filter(TeamRun.season.in_(seasons), TeamRun.gamestate.in_(teamstrengths),
+                TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
+                TeamRun.Team.in_(filterteams),
+                TeamRun.period.in_(periods)).all()
+    else:
+        if len(filterteams) == 0:
+            teamrun = TeamRun.query.filter(TeamRun.Date >= startingDate, TeamRun.Date <= endingDate,
+                TeamRun.gamestate.in_(teamstrengths),
+                TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
+                TeamRun.period.in_(periods)).all()
+        else:
+            teamrun = TeamRun.query.filter(TeamRun.Date >= startingDate, TeamRun.Date <= endingDate,
+                TeamRun.gamestate.in_(teamstrengths),
+                TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
+                TeamRun.Team.in_(filterteams),
+                TeamRun.period.in_(periods)).all()
 
-    games, seasons = helpers.calculate(teamrun)
+    games, seasons = helpers.calculate(teamrun, form.divideSeason.data)
     if form.splitgame.data == True:
         summaries = games
     else:
@@ -124,4 +161,6 @@ def show_team_comparisons():
         rd=rd,
         form=form,
         summaries=summaries,
-        cpg=cpg)
+        cpg=cpg,
+        filterteams=filterteams,
+        allteams=allteams)

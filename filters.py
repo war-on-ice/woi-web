@@ -1,6 +1,6 @@
 import flask
 from datetime import datetime
-from app.constants import teamDict, teamShortDict, comparisonchoices
+from app.constants import teamDict, teamShortDict, comparisonchoices, standingsglossary
 
 blueprint = flask.Blueprint('filters', __name__)
 
@@ -12,8 +12,17 @@ def format_currency(value):
 
 
 @blueprint.app_template_filter()
+def tooltip_standings(column):
+    return find_tooltip(column, standingsglossary)
+
+
+@blueprint.app_template_filter()
 def tooltip(column):
-    for choice in comparisonchoices:
+    return find_tooltip(column, comparisonchoices)
+
+
+def find_tooltip(column, choices):
+    for choice in choices:
         if choice[0] == column:
             return choice[1]
     print column

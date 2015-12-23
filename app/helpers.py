@@ -22,7 +22,7 @@ def c_60(c, toi, games=1):
         return 0
 
 
-def calculate(teamrun):
+def calculate(teamrun, splitseasons=False):
     games = []
     allseasons = []
     compiled = {}
@@ -115,6 +115,28 @@ def calculate(teamrun):
         if gs["Team"] != "PHX":
             compiled[gs["Team"]].append(gs)
 
+    if splitseasons is True:
+        seasondates = set()
+        for team in compiled:
+            seasondates.update([x["season"] for x in compiled[team]])
+        byseason = {}
+        for tname in compiled:
+            teamlist = compiled[tname]
+            for team in teamlist:
+                if team["season"] not in byseason:
+                    byseason[team["season"]] = {}
+                if tname not in byseason[team["season"]]:
+                    byseason[team["season"]][tname] = []
+                byseason[team["season"]][tname].append(team)
+        for season in byseason:
+            allseasons.extend(get_team_data(byseason[season]))
+    else:
+        allseasons.extend(get_team_data(compiled))
+    return games, allseasons
+
+
+def get_team_data(compiled):
+    tc = []
     for team in compiled:
         gs = {}
         td = compiled[team]
@@ -195,5 +217,5 @@ def calculate(teamrun):
         gs["OSh%"] = percent(gs["GF"], gs["SF"])
         gs["OFenSh%"] = percent(gs["GF"], gs["FF"])
         gs["OCOn%"] = ratio(gs["SF"], gs["CF"])
-        allseasons.append(gs)
-    return games, allseasons
+        tc.append(gs)
+    return tc

@@ -103,6 +103,21 @@ teamShortDict ={
   'Capitals':'WSH', 'Jets':'WPG'
 }
 
+standingsglossary = [("RW", "Regulation Wins"),
+  ("OW", "Overtime Wins"),
+  ("SW", "Shootout Wins"),
+  ("RL", "Regulation Losses"),
+  ("OL", "Overtime Losses"),
+  ("SL", "Shootout Losses"),
+  ("GF", "Goals For"),
+  ("GA", "Goals Against"),
+  ("CF", "Corsi For"),
+  ("CA", "Corsi Against"),
+  ("PNow", "Points, Under Current System"),
+  ("P3", "Points, 3-2-1-0 System"),
+  ("PTie", "Points, Tie After Overtime Ends"),
+  ("PNL", "Points, No Tie or Loser Points")]
+
 comparisonchoices = [("ZSN", "Neutral Zone Starts"),
   ("ZSO", "Offensive Zone Starts"),
   ("ZSD", "Defensive Zone Starts"),

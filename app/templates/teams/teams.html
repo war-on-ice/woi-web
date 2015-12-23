@@ -48,20 +48,11 @@
                 <tr>
                     <th class="left-rounded full-fixed">Team</th>
                     <th>Gm</th>
-                    <th>RW</th>
-                    <th>OW</th>
-                    <th>SW</th>
-                    <th>RL</th>
-                    <th>OL</th>
-                    <th>SL</th>
-                    <th>GF</th>
-                    <th>GA</th>
-                    <th>CF</th>
-                    <th>CA</th>
-                    <th>PNow</th>
-                    <th>P3</th>
-                    <th>PTie</th>
-                    <th class="right-rounded">PNL</th>
+                    {% set headers = ["RW", "OW", "SW", "RL", "OL", "SL", "GF", "GA", "CF", "CA", "PNow", "P3", "PTie", "PNL"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip_standings }}" data-container="body"
+ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip_standings }}" {% if loop.last %}class="right-rounded"{% endif %}>{{ header }}</th>
+                    {% endfor %}
                 </tr>
             </thead>
             <tbody>
@@ -100,6 +91,10 @@
 {% block page_js %}
 <script type="text/javascript" src="{{ url_for('static', filename='multi-select/js/jquery.multi-select.js') }}"></script>
 <script type="text/javascript">
+    
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
     $(document).ready(function() {
         $("#teamstandings").DataTable({
             "aaSorting": [[12, "desc"]],

@@ -2,7 +2,7 @@
 {% from "_formhelpers.html" import render_field %}
 
 {% block page_css %}
-
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='multi-select/css/multi-select.css') }}"/>
 {% endblock %}
 
 {% block title %}Team Comparisons{% endblock %}
@@ -32,8 +32,11 @@
                         <div class="col-md-3">
                             {{ render_field(form.homeAway) }}
                         </div>
-                        <div class="col-md-3">
+                        <div id="startingSeasonDiv" class="col-md-3{% if form.bydate.data == True %} hidden{% endif %}">
                             {{ render_field(form.startingSeason) }}
+                        </div>
+                        <div id="startingDateDiv" class="col-md-3{% if form.bydate.data == False %} hidden{% endif %}">
+                            {{ render_field(form.startingDate) }}
                         </div>
                     </div>
                     <div class="row">
@@ -46,8 +49,11 @@
                         <div class="col-md-3">
 
                         </div>
-                        <div class="col-md-3">
+                        <div id="endingSeasonDiv" class="col-md-3{% if form.bydate.data == True %} hidden{% endif %}">
                             {{ render_field(form.endingSeason) }}
+                        </div>
+                        <div id="endingDateDiv" class="col-md-3{% if form.bydate.data == False %} hidden{% endif %}">
+                            {{ render_field(form.endingDate) }}
                         </div>
                     </div>
                     <div class="row">
@@ -57,11 +63,25 @@
                             {{ render_field(form.splitgame) }}
                         </div>
                         <div class="col-md-3">
-
-                        </div>
-                        <div class="col-md-3">
                             {{ render_field(form.divideSeason) }}
                         </div>
+                        <div class="col-md-3">
+                            {{ render_field(form.bydate) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <select class="form-control" id="filterTeams" multiple name="filterTeams">
+                            {% for team in allteams %}
+                            {% if team[0] in filterteams %}
+                            <option value="{{ team[0] }}" selected>{{ team[1] }}</option>
+                            {% else %}
+                            <option value="{{ team[0] }}">{{ team[1] }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </select>
+                        {% for error in form.filterTeams.errors %}
+                          <li>{{ error }}</li>
+                        {% endfor %}
                     </div>
                     <div class="row">
                         <div class="col-md-3 col-md-offset-9">
@@ -235,6 +255,11 @@
                             </div>
                         </div>
                     </div>
+                    <div class="row">
+                        <div class="col-md-12">
+                            <p class="text-center"><b>*Click a circle to toggle the text</b></p>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -267,12 +292,32 @@
 {% endblock %}
 
 {% block page_js %}
+<script type="text/javascript" src="{{ url_for('static', filename='multi-select/js/jquery.multi-select.js') }}"></script>
 <script type="text/javascript">
+
+$("#bydate").click(function(e) {
+    if ($("#bydate").is(':checked') == true) {
+        $("#startingSeasonDiv").addClass("hidden");
+        $("#endingSeasonDiv").addClass("hidden");
+        $("#startingDateDiv").removeClass("hidden");
+        $("#endingDateDiv").removeClass("hidden");
+    } else {
+        $("#startingSeasonDiv").removeClass("hidden");
+        $("#endingSeasonDiv").removeClass("hidden");
+        $("#startingDateDiv").addClass("hidden");
+        $("#endingDateDiv").addClass("hidden");
+    }
+})
+
 var tableContents = $("#comparisons").html();
 
 $(document).ready(function() {
     $("th:last").addClass("right-rounded");
     checkWidth();
+    $("#filterTeams").multiSelect({
+        selectableHeader: "<div style='color:#fff;border-top-right-radius: 3px;border-top-left-radius: 3px; background-color:#262626;' class='text-center'>Available Teams</div>",
+        selectionHeader: "<div style='color:#fff;border-top-right-radius: 3px;border-top-left-radius: 3px;' class='navbar-default navbar-inverse text-center'>Selected Teams</div>"
+    });
 });
 
 var resizeTimer;
@@ -410,15 +455,20 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .attr("r", function(d) {
             return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0);
         })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"]; })
+        .attr("onclick", function(d) {
+            return "toggleText(\"" + d["Team"].replace(" ", "") + d["season"] + "\");";
+        })
         .style("fill", function(d) {
             return color(d.color);
         })
         .style("stroke", "black")
 
-    svg.selectAll("text")
+    var texts = svg.selectAll("text")
         .data(dataset)
-        .enter()
-        .append("text")
+        .enter();
+
+    texts.append("text")
         .html(function(d) {
             return d["Team"];
         })
@@ -426,11 +476,27 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
             return cpos(d.x, minwidth, maxwidth, width, maxallowed);
         })
         .attr("y", function(d) {
-            return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed) - 8;
         })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "team"; })
         .attr("font-family", "sans-serif")
         .attr("font-size", "12px")
-        .style("text-anchor", "middle")
+        .style("text-anchor", "middle");
+
+    texts.append("text")
+        .html(function(d) {
+            return d["season"];
+        })
+        .attr("x", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+        })
+        .attr("y", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed) + 7;
+        })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "season"; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .style("text-anchor", "middle");
 
 
     var xAxis = d3.svg.axis()
@@ -537,6 +603,11 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .attr("text-anchor", "left")
         .style("font-size", "12px")
         .text("war-on-ice.com")
+}
+
+function toggleText(circleid) {
+    $("#" + circleid + "team").toggle();
+    $("#" + circleid + "season").toggle();
 }
 
 function cpos(val, minval, maxval, distance, maxallowed) {
