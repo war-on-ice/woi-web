@@ -1,0 +1,119 @@
+<div class="row">
+    <div class="col-md-12">
+        <table id="{{ tableid }}" class="table table-striped table-condensed rt cf">
+            <thead>
+                <tr>
+                    <th class="left-rounded team">Team</th>
+                    {% if splitgame == True %}
+                    <th>Date</th>
+                    {% else %}
+                    <th>Gm</th>
+                    {% endif %}
+                    <th>Season</th>
+                    {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
+                    {% set headers = ["GF", "GA", "G+/-", "CF%", "CP60", "OFOn%", "OSh%", "OSv%", "FO%", "PDO", "ZSO%"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
+                    {% set headers = ["HSCF%", "HSC+/-", "HSCF", "HSCA", "HSCF60", "HSCA60", "HSCP60"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
+                    {% set headers = ["SCF%", "SC+/-", "SCF", "SCA", "SCF60", "SCA60", "SCP60"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
+                    {% set headers = ["CF%", "C+/-", "CF", "CA", "CF60", "CA60", "CP60", "FF%", "F+/-", "FF", "FA", "FF60", "FA60", "FP60", "MSF", "MSA", "BSF", "BSA"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
+                    {% set headers = ["SF%", "S+/-", "SF60", "SA60", "SF", "SA", "GF60", "GA60", "GF%", "OSh%", "OFenSh%", "OSv%", "OCOn%", "OFOn%"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
+                    {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
+                    {% for header in headers %}
+                    <th data-original-title="{{ header|tooltip }}" data-container="body"
+data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ header }}</th>
+                    {% endfor %}
+                    {% endif %}
+                </tr>
+            </thead>
+            <tbody>
+                {% for summary in summaries %}
+                <tr>
+                    <td><img alt="{{ summary["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + summary["Team"] + '.png') }}" height="20" width="20"/>{{ summary["Team"]|teamshortname }}</td>
+                    {% if splitgame == True %}
+                    <td>{{ summary["Date"] }}</td>
+                    {% else %}
+                    <td>{{ summary["Gm"] }}</td>
+                    {% endif %}
+                    <td>{{ summary["season"] }}</td>
+
+                    {% if form.tablecolumns.data|int == 0 or form.tablecolumns.data|int == 9 %}
+                    {% set headers = ["GF", "GA", "G+/-", "CF%", "CP60", "OFOn%", "OSh%", "OSv%", "FO%", "PDO", "ZSO%"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 1 %}
+                    {% set headers = ["HSCF%", "HSC+/-", "HSCF", "HSCA", "HSCF60", "HSCA60", "HSCP60"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 2 %}
+                    {% set headers = ["SCF%", "SC+/-", "SCF", "SCA", "SCF60", "SCA60", "SCP60"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 3 %}
+                    {% set headers = ["CF%", "C+/-", "CF", "CA", "CF60", "CA60", "CP60", "FF%", "F+/-", "FF", "FA", "FF60", "FA60", "FP60", "MSF", "MSA", "BSF", "BSA"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 5 %}
+                    {% set headers = ["SF%", "S+/-", "SF60", "SA60", "SF", "SA", "GF60", "GA60", "GF%", "OSh%", "OFenSh%", "OSv%", "OCOn%", "OFOn%"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+
+                    {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
+                    {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
+                    {% for header in headers %}
+                    <td>{{ summary[header] }}</td>
+                    {% endfor %}
+                    {% endif %}
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>

@@ -1,0 +1,151 @@
+{% extends "wrappers/wrapper.html" %}
+{% from "_formhelpers.html" import render_field %}
+
+{% block page_css %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='multi-select/css/multi-select.css') }}"/>
+{% endblock %}
+
+{% block title %}Team History{% endblock %}
+
+{% block content_header %}
+
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        <form class="table-opts" method="post" action="">
+            {{ csrf_token }}
+            <div class="row">
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ render_field(form.teamstrengths) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(form.scoresituations) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(form.homeAway) }}
+                    </div>
+                    <div id="startingSeasonDiv" class="col-md-3">
+                        {{ render_field(form.filterTeams) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ render_field(form.tablecolumns) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(form.startingDate) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(form.endingDate) }}
+                    </div>
+                    <div id="endingSeasonDiv" class="col-md-3">
+                        {{ render_field(form.regularplayoffs) }}
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-3 col-md-offset-9">
+                        <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <!-- Nav tabs -->
+        <ul class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#tabulargame" aria-controls="tabulargame" role="tab" data-toggle="tab">Tabular By Game</a></li>
+            <li role="presentation"><a href="#graphicalgame" aria-controls="graphicalgame" role="tab" data-toggle="tab">Graphical By Game</a></li>
+            <li role="presentation"><a href="#tabularseason" aria-controls="tabularseason" role="tab" data-toggle="tab">Tabular By Season</a></li>
+            <li role="presentation"><a href="#graphicalseason" aria-controls="graphicalseason" role="tab" data-toggle="tab">Graphical By Season</a></li>
+        </ul>
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="tabulargame">
+                {% set summaries=games %}
+                {% set splitgame=True %}
+                {% set tableid="comparisons-game" %}
+                {% include "tables/teaminfo.html" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="graphicalgame">
+
+            </div>
+            <div role="tabpanel" class="tab-pane" id="tabularseason">
+                {% set summaries=seasons %}
+                {% set splitgame = False %}
+                {% set tableid="comparisons-season" %}
+                {% include "tables/teaminfo.html" %}
+            </div>
+            <div role="tabpanel" class="tab-pane" id="graphicalseason">
+
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}
+
+{% block page_js %}
+<script type="text/javascript">
+
+var seasonTableContents = $("#comparisons-season").html();
+var gameTableContents = $("#comparisons-game").html();
+
+$(document).ready(function() {
+    $("th:last").addClass("right-rounded");
+    checkWidth();
+});
+
+var resizeTimer;
+$(window).on('resize', function(e) {
+
+  clearTimeout(resizeTimer);
+  resizeTimer = setTimeout(function() {
+
+    $("#comparisons-game").dataTable().fnDestroy();
+    $("#comparisons-season").dataTable().fnDestroy();
+    checkWidth();
+            
+  }, 250);
+
+});
+
+$('a[data-toggle="tab"]').on( 'shown.bs.tab', function (e) {
+    $.fn.dataTable.tables( {visible: true, api: true} ).columns.adjust();
+} );
+
+function checkWidth() {
+    if ($(window).width() <= 640) {
+        $("#comparisons-game").html(gameTableContents);
+        $('#comparisons-game').DataTable({
+            "aaSorting": [[1, "desc"]],
+            "autoWidth": false
+        });
+        $("#comparisons-season").html(seasonTableContents);
+        $('#comparisons-season').DataTable({
+            "paging": false,
+            "autoWidth": false
+        });
+    } else {
+        $('#comparisons-game').DataTable({
+            "aaSorting": [[1, "desc"]],
+            "scrollX": true,
+            "fixedColumns": true,
+            "autoWidth": false
+        });
+        $('#comparisons-season').DataTable({
+            "paging": false,
+            "scrollX": true,
+            "fixedColumns": true,
+            "autoWidth": false
+        });
+    }
+    $(function () {
+      $('[data-toggle="tooltip"]').tooltip()
+    })
+}
+</script>
+{% endblock %}

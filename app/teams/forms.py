@@ -3,6 +3,8 @@ from wtforms.fields.html5 import DateField
 
 from operator import itemgetter
 
+import datetime
+
 from app import constants
 
 class SeasonSelectForm(Form):
@@ -15,6 +17,36 @@ class SeasonSelectForm(Form):
         except:
             pass
         Form.__init__(self, formdata, obj, prefix, **kwargs)
+
+
+class HistoryForm(Form):
+    teamstrengths = SelectField(u'Team Strength',
+        choices=sorted([(str(constants.strength_situations_dict[key]["value"]), key)
+                        for key in constants.strength_situations_dict],
+                        key=lambda k: constants.strength_situations_dict[k[1]]["order"]),
+        default=constants.strength_situations_dict["Even strength 5v5"]["value"])
+    scoresituations = SelectField(u'Score Situation',
+        choices=sorted([(str(constants.score_situations_dict[key]["value"]), key)
+                        for key in constants.score_situations_dict],
+                        key=lambda k: constants.score_situations_dict[k[1]]["order"]),
+        default=constants.score_situations_dict["All"]["value"])
+    homeAway = SelectField(u'Home/Away Situation',
+        choices=[("1", "Home"), ("0", "Away"), ("all", "All")],
+        default="all")
+    filterTeams = SelectField(u'Select Team',
+        choices=sorted([(constants.teamDict[key], key) for key in constants.teamDict]),
+        default="BOS")
+    tablecolumns = SelectField(u'Table Columns',
+        choices=[("0", "Prime"), ("1", "High-Danger Chances"), ("2", "Scoring Chances"),
+                ("3", "Corsi/Fenwick"), ("5", "Shot-Based/Goal-Based"),
+                ("7", "Faceoffs"), ("9", "All")],
+        default="0")
+    startingDate = DateField(u'Starting Date', validators=[validators.optional(),],
+        default=datetime.datetime.strptime("2002-10-01", "%Y-%m-%d"))
+    endingDate = DateField(u'Ending Date', validators=[validators.optional(),])
+    regularplayoffs = SelectField(u'Regular/Playoffs',
+        choices=[("0", "All"), ("1", "Regular"), ("2", "Playoff")],
+        default="0")
 
 
 class ComparisonForm(Form):
@@ -47,7 +79,6 @@ class ComparisonForm(Form):
                         for key in constants.periods_options],
                         key=lambda k: constants.periods_options[k[1]]["order"]),
         default=constants.periods["default"])
-    # TODO: Check, some column choices seemed redundant
     tablecolumns = SelectField(u'Table Columns',
         choices=[("0", "Prime"), ("1", "High-Danger Chances"), ("2", "Scoring Chances"),
                 ("3", "Corsi/Fenwick"), ("5", "Shot-Based/Goal-Based"),

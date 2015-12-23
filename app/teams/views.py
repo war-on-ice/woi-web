@@ -8,7 +8,7 @@ from app.gamesummary.models import TeamRun
 from app import app, Base, constants, filters, helpers
 from app.gamesummary.calls import get_r_standings, get_r_seasons, compiled_teams
 
-from forms import SeasonSelectForm, ComparisonForm, ComparisonGraphForm
+from forms import SeasonSelectForm, ComparisonForm, ComparisonGraphForm, HistoryForm
 
 import datetime
 import urllib2
@@ -47,6 +47,65 @@ def show_team_standings():
         seasongames=seasongames,
         form=form,
         allseasons=allseasons,
+        seasons=seasons)
+
+
+@mod.route("/history/", methods=["GET", "POST"])
+def show_team_history():
+    rd = setup_nav()
+    form = HistoryForm(request.form)
+    now = datetime.datetime.now().date()
+    if request.method == "POST" and form.validate():
+        pass
+    else:
+        form.endingDate.data = now
+        form.startingDate.data = datetime.datetime.strptime(str(now.year-1) + "-10-01", "%Y-%m-%d").date()
+
+    startingDate = form.startingDate.data
+    endingDate = form.endingDate.data
+    team = form.filterTeams.data
+    columns = form.tablecolumns.data
+    regularplayoffs = form.regularplayoffs.data
+
+    # Filter teamrun based on form data
+    teamstrengths = int(form.teamstrengths.data)
+    if teamstrengths == 7:
+        teamstrengths = [constants.strength_situations_dict[x]["value"] for x in constants.strength_situations_dict]
+    else:
+        teamstrengths = [teamstrengths, ]
+    scoresituations = int(form.scoresituations.data)
+    if scoresituations == 7:
+        scoresituations = [constants.score_situations_dict[x]["value"] for x in constants.score_situations_dict]
+    homeaway = form.homeAway.data
+    if homeaway == "all":
+        homeaway = [0, 1]
+    else:
+        homeaway = [int(homeaway), ]
+    periods = constants.periods_options["All"]["value"]
+    if 0 in periods:
+        periods = [0, ]
+
+    if 7 in scoresituations:
+        scoresituations = [7, ]
+    if 7 in teamstrengths:
+        teamstrengths = [7, ]
+
+    teamrun = TeamRun.query.filter(TeamRun.Date >= startingDate, TeamRun.Date <= endingDate,
+        TeamRun.gamestate.in_(teamstrengths),
+        TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
+        TeamRun.Team == team,
+        TeamRun.period.in_(periods)).all()
+
+
+    for team in teamrun:
+        print team.Date, team.TOI, team.period, type(team.period)
+
+    games, seasons = helpers.calculate(teamrun, True)
+
+    return render_template("teams/teamhistory.html",
+        rd=rd,
+        form=form,
+        games=games,
         seasons=seasons)
 
 
