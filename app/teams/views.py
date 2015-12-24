@@ -54,12 +54,14 @@ def show_team_standings():
 def show_team_history():
     rd = setup_nav()
     form = HistoryForm(request.form)
+    cpg = ComparisonGraphForm()
+    cpg.xaxis.data = "season"
     now = datetime.datetime.now().date()
     if request.method == "POST" and form.validate():
         pass
     else:
         form.endingDate.data = now
-        form.startingDate.data = datetime.datetime.strptime(str(now.year-1) + "-10-01", "%Y-%m-%d").date()
+        form.startingDate.data = datetime.datetime.strptime("2002-10-01", "%Y-%m-%d").date()
 
     startingDate = form.startingDate.data
     endingDate = form.endingDate.data
@@ -96,14 +98,11 @@ def show_team_history():
         TeamRun.Team == team,
         TeamRun.period.in_(periods)).all()
 
-
-    for team in teamrun:
-        print team.Date, team.TOI, team.period, type(team.period)
-
     games, seasons = helpers.calculate(teamrun, True)
 
     return render_template("teams/teamhistory.html",
         rd=rd,
+        cpg=cpg,
         form=form,
         games=games,
         seasons=seasons)
@@ -130,7 +129,6 @@ def show_team_comparisons():
         form.endingSeason.data = int(form.endingSeason.data)
     except:
         pass
-    print form.startingDate.data
     allseasons = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
     usedates = False
 
@@ -162,7 +160,6 @@ def show_team_comparisons():
                 endingDate = startingDate
                 startingDate = temp
     else:
-        print form.errors
         smax = max(teamgames.keys())
         seasons = [smax, ]
     # Filter teamrun based on form data

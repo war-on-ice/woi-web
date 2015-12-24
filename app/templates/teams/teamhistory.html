@@ -80,12 +80,50 @@
                 {% include "tables/teaminfo.html" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="graphicalseason">
+                <form id="cpg">
+                    <div class="row">
+                        <div class="col-md-3">
+                            {{ render_field(cpg.xaxis) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(cpg.yaxis) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(cpg.caxis) }}
+                        </div>
+                        <div class="col-md-3">
+                            {{ render_field(cpg.saxis) }}
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph()">Generate Chart</button>
+                        </div>
+                        <div class="col-md-6">
+                            <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG">Create PNG from Current Chart</button>
+                        </div>
+                    </div>
+                </form>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="season-graph">
 
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="text-center"><b>*Click a circle to toggle the text</b></p>
+                    </div>
+                </div>
             </div>
         </div>
 
     </div>
 </div>
+
+<div id="pngdataurl" style="display:none"></div>
+<canvas width="960" height="500" style="display:none"></canvas>
 {% endblock %}
 
 {% block page_js %}
@@ -147,5 +185,391 @@ function checkWidth() {
       $('[data-toggle="tooltip"]').tooltip()
     })
 }
+</script>
+<script type="text/javascript">
+var margin = {top: 20, right: 10, bottom: 30, left: 40};
+var width = $("#tabulargame").width() - margin.left - margin.right,
+    height = width / 1.5 - margin.top - margin.bottom;
+
+$("#graphical").height(height + margin.top + margin.bottom + 20);
+
+var dataset = [
+    {% for summary in seasons %}
+    {
+        {% for key in summary %}
+        {% if key == "Team" %}
+        "{{ key }}": "{{ summary[key]|teamshortname }}",
+        {% elif summary[key] is number %}
+        "{{ key }}": {{ summary[key] }},
+        {% else %}
+        "{{ key }}": "{{ summary[key] }}",
+        {% endif %}
+        {% endfor %}
+    },
+    {% endfor %}
+];
+
+createGraph("season", "SA", "CF60", "OSv%", "Time",
+    "On-Ice Shots-On-Goal Differential", "Corsi For, Per 60 Minutes", "On-Ice Save Percentage");
+
+function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
+    $("#season-graph").html("");
+    var maxradius = 0,
+        maxheight = 0,
+        minheight = 100000000,
+        minwidth = 100000000,
+        maxwidth = 0,
+        mincolor = 100000000,
+        maxcolor = 0;
+
+    for (var i=0; i<dataset.length; i++) {
+        var row = dataset[i];
+        row.x = row[x];
+        row.y = row[y];
+        row.color = row[color];
+        row.size = row[size];
+        if (row.size > maxradius) {
+            maxradius = row.size;
+        }
+        if (row.y > maxheight) {
+            maxheight = row.y;
+        }
+        if (row.y < minheight) {
+            minheight = row.y;
+        }
+        if (row.x > maxwidth) {
+            maxwidth = row.x;
+        }
+        if (row.x < minwidth) {
+            minwidth = row.x;
+        }
+        if (row.color > maxcolor) {
+            maxcolor = row.color;
+        }
+        if (row.color < mincolor) {
+            mincolor = row.color;
+        }
+    }
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    if (maxcolor - mincolor >= 3) {
+        var color = d3.scale.linear().domain([Math.floor(mincolor), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor)]).range(["#FF2400", "#FFFFFF", "#0042FF"])
+    } else {
+        var color = d3.scale.linear().domain([Math.floor(mincolor - (maxcolor - mincolor)), Math.round((mincolor + maxcolor) / 2), Math.ceil(maxcolor + (maxcolor - mincolor))]).range(["#FF2400", "#FFFFFF", "#0042FF"])
+    }
+    var maxallowed = 35,
+        minallowed = 2;
+    var rr = maxallowed / maxradius;
+
+    var svg = d3.select("#season-graph")
+        .insert("svg", "svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    svg.append("rect")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
+        .attr("fill", "white");
+
+    svg.selectAll("circle")
+        .data(dataset)
+        .enter()
+        .append("circle")
+        .attr("class", "circle")
+        .attr("cx", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
+        })
+        .attr("cy", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext);
+        })
+        .attr("r", function(d) {
+            return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0, sizetext);
+        })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"]; })
+        .attr("onclick", function(d) {
+            return "toggleText(\"" + d["Team"].replace(" ", "") + d["season"] + "\");";
+        })
+        .style("fill", function(d) {
+            return color(d.color);
+        })
+        .style("stroke", "black")
+
+    var texts = svg.selectAll("text")
+        .data(dataset)
+        .enter();
+
+    texts.append("text")
+        .html(function(d) {
+            return d["Team"];
+        })
+        .attr("x", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
+        })
+        .attr("y", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext) - 7;
+        })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "team"; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .style("text-anchor", "middle");
+
+    texts.append("text")
+        .html(function(d) {
+            return d["season"];
+        })
+        .attr("x", function(d) {
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
+        })
+        .attr("y", function(d) {
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext) + 7;
+        })
+        .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "season"; })
+        .attr("font-family", "sans-serif")
+        .attr("font-size", "12px")
+        .style("text-anchor", "middle");
+
+
+    if (xtext != "Time") {
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(10)
+            .tickFormat(function(d) {
+                return formatAxisText(d, xtext);
+            });
+    } else {
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(0);
+    }
+
+    if (ytext != "Time") {
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(10)
+            .tickFormat(function(d) { return formatAxisText(d, ytext); });
+    } else {
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(0);
+    }
+
+    x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
+    y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
+
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("x", width - 50)
+      .attr("dy", "-.71em")
+      .style("text-anchor", "end")
+      .text(xtext);
+
+    svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text(ytext);
+
+    var legendRectSize = 18;
+    var legendSpacing = 4;
+
+    var legend = svg.selectAll('.legend')
+      .data(color.domain().reverse())
+      .enter()
+      .append('g')
+      .attr('class', 'legend')
+      .attr('transform', function(d, i) {
+        var height = legendRectSize + legendSpacing;
+        var offset =  height * color.domain().length / 2;
+        var horz = -2 * legendRectSize;
+        var vert = i * height + offset;
+        return 'translate(' + horz + ',' + vert + ')';
+      });
+
+    legend.append('rect')
+      .attr('x', legendRectSize + margin.left + margin.right + 15)
+      .attr('y', legendRectSize + margin.top)
+      .attr('width', legendRectSize)
+      .attr('height', legendRectSize)
+      .style('fill', color)
+      .style('stroke', color)
+      .style("stroke", "black");
+
+    legend.append('text')
+      .attr('x', legendRectSize + margin.left + margin.right + 60)
+      .attr('y', legendRectSize + margin.top + legendRectSize / 1.5)
+      .style("text-anchor", "end")
+      .text(function(d) { return d; });
+
+    var texts = colortext.split(",");
+
+    for (var i=0; i<texts.length; i++) {
+        var text = texts[i];
+        if (i != texts.length - 1) {
+            text = text + ",";
+        }
+        svg.append("g")
+          .attr("class", "x axis")
+        .append("text")
+          .attr("dx", "4em")
+          .attr("dy", (11 + i) + "em")
+          .style("text-anchor", "left")
+          .text(text)
+    }
+
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 4))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(xtext + " vs " + ytext + ",");
+
+    svg.append("text")
+        .attr("x", (width / 2))
+        .attr("y", 18 - (margin.top / 4))
+        .attr("text-anchor", "middle")
+        .style("font-size", "16px")
+        .style("text-decoration", "underline")
+        .text("Colored by " + colortext + ", Sized by " + sizetext);
+
+    svg.append("text")
+        .attr("x", margin.left)
+        .attr("y", height - margin.bottom)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+}
+
+function formatAxisText(d, text) {
+    if (text == "Time") {
+        return startYear(d);
+    }
+    else if (text.indexOf("Fraction") >= 0 || text.indexOf("Percentage") >= 0) {
+        return d + "%";
+    } else {
+        return d;
+    }
+}
+
+function toggleText(circleid) {
+    $("#" + circleid + "team").toggle();
+    $("#" + circleid + "season").toggle();
+}
+
+function cpos(val, minval, maxval, distance, maxallowed, xtext) {
+    if (xtext != "Time") {
+        return (val - minval) / (maxval - minval) * (distance - maxallowed * 2) + maxallowed;
+    } else {
+        return (years(distance) * (startYear(val) - 2002));
+    }
+}
+
+function years(distance) {
+    var year = new Date().getFullYear();
+    year = year * 10000 + year + 1;
+    var diff = (distance - 15) / (startYear(year) - startYear(2002));
+    console.log(diff)
+    return diff
+}
+
+
+function startYear(year) {
+    var string = year.toString().substring(0,4);
+    return Number(string);
+}
+
+function addGraph() {
+    var x = $("#xaxis").val(),
+        y = $("#yaxis").val(),
+        color = $("#caxis").val(),
+        size = $("#saxis").val(),
+        xtext = $("#xaxis option[value='" + x + "']").text(),
+        ytext = $("#yaxis option[value='" + y + "']").text(),
+        colortext = $("#caxis option[value='" + color + "']").text(),
+        sizetext = $("#saxis option[value='" + size + "']").text();
+    xtext = xtext.replace(/ *\([^)]*\) */g, "");
+    ytext = ytext.replace(/ *\([^)]*\) */g, "");
+    colortext = colortext.replace(/ *\([^)]*\) */g, "");
+    sizetext = sizetext.replace(/ *\([^)]*\) */g, "");
+    createGraph(x, y, color, size, xtext, ytext, colortext, sizetext);
+
+};
+
+function wrap(text, width) {
+  text.each(function() {
+    var text = d3.select(this),
+        words = text.text().split(/\s+/).reverse(),
+        word,
+        line = [],
+        lineNumber = 0,
+        lineHeight = 1.1, // ems
+        y = text.attr("y"),
+        dy = parseFloat(text.attr("dy")),
+        tspan = text.text(null).style("text-anchor", "right").append("tspan").attr("x", "80").attr("y", y).attr("dy", dy + "em");
+    while (word = words.pop()) {
+      line.push(word);
+      tspan.text(line.join(" "));
+      if (tspan.node().getComputedTextLength() > width) {
+        line.pop();
+        tspan.text(line.join(" "));
+        line = [word];
+        tspan = text.append("tspan").style("text-anchor", "right").attr("x", "80").attr("y", y).attr("dy", "1em").text(word);
+      }
+    }
+  });
+}
+
+d3.select("#savePNG").on("click", function(){
+  var html = d3.select("svg")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+  //console.log(html);
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  var img = '<img src="'+imgsrc+'">'; 
+
+
+  var canvas = document.querySelector("canvas"),
+      context = canvas.getContext("2d");
+  canvas.width = width + margin.left + margin.right;
+  canvas.height = height + margin.top + margin.bottom;
+
+  var image = new Image;
+  image.src = imgsrc;
+  image.onload = function() {
+      context.drawImage(image, 0, 0);
+
+      var canvasdata = canvas.toDataURL("image/png");
+
+      var pngimg = '<img src="'+canvasdata+'">'; 
+      d3.select("#pngdataurl").html(pngimg);
+
+      var a = document.createElement("a");
+      a.download = "sample.png";
+      a.href = canvasdata;
+          document.body.appendChild(a);
+      a.click();
+  };
+
+});
 </script>
 {% endblock %}

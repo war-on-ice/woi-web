@@ -247,7 +247,7 @@ function checkWidth() {
 </script>
 <!-- Team Comparison Graphical View -->
 <script type="text/javascript">
-var margin = {top: 20, right: 20, bottom: 30, left: 30};
+var margin = {top: 20, right: 10, bottom: 30, left: 40};
 var width = $("#info-container").width() - margin.left - margin.right,
     height = width / 1.5 - margin.top - margin.bottom;
 
@@ -293,17 +293,20 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         }
         if (row.y > maxheight) {
             maxheight = row.y;
-        } else if (row.y < minheight) {
+        }
+        if (row.y < minheight) {
             minheight = row.y;
         }
         if (row.x > maxwidth) {
             maxwidth = row.x;
-        } else if (row.x < minwidth) {
+        }
+        if (row.x < minwidth) {
             minwidth = row.x;
         }
         if (row.color > maxcolor) {
             maxcolor = row.color;
-        } else if (row.color < mincolor) {
+        }
+        if (row.color < mincolor) {
             mincolor = row.color;
         }
     }
@@ -337,13 +340,13 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .append("circle")
         .attr("class", "circle")
         .attr("cx", function(d) {
-            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
         })
         .attr("cy", function(d) {
-            return height - cpos(d.y, minheight, maxheight, height, maxallowed);
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext);
         })
         .attr("r", function(d) {
-            return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0);
+            return cpos(d.size * rr, minallowed, maxallowed, maxallowed, 0, sizetext);
         })
         .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"]; })
         .attr("onclick", function(d) {
@@ -363,10 +366,10 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
             return d["Team"];
         })
         .attr("x", function(d) {
-            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
         })
         .attr("y", function(d) {
-            return height - cpos(d.y, minheight, maxheight, height, maxallowed) - 7;
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext) - 7;
         })
         .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "team"; })
         .attr("font-family", "sans-serif")
@@ -378,10 +381,10 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
             return d["season"];
         })
         .attr("x", function(d) {
-            return cpos(d.x, minwidth, maxwidth, width, maxallowed);
+            return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);
         })
         .attr("y", function(d) {
-            return height - cpos(d.y, minheight, maxheight, height, maxallowed) + 7;
+            return height - cpos(d.y, minheight, maxheight, height, maxallowed, ytext) + 7;
         })
         .attr("id", function(d) { return d["Team"].replace(" ", "") + d["season"] + "season"; })
         .attr("font-family", "sans-serif")
@@ -389,19 +392,33 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .style("text-anchor", "middle");
 
 
-    var xAxis = d3.svg.axis()
-        .scale(x)
-        .orient("bottom")
-        .ticks(10)
-        .tickFormat(function(d) {
-            return formatAxisText(d, xtext);
-        });
+    if (xtext != "Time") {
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(10)
+            .tickFormat(function(d) {
+                return formatAxisText(d, xtext);
+            });
+    } else {
+        var xAxis = d3.svg.axis()
+            .scale(x)
+            .orient("bottom")
+            .ticks(0);
+    }
 
-    var yAxis = d3.svg.axis()
-        .scale(y)
-        .orient("left")
-        .ticks(10)
-        .tickFormat(function(d) { return formatAxisText(d, ytext); });
+    if (ytext != "Time") {
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(10)
+            .tickFormat(function(d) { return formatAxisText(d, ytext); });
+    } else {
+        var yAxis = d3.svg.axis()
+            .scale(y)
+            .orient("left")
+            .ticks(0);
+    }
 
     x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
     y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
@@ -498,7 +515,10 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
 }
 
 function formatAxisText(d, text) {
-    if (text.indexOf("Fraction") >= 0 || text.indexOf("Percentage") >= 0) {
+    if (text == "Time") {
+        return startYear(d);
+    }
+    else if (text.indexOf("Fraction") >= 0 || text.indexOf("Percentage") >= 0) {
         return d + "%";
     } else {
         return d;
@@ -510,8 +530,25 @@ function toggleText(circleid) {
     $("#" + circleid + "season").toggle();
 }
 
-function cpos(val, minval, maxval, distance, maxallowed) {
-    return (val - minval) / (maxval - minval) * (distance - maxallowed * 2) + maxallowed;
+function cpos(val, minval, maxval, distance, maxallowed, xtext) {
+    if (xtext != "Time") {
+        return (val - minval) / (maxval - minval) * (distance - maxallowed * 2) + maxallowed;
+    } else {
+        return (years(distance) * (startYear(val) - 2002));
+    }
+}
+
+function years(distance) {
+    var year = new Date().getFullYear();
+    year = year * 10000 + year + 1;
+    var diff = (distance - 15) / (startYear(year) - startYear(2002));
+    return diff
+}
+
+
+function startYear(year) {
+    var string = year.toString().substring(0,4);
+    return Number(string);
 }
 
 function addGraph() {
@@ -555,28 +592,12 @@ function wrap(text, width) {
   });
 }
 
-/*function createPNG(){
-  var html = d3.select("svg")
-        .attr("version", 1.1)
-        .attr("xmlns", "http://www.w3.org/2000/svg")
-        .node().parentNode.innerHTML;
-
-  //console.log(html);
-  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
-  var img = '<img class="img-responsive" src="'+imgsrc+'">'; 
-  d3.select("#png-graph").html(img);
-  $("#png-text").show();
-  $("#png-modal").modal();
-
-}*/
-
 d3.select("#savePNG").on("click", function(){
   var html = d3.select("svg")
         .attr("version", 1.1)
         .attr("xmlns", "http://www.w3.org/2000/svg")
         .node().parentNode.innerHTML;
 
-  //console.log(html);
   var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
   var img = '<img src="'+imgsrc+'">'; 
 
@@ -591,13 +612,13 @@ d3.select("#savePNG").on("click", function(){
   image.onload = function() {
       context.drawImage(image, 0, 0);
 
-      var canvasdata = canvas.toDataURL("image/jpeg");
+      var canvasdata = canvas.toDataURL("image/png");
 
       var pngimg = '<img src="'+canvasdata+'">'; 
       d3.select("#pngdataurl").html(pngimg);
 
       var a = document.createElement("a");
-      a.download = "sample.jpeg";
+      a.download = "sample.png";
       a.href = canvasdata;
           document.body.appendChild(a);
       a.click();

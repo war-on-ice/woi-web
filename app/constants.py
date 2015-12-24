@@ -184,4 +184,5 @@ comparisonchoices = [("ZSN", "Neutral Zone Starts"),
   ("OCOn%", "On-ice Corsi On-goal Percentage"),
   ("OFAOn%", "On-Ice Unblocked Shot Attempts On Goal, Against"),
   ("OSv%", "On-Ice Save Percentage"),
-  ("FenSv%", "On-Ice Unblocked Save Percentage")]
+  ("FenSv%", "On-Ice Unblocked Save Percentage"),
+  ("season", "Time")]
