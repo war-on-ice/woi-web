@@ -671,6 +671,15 @@ for (var i=0; i<alldata.length; i++) {
     }
 }
 
+var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("background", "#EEEEEE")
+    .style("border-radius", 3)
+    .text("a simple tooltip");
+
 var MARGINS = {top: 20, right: 20, bottom: 30, left: 50},
     WIDTH = 960 - margin.left - margin.right,
     HEIGHT = 500 - margin.top - margin.bottom;
@@ -717,7 +726,7 @@ var line = d3.svg.line()
 svg.append("path")
     .datum(data)
     .attr('stroke', get_team_color(teamname, true))
-    .attr('stroke-width', 4)
+    .attr('stroke-width', 6)
     .attr('fill', "none")
     .attr("d", line);
 
@@ -728,6 +737,29 @@ svg.append("path")
     .attr('fill', "none")
     .attr("d", line);
 
+
+svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+        .data(data)                                         // associates the range of data to the group of elements
+    .enter().append("circle")                               // adds a circle for each data point
+        .attr("r", 4)                                       // with a radius of 3.5 pixels
+        .attr("cx", function(d) { return x(new Date(d["Date"])); })      // at an appropriate x coordinate 
+        .attr("cy", function(d) { return y(d["SF"]); })     // and an appropriate y coordinate
+        .attr("opacity", "0")
+    .on("mouseover", function(d){
+        tooltip.text(d["Date"]);
+        return tooltip.style("visibility", "visible");
+        })
+    .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+    .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
+svg.append("text")
+    .attr("x", width - margin.right)
+    .attr("y", height - margin.bottom - 50)
+    .attr("text-anchor", "left")
+    .style("font-size", "12px")
+    .text("war-on-ice.com")
+
+
 function compare(a,b) {
   if (a["Date"] < b["Date"])
     return -1;
@@ -737,7 +769,6 @@ function compare(a,b) {
 }
 
 for (var i=0; i<offDates.length; i++) {
-    console.log(offDates[i][0], offDates[i][1]);
     svg.append("rect")
         .attr("width", x(offDates[i][1]) - x(offDates[i][0]))
         .attr("height", height + margin.top + margin.bottom)
@@ -800,6 +831,95 @@ function get_team_color(team, primary) {
         }
     }
 }
+
+</script>
+<script type="text/javascript">
+
+var datadistr = {{ datadistr|safe }}
+
+// line chart based on http://bl.ocks.org/mbostock/3883245
+var margin = {
+        top: 20,
+        right: 20,
+        bottom: 30,
+        left: 50
+    },
+    width = 960 - margin.left - margin.right,
+    height = 500 - margin.top - margin.bottom;
+
+var x = d3.scale.linear()
+    .range([0, width]);
+
+var y = d3.scale.linear()
+    .range([height, 0]);
+
+var xAxis = d3.svg.axis()
+    .scale(x)
+    .orient("bottom");
+
+var yAxis = d3.svg.axis()
+    .scale(y)
+    .orient("left");
+
+var line = d3.svg.line()
+    .x(function(d) {
+        console.log(d.x, d.y)
+        return x(d.x);
+    })
+    .y(function(d) {
+        return y(d.y);
+    });
+
+var svg = d3.select("#game-graph").append("svg")
+    .attr("width", width + margin.left + margin.right)
+    .attr("height", height + margin.top + margin.bottom)
+    .append("g")
+    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+x.domain(d3.extent(datadistr, function(d) {
+    return d.x;
+}));
+y.domain(d3.extent(datadistr, function(d) {
+    return d.y;
+}));
+
+svg.append("g")
+    .attr("class", "x axis")
+    .attr("transform", "translate(0," + height + ")")
+    .call(xAxis);
+
+svg.append("g")
+    .attr("class", "y axis")
+    .call(yAxis);
+
+/*svg.append("path")
+    .datum(datadistr)
+    .attr("class", "line")
+    .attr('stroke', get_team_color(teamname, true))
+    .attr('stroke-width', 6)
+    .attr('fill', "none")
+    .attr("d", line);*/
+
+var bar = svg.selectAll(".bar")
+    .data(datadistr)
+  .enter().append("g")
+    .attr("class", "bar")
+    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+bar.append("rect")
+    .attr("x", 1)
+    .attr("width", x(datadistr[0].x + 1) - x(datadistr[0].x))
+    .attr("fill", get_team_color(teamname, false))
+    .attr("stroke", get_team_color(teamname, true))
+    .attr("height", function(d) { return height - y(d.y); });
+
+/*svg.append("path")
+    .datum(datadistr)
+    .attr("class", "line")
+    .attr('stroke', get_team_color(teamname, false))
+    .attr('stroke-width', 2)
+    .attr('fill', "none")
+    .attr("d", line);*/
 
 </script>
 {% endblock %}
