@@ -234,6 +234,7 @@ var dataset = [
         {% for key in summary %}
         {% if key == "Team" %}
         "{{ key }}": "{{ summary[key]|teamshortname }}",
+        "teaminitial": "{{ summary[key] }}",
         {% elif summary[key] is number %}
         "{{ key }}": {{ summary[key] }},
         {% else %}
@@ -614,6 +615,7 @@ var alldata = [
         {% for key in summary %}
         {% if key == "Team" %}
         "{{ key }}": "{{ summary[key]|teamshortname }}",
+        "teaminitial": "{{ summary[key] }}",
         {% elif summary[key] is number %}
         "{{ key }}": {{ summary[key] }},
         {% else %}
@@ -625,10 +627,34 @@ var alldata = [
 ];
 
 var data = [];
+var teamname = "";
+var offDates = [];
+alldata.sort(compare);
 for (var i=0; i<alldata.length; i++) {
     var g = 0;
     var total = 0;
+    if (i != 0) {
+        var pdate = new Date(alldata[i-1]["Date"]);
+        var cdate = new Date(alldata[i]["Date"]);
+        var timeDiff = Math.abs(cdate.getTime() - pdate.getTime());
+        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+        if (diffDays > 30) {
+            offDates.push([pdate, cdate]);
+        }
+    }
     var curryear = alldata[i]["season"];
+    if (teamname == "") {
+        teamname = alldata[i]["teaminitial"];
+    }
+    var min = 12;
+    var max = 12;
+    while (i - min < 0) {
+        min -= 1;
+        max += 1;
+    }
+    while (i + max >= alldata.length) {
+        max -= 1;
+    }
     for (var j=i-12; j<i+12; j++) {
         if (j < 0 || j >= alldata.length) {
             
@@ -690,18 +716,33 @@ var line = d3.svg.line()
 
 svg.append("path")
     .datum(data)
-    .attr('stroke', 'green')
-    .attr('stroke-width', 2)
-    .attr('fill', 'none')
+    .attr('stroke', get_team_color(teamname, true))
+    .attr('stroke-width', 4)
+    .attr('fill', "none")
     .attr("d", line);
 
-for (var i = minyear.getFullYear(); i < maxyear.getFullYear(); i++) {
-    console.log(i + 1, i, new Date((i + 1).toString()), new Date(i));
+svg.append("path")
+    .datum(data)
+    .attr('stroke', get_team_color(teamname, false))
+    .attr('stroke-width', 2)
+    .attr('fill', "none")
+    .attr("d", line);
+
+function compare(a,b) {
+  if (a["Date"] < b["Date"])
+    return -1;
+  if (a["Date"] > b["Date"])
+    return 1;
+  return 0;
+}
+
+for (var i=0; i<offDates.length; i++) {
+    console.log(offDates[i][0], offDates[i][1]);
     svg.append("rect")
-        .attr("width", x(new Date((i + 1).toString() + "-05-01")) - x(new Date(i.toString() + "-10-01")))
+        .attr("width", x(offDates[i][1]) - x(offDates[i][0]))
         .attr("height", height + margin.top + margin.bottom)
-        .attr("transform", "translate(" + x(new Date(i.toString() + "-05-01")) + ",-" + margin.top + ")")
-        .attr("fill", "white");
+        .attr("transform", "translate(" + x(offDates[i][0]) + ",-" + margin.top + ")")
+        .attr("fill", "#EEEEEE");
 }
 
 svg.append('g')
@@ -712,6 +753,53 @@ svg.append('g')
 svg.append('g')
   .attr('class', 'y axis')
   .call(yAxis);
+
+function get_team_color(team, primary) {
+    var coloroptions = [
+        ["1","ANA","#91764B","#EF5225","Anaheim Ducks","Anaheim"],
+        ["2","BOS","#FFC422","#000000","Boston Bruins","Boston"],
+        ["3","BUF","#002E62","#FDBB2F","Buffalo Sabres","Buffalo"],
+        ["4","CAR","#E03A3E","#8E8E90","Carolina Hurricanes","Carolina"],
+        ["5","CBJ","#00285C","#A9B0B8","Columbus Blue Jackets","Columbus"],
+        ["6","CGY","#E03A3E","#000000","Calgary Flames","Calgary"],
+        ["7","CHI","#E3263A","#000000","Chicago Blackhawks","Chicago"],
+        ["8","COL","#8B2942","#01548A","Colorado Avalanche","Colorado"],
+        ["9","DAL","#006A4E","#000000","Dallas Stars","Dallas"],
+        ["10","DET","#EC1F26","#EC1F26","Detroit Red Wings","Detroit"],
+        ["11","EDM","#E66A20","#003777","Edmonton Oilers","Edmonton"],
+        ["12","FLA","#D59C05","#C8213F","Florida Panthers","Florida"],
+        ["13","L.A","#000000","#AFB7BA","Los Angeles Kings","Los Angeles"],
+        ["14","MIN","#025736","#BF2B37","Minnesota Wild","Minnesota"],
+        ["15","MTL","#BF2F38","#213770","Montreal Canadiens","Montreal"],
+        ["16","N.J","#E03A3E","#000000","New Jersey Devils","New Jersey"],
+        ["17","NSH","#FDBB2F","#002E62","Nashville Predators","Nashville"],
+        ["18","NYI","#00529B","#F57D31","New York Islanders","NY Islanders"],
+        ["19","NYR","#0161AB","#E6393F","New York Rangers","NY Rangers"],
+        ["20","OTT","#E4173E","#000000","Ottawa Senators","Ottawa"],
+        ["21","PHI","#F47940","#000000","Philadelphia Flyers","Philadelphia"],
+        ["22","PHX","#8E0028","#EFE1C6","Phoenix Coyotes","Phoenix"],
+        ["23","PIT","#D1BD80","#000000","Pittsburgh Penguins","Pittsburgh"],
+        ["24","S.J","#F38F20","#05535D","San Jose Sharks","San Jose"],
+        ["25","STL","#0546A0","#FFC325","St. Louis Blues","St. Louis"],
+        ["26","T.B","#013E7D","#CCCCCC","Tampa Bay Lightning","Tampa Bay"],
+        ["27","TOR","#003777","#003777","Toronto Maple Leafs","Toronto"],
+        ["28","VAN","#07646F","#047A4A","Vancouver Canucks","Vancouver"],
+        ["29","WPG","#0168AB","#002E62","Winnipeg Jets","Winnipeg"],
+        ["30","WSH","#00214E","#CF132B","Washington Capitals","Washington"],
+        ["31","ATL","#002E62","#0168AB","Atlanta Thrashers","Atlanta"],
+        ["32","ARI","#8E0028","#EFE1C6","Arizona Coyotes","Arizona"]
+    ]
+    for (var i=0; i<coloroptions.length; i++) {
+        var color = coloroptions[i];
+        if (team == color[1]) {
+            if (primary == true) {
+                return color[2];
+            } else {
+                return color[3];
+            }
+        }
+    }
+}
 
 </script>
 {% endblock %}

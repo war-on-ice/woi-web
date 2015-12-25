@@ -12,6 +12,22 @@ def format_currency(value):
 
 
 @blueprint.app_template_filter()
+def get_team_color(team, primary=True):
+    for line in open("teamcolors.csv"):
+        line = line.replace("\n", "").split(",")
+        try:
+            names = [line[1], line[4], line[5]]
+            print names
+            if team in names:
+                if primary is True:
+                    return line[2]
+                else:
+                    return line[3]
+        except:
+            pass
+
+
+@blueprint.app_template_filter()
 def tooltip_standings(column):
     return find_tooltip(column, standingsglossary)
 
