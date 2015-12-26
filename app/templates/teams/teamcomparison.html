@@ -378,7 +378,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
 
     texts.append("text")
         .html(function(d) {
-            return d["season"];
+            return d["season"].substring(2, 4) + "/" + d["season"].substring(6, 8);
         })
         .attr("x", function(d) {
             return cpos(d.x, minwidth, maxwidth, width, maxallowed, xtext);

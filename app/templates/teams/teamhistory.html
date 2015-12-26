@@ -74,21 +74,18 @@
                 <form id="cpg2">
                     <div class="row">
                         <div class="col-md-3">
-                            {{ render_field(cpg.xaxis) }}
+                            {{ render_field(ggf.paxis) }}
                         </div>
                         <div class="col-md-3">
-                            {{ render_field(cpg.yaxis) }}
+                            {{ render_field(ggf.saxis) }}
                         </div>
                         <div class="col-md-3">
-                            {{ render_field(cpg.caxis) }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ render_field(cpg.saxis) }}
+                            {{ render_field(ggf.steam) }}
                         </div>
                     </div>
                     <div class="row">
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph()">Generate Chart</button>
+                            <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph2()">Generate Chart</button>
                         </div>
                         <div class="col-md-6">
                             <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG">Create PNG from Current Chart</button>
@@ -487,7 +484,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .text("Colored by " + colortext + ", Sized by " + sizetext);
 
     svg.append("text")
-        .attr("x", margin.left)
+        .attr("x", width - margin.left - margin.right)
         .attr("y", height - margin.bottom)
         .attr("text-anchor", "left")
         .style("font-size", "12px")
@@ -578,7 +575,6 @@ d3.select("#savePNG").on("click", function(){
         .attr("xmlns", "http://www.w3.org/2000/svg")
         .node().parentNode.innerHTML;
 
-  //console.log(html);
   var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
   var img = '<img src="'+imgsrc+'">'; 
 
@@ -609,6 +605,7 @@ d3.select("#savePNG").on("click", function(){
 </script>
 
 <script type="text/javascript">
+
 var alldata = [
     {% for summary in games %}
     {
@@ -626,164 +623,13 @@ var alldata = [
     {% endfor %}
 ];
 
-var data = [];
-var teamname = "";
-var offDates = [];
-alldata.sort(compare);
-for (var i=0; i<alldata.length; i++) {
-    var g = 0;
-    var total = 0;
-    if (i != 0) {
-        var pdate = new Date(alldata[i-1]["Date"]);
-        var cdate = new Date(alldata[i]["Date"]);
-        var timeDiff = Math.abs(cdate.getTime() - pdate.getTime());
-        var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-        if (diffDays > 30) {
-            offDates.push([pdate, cdate]);
-        }
-    }
-    var curryear = alldata[i]["season"];
-    if (teamname == "") {
-        teamname = alldata[i]["teaminitial"];
-    }
-    var min = 12;
-    var max = 12;
-    while (i - min < 0) {
-        min -= 1;
-        max += 1;
-    }
-    while (i + max >= alldata.length) {
-        max -= 1;
-    }
-    for (var j=i-12; j<i+12; j++) {
-        if (j < 0 || j >= alldata.length) {
-            
-        }
-        else if (curryear == alldata[j]["season"]) {
-            g += alldata[j]["SF"];
-            total += 1;
-        }
-    }
-    if (total != 0) {
-        data.push({"Date": alldata[i]["Date"], "SF": g/total});
-    } else {
-        data.push({"Date": alldata[i]["Date"], "SF": 0});
-    }
-}
-
-var tooltip = d3.select("body")
-    .append("div")
-    .style("position", "absolute")
-    .style("z-index", "10")
-    .style("visibility", "hidden")
-    .style("background", "#EEEEEE")
-    .style("border-radius", 3)
-    .text("a simple tooltip");
-
-var MARGINS = {top: 20, right: 20, bottom: 30, left: 50},
-    WIDTH = 960 - margin.left - margin.right,
-    HEIGHT = 500 - margin.top - margin.bottom;
-
-var minyear = new Date(d3.min(data, function(d) { return d["Date"]; })),
-    maxyear = new Date(d3.max(data, function(d) { return d["Date"]; }));
-
-var parseDate = d3.time.format("%Y-%m-%d").parse;
-var x = d3.time.scale()
-    .domain([minyear, maxyear])
-    .rangeRound([0, width - margin.left - margin.right]);
-
-var y = d3.scale.linear()
-    .domain([d3.min(data, function(d) { return d["SF"]; }), d3.max(data, function(d) { return d["SF"]; })])
-    .range([height - margin.top - margin.bottom, 0]);
-
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .ticks(new Date().getFullYear() - 2002)
-    .tickFormat(function(d) { return d.getFullYear(); });
-
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient('left')
-    .tickPadding(8);
-
-var svg = d3.select('#game-graph').append('svg')
-    .attr('class', 'chart')
-    .attr('width', width)
-    .attr('height', height)
-  .append('g')
-    .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
-
-svg.append("rect")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
-    .attr("fill", "white");
-
-var line = d3.svg.line()
-    .x(function(d) { return x(new Date(d["Date"])); })
-    .y(function(d) { return y(d["SF"]); });
-
-svg.append("path")
-    .datum(data)
-    .attr('stroke', get_team_color(teamname, true))
-    .attr('stroke-width', 6)
-    .attr('fill', "none")
-    .attr("d", line);
-
-svg.append("path")
-    .datum(data)
-    .attr('stroke', get_team_color(teamname, false))
-    .attr('stroke-width', 2)
-    .attr('fill', "none")
-    .attr("d", line);
-
-
-svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
-        .data(data)                                         // associates the range of data to the group of elements
-    .enter().append("circle")                               // adds a circle for each data point
-        .attr("r", 4)                                       // with a radius of 3.5 pixels
-        .attr("cx", function(d) { return x(new Date(d["Date"])); })      // at an appropriate x coordinate 
-        .attr("cy", function(d) { return y(d["SF"]); })     // and an appropriate y coordinate
-        .attr("opacity", "0")
-    .on("mouseover", function(d){
-        tooltip.text(d["Date"]);
-        return tooltip.style("visibility", "visible");
-        })
-    .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-    .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-
-svg.append("text")
-    .attr("x", width - margin.right)
-    .attr("y", height - margin.bottom - 50)
-    .attr("text-anchor", "left")
-    .style("font-size", "12px")
-    .text("war-on-ice.com")
-
-
 function compare(a,b) {
-  if (a["Date"] < b["Date"])
-    return -1;
-  if (a["Date"] > b["Date"])
-    return 1;
-  return 0;
+    if (a["Date"] < b["Date"])
+        return -1;
+    if (a["Date"] > b["Date"])
+        return 1;
+    return 0;
 }
-
-for (var i=0; i<offDates.length; i++) {
-    svg.append("rect")
-        .attr("width", x(offDates[i][1]) - x(offDates[i][0]))
-        .attr("height", height + margin.top + margin.bottom)
-        .attr("transform", "translate(" + x(offDates[i][0]) + ",-" + margin.top + ")")
-        .attr("fill", "#EEEEEE");
-}
-
-svg.append('g')
-    .attr('class', 'x axis')
-    .attr('transform', 'translate(0, ' + (height - margin.top - margin.bottom) + ')')
-    .call(xAxis);
-
-svg.append('g')
-  .attr('class', 'y axis')
-  .call(yAxis);
 
 function get_team_color(team, primary) {
     var coloroptions = [
@@ -832,94 +678,291 @@ function get_team_color(team, primary) {
     }
 }
 
-</script>
-<script type="text/javascript">
+var margin = {top: 20, right: 20, bottom: 30, left: 50},
+    width = $("#tabulargame").width() - margin.left - margin.right,
+    height = width / 1.5 - margin.top - margin.bottom;
 
-var datadistr = {{ datadistr|safe }}
+createGraph2("SF", "NA", "On-Ice Shots on Goal For Total", "NA", margin, width, height);
 
-// line chart based on http://bl.ocks.org/mbostock/3883245
-var margin = {
-        top: 20,
-        right: 20,
-        bottom: 30,
-        left: 50
-    },
-    width = 960 - margin.left - margin.right,
-    height = 500 - margin.top - margin.bottom;
+function addGraph2() {
+    var p = $("#paxis").val(),
+        s = $("#saxis").val(),
+        ptext = $("#paxis option[value='" + p + "']").text(),
+        stext = $("#saxis option[value='" + s + "']").text(),
+    ptext = ptext.replace(/ *\([^)]*\) */g, "");
+    stext = stext.replace(/ *\([^)]*\) */g, "");
+    createGraph2(p, s, ptext, stext, margin, width, height);
 
-var x = d3.scale.linear()
-    .range([0, width]);
+};
 
-var y = d3.scale.linear()
-    .range([height, 0]);
+function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
+    $("#game-graph").html("");
+    var data = [];
+    var teamname = "";
+    var offDates = [];
+    alldata.sort(compare);
+    for (var i=0; i<alldata.length; i++) {
+        var g = 0;
+        var total = 0;
+        if (i != 0) {
+            var pdate = new Date(alldata[i-1]["Date"]);
+            var cdate = new Date(alldata[i]["Date"]);
+            var timeDiff = Math.abs(cdate.getTime() - pdate.getTime());
+            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+            if (diffDays > 30) {
+                offDates.push([pdate, cdate]);
+            }
+        }
+        var curryear = alldata[i]["season"];
+        if (teamname == "") {
+            teamname = alldata[i]["teaminitial"];
+        }
+        var min = 12;
+        var max = 12;
+        while (i - min < 0) {
+            min -= 1;
+            max += 1;
+        }
+        while (i + max >= alldata.length) {
+            max -= 1;
+        }
+        for (var j=i-12; j<i+12; j++) {
+            if (j < 0 || j >= alldata.length) {
+                
+            }
+            else if (curryear == alldata[j]["season"]) {
+                g += alldata[j][primary];
+                total += 1;
+            }
+        }
+        if (total != 0) {
+            data.push({"Date": alldata[i]["Date"], primary: g/total});
+        } else {
+            data.push({"Date": alldata[i]["Date"], primary: 0});
+        }
+    }
 
-var xAxis = d3.svg.axis()
-    .scale(x)
-    .orient("bottom");
+    var tooltip = d3.select("body")
+        .append("div")
+        .style("position", "absolute")
+        .style("z-index", "10")
+        .style("visibility", "hidden")
+        .style("border-radius", 3)
+        .attr("class", "tooltip-inner")
+        .text("a simple tooltip");
 
-var yAxis = d3.svg.axis()
-    .scale(y)
-    .orient("left");
+    var minyear = new Date(d3.min(data, function(d) { return d["Date"]; })),
+        maxyear = new Date(d3.max(data, function(d) { return d["Date"]; }));
 
-var line = d3.svg.line()
-    .x(function(d) {
-        console.log(d.x, d.y)
-        return x(d.x);
-    })
-    .y(function(d) {
-        return y(d.y);
-    });
+    var parseDate = d3.time.format("%Y-%m-%d").parse;
+    var x = d3.time.scale()
+        .domain([minyear, maxyear])
+        .rangeRound([0, width - margin.left - margin.right]);
 
-var svg = d3.select("#game-graph").append("svg")
-    .attr("width", width + margin.left + margin.right)
-    .attr("height", height + margin.top + margin.bottom)
-    .append("g")
-    .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var y = d3.scale.linear()
+        .domain([d3.min(data, function(d) { return d.primary; }), d3.max(data, function(d) { return d.primary; })])
+        .range([height - margin.top - margin.bottom, 0]);
 
-x.domain(d3.extent(datadistr, function(d) {
-    return d.x;
-}));
-y.domain(d3.extent(datadistr, function(d) {
-    return d.y;
-}));
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .ticks(new Date().getFullYear() - 2002)
+        .tickFormat(function(d) { return d.getFullYear(); });
 
-svg.append("g")
-    .attr("class", "x axis")
-    .attr("transform", "translate(0," + height + ")")
-    .call(xAxis);
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient('left')
+        .tickPadding(8);
 
-svg.append("g")
-    .attr("class", "y axis")
-    .call(yAxis);
+    var svg = d3.select('#game-graph').append('svg')
+        .attr('class', 'chart')
+        .attr('width', width)
+        .attr('height', height)
+      .append('g')
+        .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
-/*svg.append("path")
-    .datum(datadistr)
-    .attr("class", "line")
-    .attr('stroke', get_team_color(teamname, true))
-    .attr('stroke-width', 6)
-    .attr('fill', "none")
-    .attr("d", line);*/
+    svg.append("rect")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
+        .attr("fill", "white");
 
-var bar = svg.selectAll(".bar")
-    .data(datadistr)
-  .enter().append("g")
-    .attr("class", "bar")
-    .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+    var line = d3.svg.line()
+        .x(function(d) { return x(new Date(d["Date"])); })
+        .y(function(d) { return y(d.primary); });
 
-bar.append("rect")
-    .attr("x", 1)
-    .attr("width", x(datadistr[0].x + 1) - x(datadistr[0].x))
-    .attr("fill", get_team_color(teamname, false))
-    .attr("stroke", get_team_color(teamname, true))
-    .attr("height", function(d) { return height - y(d.y); });
+    svg.append("path")
+        .datum(data)
+        .attr('stroke', get_team_color(teamname, true))
+        .attr('stroke-width', 6)
+        .attr('fill', "none")
+        .attr("d", line);
 
-/*svg.append("path")
-    .datum(datadistr)
-    .attr("class", "line")
-    .attr('stroke', get_team_color(teamname, false))
-    .attr('stroke-width', 2)
-    .attr('fill', "none")
-    .attr("d", line);*/
+    svg.append("path")
+        .datum(data)
+        .attr('stroke', get_team_color(teamname, false))
+        .attr('stroke-width', 2)
+        .attr('fill', "none")
+        .attr("d", line);
+
+
+    svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+            .data(data)                                         // associates the range of data to the group of elements
+        .enter().append("circle")                               // adds a circle for each data point
+            .attr("r", 4)                                       // with a radius of 3.5 pixels
+            .attr("cx", function(d) { return x(new Date(d["Date"])); })      // at an appropriate x coordinate 
+            .attr("cy", function(d) { return y(d.primary); })     // and an appropriate y coordinate
+            .attr("opacity", "0")
+        .on("mouseover", function(d){
+            tooltip.text(d["Date"]);
+            return tooltip.style("visibility", "visible");
+            })
+        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+        .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+
+    for (var i=0; i<offDates.length; i++) {
+        svg.append("rect")
+            .attr("width", x(offDates[i][1]) - x(offDates[i][0]))
+            .attr("height", height + margin.top + margin.bottom)
+            .attr("transform", "translate(" + x(offDates[i][0]) + ",-" + margin.top + ")")
+            .attr("fill", "#EEEEEE");
+    }
+
+    svg.append('g')
+        .attr('class', 'x axis')
+        .attr('transform', 'translate(0, ' + (height - margin.top - margin.bottom) + ')')
+        .call(xAxis);
+
+    svg.append('g')
+      .attr('class', 'y axis')
+      .call(yAxis);
+
+    var text = "Moving Average of " + ptext + " for " + teamname + " over time";
+
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 4))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(text);
+
+    svg.append("text")
+        .attr("x", width - margin.right - margin.left - 100)
+        .attr("y", height - margin.bottom - 50)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+
+    var datadistr = [];//{{ datadistr|safe }}
+    for (var i=0; i<alldata.length; i++) {
+        var x = alldata[i][primary];
+        var found = false;
+        var foundint = 0;
+        for (var j=0; j<datadistr.length; j++) {
+            if (datadistr[j].x == x) {
+                found = true;
+                foundint = j;
+                break;
+            }
+        }
+        if (found == true) {
+            datadistr[foundint].y += 1;
+        } else {
+            datadistr.push({x: x, y: 1})
+        }
+    }
+
+    // line chart based on http://bl.ocks.org/mbostock/3883245
+    var margin = {
+            top: 20,
+            right: 20,
+            bottom: 30,
+            left: 50
+        },
+        width = 960 - margin.left - margin.right,
+        height = 500 - margin.top - margin.bottom;
+
+    var x = d3.scale.linear()
+        .range([0, width]);
+
+    var y = d3.scale.linear()
+        .range([height, 0]);
+
+    var xAxis = d3.svg.axis()
+        .scale(x)
+        .orient("bottom");
+
+    var yAxis = d3.svg.axis()
+        .scale(y)
+        .orient("left");
+
+    var line = d3.svg.line()
+        .x(function(d) {
+            return x(d.x);
+        })
+        .y(function(d) {
+            return y(d.y);
+        });
+
+    var svg = d3.select("#game-graph").append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    x.domain(d3.extent(datadistr, function(d) {
+        return d.x;
+    }));
+    y.domain(d3.extent(datadistr, function(d) {
+        return d.y;
+    }));
+
+    svg.append("g")
+        .attr("class", "x axis")
+        .attr("transform", "translate(0," + height + ")")
+        .call(xAxis);
+
+    svg.append("g")
+        .attr("class", "y axis")
+        .call(yAxis);
+
+    var bar = svg.selectAll(".bar")
+        .data(datadistr)
+      .enter().append("g")
+        .attr("class", "bar")
+        .on("mouseover", function(d){
+            tooltip.text(d["y"]);
+            return tooltip.style("visibility", "visible");
+            })
+        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+        .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+        .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+
+    bar.append("rect")
+        .attr("x", 1)
+        .attr("width", x(datadistr[0].x + 1) - x(datadistr[0].x))
+        .attr("fill", get_team_color(teamname, false))
+        .attr("stroke", get_team_color(teamname, true))
+        .attr("height", function(d) { return height - y(d.y); });
+
+    var text = "Distribution of " + ptext + " for " + teamname;
+
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 4))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(text);
+
+    svg.append("text")
+        .attr("x", width - margin.right - margin.left)
+        .attr("y", height - margin.bottom)
+        .attr("text-anchor", "right")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+
+}
 
 </script>
 {% endblock %}

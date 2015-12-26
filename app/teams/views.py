@@ -9,7 +9,7 @@ from app.gamesummary.models import TeamRun
 from app import app, Base, constants, filters, helpers
 from app.gamesummary.calls import get_r_standings, get_r_seasons, compiled_teams
 
-from forms import SeasonSelectForm, ComparisonForm, ComparisonGraphForm, HistoryForm
+from forms import SeasonSelectForm, ComparisonForm, ComparisonGraphForm, HistoryForm, GameGraphForm
 
 import datetime
 import urllib2
@@ -58,6 +58,7 @@ def show_team_history():
     rd = setup_nav()
     form = HistoryForm(request.form)
     cpg = ComparisonGraphForm()
+    ggf = GameGraphForm()
     cpg.xaxis.data = "season"
     now = datetime.datetime.now().date()
     if request.method == "POST" and form.validate():
@@ -117,6 +118,7 @@ def show_team_history():
     return render_template("teams/teamhistory.html",
         rd=rd,
         cpg=cpg,
+        ggf=ggf,
         form=form,
         games=games,
         seasons=seasons,

@@ -104,3 +104,12 @@ class ComparisonGraphForm(Form):
     saxis = SelectField(u'Size Variable',
         choices=constants.comparisonchoices,
         default="FO%")
+
+
+class GameGraphForm(Form):
+    paxis = SelectField(u'X Axis Variable',
+        choices=constants.comparisonchoices,
+        default="SF")
+    saxis = SelectField(u'Y Axis Variable', choices=constants.comparisonchoices + [("NA", "None"),], default="NA")
+    steam = SelectMultipleField(u'Comparison Team',
+        choices=sorted([(constants.teamDict[key], key) for key in constants.teamDict]))
