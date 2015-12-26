@@ -104,25 +104,13 @@ def show_team_history():
 
     games, seasons = helpers.calculate(teamrun, True)
 
-    datadistr = {}
-    values = []
-    for game in games:
-        values.append(game["SF"])
-        if game["SF"] not in datadistr:
-            datadistr[game["SF"]] = 0
-        datadistr[game["SF"]] += 1
-    datadistrlist = []
-    for data in datadistr:
-        datadistrlist.append({"x": data, "y": datadistr[data]})
-
     return render_template("teams/teamhistory.html",
         rd=rd,
         cpg=cpg,
         ggf=ggf,
         form=form,
         games=games,
-        seasons=seasons,
-        datadistr=sorted(datadistrlist, key=lambda k: k['x']))
+        seasons=seasons)
 
 
 @mod.route('/comparisons/', methods=["GET", "POST"])

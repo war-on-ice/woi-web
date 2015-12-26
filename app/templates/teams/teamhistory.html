@@ -631,6 +631,14 @@ function compare(a,b) {
     return 0;
 }
 
+function compareScore(a,b) {
+    if (a.x < b.x)
+        return -1;
+    if (a.x > b.x)
+        return 1;
+    return 0;
+}
+
 function get_team_color(team, primary) {
     var coloroptions = [
         ["1","ANA","#91764B","#EF5225","Anaheim Ducks","Anaheim"],
@@ -853,7 +861,8 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .style("font-size", "12px")
         .text("war-on-ice.com")
 
-    var datadistr = [];//{{ datadistr|safe }}
+    var datadistr = [];
+    var xs = []
     for (var i=0; i<alldata.length; i++) {
         var x = alldata[i][primary];
         var found = false;
@@ -867,10 +876,47 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         }
         if (found == true) {
             datadistr[foundint].y += 1;
+            xs.push(x);
         } else {
             datadistr.push({x: x, y: 1})
+            xs.push(x);
         }
     }
+    if (datadistr.length > 50) {
+        var adata = {};
+        for (var i=0; i<datadistr.length; i++) {
+            if (adata.hasOwnProperty(Math.ceil(datadistr[i].x))) {
+                adata[Math.ceil(datadistr[i].x)] += datadistr[i].y;
+            } else {
+                adata[Math.ceil(datadistr[i].x)] = datadistr[i].y;
+            }
+        }
+        var i = Math.floor(Math.min.apply(null, xs)),
+            min = Math.min.apply(null, xs),
+            max = Math.max.apply(null, xs),
+            average = Math.ceil((max - min) / 50);
+        if (average < 1) {
+            average = 1;
+        }
+        var merged = [];
+        while (i <= max) {
+            var score = 0;
+            for (var j=i; j<i + average; j++) {
+                if (adata.hasOwnProperty(j)) {
+                    score += adata[j];
+                }
+            }
+            merged.push({x: i, y: score});
+            i += average;
+        }
+        datadistr = merged;
+
+    }
+    minimum = [];
+    for (var i=0; i<datadistr.length; i++) {
+        minimum.push(datadistr[i].x);
+    }
+    md = minimumDifference(minimum);
 
     // line chart based on http://bl.ocks.org/mbostock/3883245
     var margin = {
@@ -940,7 +986,7 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
 
     bar.append("rect")
         .attr("x", 1)
-        .attr("width", x(datadistr[0].x + 1) - x(datadistr[0].x))
+        .attr("width", x(datadistr[0].x + md) - x(datadistr[0].x))
         .attr("fill", get_team_color(teamname, false))
         .attr("stroke", get_team_color(teamname, true))
         .attr("height", function(d) { return height - y(d.y); });
@@ -962,6 +1008,19 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .style("font-size", "12px")
         .text("war-on-ice.com")
 
+}
+
+function minimumDifference(a) {
+    a.sort(sortNumber);
+    var minDiff = a[1]-a[0];
+    for (var i=2; i<a.length; i++) {
+        minDiff = Math.min(minDiff, a[i]-a[i-1]);
+    }
+    return minDiff;
+}
+
+function sortNumber(a,b) {
+    return a - b;
 }
 
 </script>

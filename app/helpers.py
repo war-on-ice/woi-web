@@ -99,6 +99,7 @@ def calculate(teamrun, splitseasons=False):
         gs["PenD"] = gs["PN-"] - gs["PN"]
         gs["OSh%"] = percent(gs["GF"], gs["SF"])
         gs["OFenSh%"] = percent(gs["GF"], gs["FF"])
+        gs["FenSv%"] = 100 - percent(gs["GA"], gs["FA"])
         gs["OCOn%"] = ratio(gs["SF"], gs["CF"])
         gs["OFOn%"] = percent(gs["SF"], gs["MSF"])
         gs["OSh%"] = ratio(gs["GF"], gs["SF"])
@@ -216,6 +217,7 @@ def get_team_data(compiled):
         gs["PenD"] = gs["PN-"] - gs["PN"]
         gs["OSh%"] = percent(gs["GF"], gs["SF"])
         gs["OFenSh%"] = percent(gs["GF"], gs["FF"])
+        gs["FenSv%"] = 100 - percent(gs["GA"], gs["FA"])
         gs["OCOn%"] = ratio(gs["SF"], gs["CF"])
         tc.append(gs)
     return tc
