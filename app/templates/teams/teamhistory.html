@@ -88,7 +88,7 @@
                             <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph2()">Generate Chart</button>
                         </div>
                         <div class="col-md-6">
-                            <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG">Create PNG from Current Chart</button>
+                            <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG2">Create PNG from Current Chart</button>
                         </div>
                     </div>
                 </form>
@@ -100,8 +100,15 @@
                     </div>
                 </div>
                 <div class="row">
+                    <div class="col-md-6  col-md-offset-6">
+                        <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG3">Create PNG from Current Chart</button>
+                    </div>
+                </div>
+                <div class="row">
                     <div class="col-md-12">
-                        <p class="text-center"><b>*Click a circle to toggle the text</b></p>
+                        <div id="game-graph2">
+
+                        </div>
                     </div>
                 </div>
             </div>
@@ -302,6 +309,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .insert("svg", "svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .attr('id', 'season-graph-circle')
     .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -570,7 +578,75 @@ function wrap(text, width) {
 }
 
 d3.select("#savePNG").on("click", function(){
-  var html = d3.select("svg")
+  var html = d3.select("#season-graph-circle")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  var img = '<img src="'+imgsrc+'">'; 
+
+
+  var canvas = document.querySelector("canvas"),
+      context = canvas.getContext("2d");
+  canvas.width = width + margin.left + margin.right;
+  canvas.height = height + margin.top + margin.bottom;
+
+  var image = new Image;
+  image.src = imgsrc;
+  image.onload = function() {
+      context.drawImage(image, 0, 0);
+
+      var canvasdata = canvas.toDataURL("image/png");
+
+      var pngimg = '<img src="'+canvasdata+'">'; 
+      d3.select("#pngdataurl").html(pngimg);
+
+      var a = document.createElement("a");
+      a.download = "sample.png";
+      a.href = canvasdata;
+          document.body.appendChild(a);
+      a.click();
+  };
+
+});
+
+d3.select("#savePNG2").on("click", function(){
+  var html = d3.select("#game-graph-moving-average")
+        .attr("version", 1.1)
+        .attr("xmlns", "http://www.w3.org/2000/svg")
+        .node().parentNode.innerHTML;
+
+  var imgsrc = 'data:image/svg+xml;base64,'+ btoa(html);
+  var img = '<img src="'+imgsrc+'">'; 
+
+
+  var canvas = document.querySelector("canvas"),
+      context = canvas.getContext("2d");
+  canvas.width = width + margin.left + margin.right;
+  canvas.height = height + margin.top + margin.bottom;
+
+  var image = new Image;
+  image.src = imgsrc;
+  image.onload = function() {
+      context.drawImage(image, 0, 0);
+
+      var canvasdata = canvas.toDataURL("image/png");
+
+      var pngimg = '<img src="'+canvasdata+'">'; 
+      d3.select("#pngdataurl").html(pngimg);
+
+      var a = document.createElement("a");
+      a.download = "sample.png";
+      a.href = canvasdata;
+          document.body.appendChild(a);
+      a.click();
+  };
+
+});
+
+d3.select("#savePNG3").on("click", function(){
+  var html = d3.select("#game-graph-distribution")
         .attr("version", 1.1)
         .attr("xmlns", "http://www.w3.org/2000/svg")
         .node().parentNode.innerHTML;
@@ -705,6 +781,7 @@ function addGraph2() {
 
 function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
     $("#game-graph").html("");
+    $("#game-graph2").html("");
     var data = [];
     var teamname = "";
     var offDates = [];
@@ -785,6 +862,7 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .attr('class', 'chart')
         .attr('width', width)
         .attr('height', height)
+        .attr('id', 'game-graph-moving-average')
       .append('g')
         .attr('transform', 'translate(' + margin.left + ', ' + margin.top + ')');
 
@@ -950,9 +1028,10 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
             return y(d.y);
         });
 
-    var svg = d3.select("#game-graph").append("svg")
+    var svg = d3.select("#game-graph2").append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
+        .attr('id', 'game-graph-distribution')
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
@@ -962,6 +1041,12 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
     y.domain(d3.extent(datadistr, function(d) {
         return d.y;
     }));
+
+    svg.append("rect")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+        .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
+        .attr("fill", "white");
 
     svg.append("g")
         .attr("class", "x axis")
