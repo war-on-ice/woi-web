@@ -172,7 +172,8 @@ var seasonTableContents = $("#comparisons-season").html();
 var gameTableContents = $("#comparisons-game").html();
 
 $(document).ready(function() {
-    $("th:last").addClass("right-rounded");
+    $("#comparisons-game th:last").addClass("right-rounded");
+    $("#comparisons-season th:last").addClass("right-rounded");
     checkWidth();
 });
 
@@ -766,13 +767,13 @@ var margin = {top: 20, right: 20, bottom: 30, left: 50},
     width = $("#tabulargame").width() - margin.left - margin.right,
     height = width / 1.5 - margin.top - margin.bottom;
 
-createGraph2("SF", "NA", "On-Ice Shots on Goal For Total", "NA", margin, width, height);
+addGraph2();
 
 function addGraph2() {
-    var p = $("#paxis").val(),
-        s = $("#saxis").val(),
-        ptext = $("#paxis option[value='" + p + "']").text(),
-        stext = $("#saxis option[value='" + s + "']").text(),
+    var p = $("#game-form-paxis").val(),
+        s = $("#game-form-saxis").val(),
+        ptext = $("#game-form-paxis option[value='" + p + "']").text(),
+        stext = $("#game-form-saxis option[value='" + s + "']").text(),
     ptext = ptext.replace(/ *\([^)]*\) */g, "");
     stext = stext.replace(/ *\([^)]*\) */g, "");
     createGraph2(p, s, ptext, stext, margin, width, height);
@@ -941,61 +942,73 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
 
     var datadistr = [];
     var xs = []
-    for (var i=0; i<alldata.length; i++) {
-        var x = alldata[i][primary];
-        var found = false;
-        var foundint = 0;
-        for (var j=0; j<datadistr.length; j++) {
-            if (datadistr[j].x == x) {
-                found = true;
-                foundint = j;
-                break;
-            }
-        }
-        if (found == true) {
-            datadistr[foundint].y += 1;
-            xs.push(x);
-        } else {
-            datadistr.push({x: x, y: 1})
-            xs.push(x);
-        }
-    }
-    if (datadistr.length > 50) {
-        var adata = {};
-        for (var i=0; i<datadistr.length; i++) {
-            if (adata.hasOwnProperty(Math.ceil(datadistr[i].x))) {
-                adata[Math.ceil(datadistr[i].x)] += datadistr[i].y;
-            } else {
-                adata[Math.ceil(datadistr[i].x)] = datadistr[i].y;
-            }
-        }
-        var i = Math.floor(Math.min.apply(null, xs)),
-            min = Math.min.apply(null, xs),
-            max = Math.max.apply(null, xs),
-            average = Math.ceil((max - min) / 50);
-        if (average < 1) {
-            average = 1;
-        }
-        var merged = [];
-        while (i <= max) {
-            var score = 0;
-            for (var j=i; j<i + average; j++) {
-                if (adata.hasOwnProperty(j)) {
-                    score += adata[j];
+    if (secondary == "NA") {
+        for (var i=0; i<alldata.length; i++) {
+            var x = alldata[i][primary];
+            var found = false;
+            var foundint = 0;
+            for (var j=0; j<datadistr.length; j++) {
+                if (datadistr[j].x == x) {
+                    found = true;
+                    foundint = j;
+                    break;
                 }
             }
-            merged.push({x: i, y: score});
-            i += average;
+            if (found == true) {
+                datadistr[foundint].y += 1;
+                xs.push(x);
+            } else {
+                datadistr.push({x: x, y: 1})
+                xs.push(x);
+            }
         }
-        datadistr = merged;
+        if (datadistr.length > 50) {
+            var adata = {};
+            for (var i=0; i<datadistr.length; i++) {
+                if (adata.hasOwnProperty(Math.ceil(datadistr[i].x))) {
+                    adata[Math.ceil(datadistr[i].x)] += datadistr[i].y;
+                } else {
+                    adata[Math.ceil(datadistr[i].x)] = datadistr[i].y;
+                }
+            }
+            var i = Math.floor(Math.min.apply(null, xs)),
+                min = Math.min.apply(null, xs),
+                max = Math.max.apply(null, xs),
+                average = Math.ceil((max - min) / 50);
+            if (average < 1) {
+                average = 1;
+            }
+            var merged = [];
+            while (i <= max) {
+                var score = 0;
+                for (var j=i; j<i + average; j++) {
+                    if (adata.hasOwnProperty(j)) {
+                        score += adata[j];
+                    }
+                }
+                merged.push({x: i, y: score});
+                i += average;
+            }
+            datadistr = merged;
 
+        }
+        minimum = [];
+        for (var i=0; i<datadistr.length; i++) {
+            minimum.push(datadistr[i].x);
+        }
+        md = minimumDifference(minimum);
+    } else {
+        for (var i=0; i<alldata.length; i++) {
+            var x = null;
+            var y = null;
+            var d = alldata[i];
+            if (primary in d && secondary in d) {
+                x = d[primary];
+                y = d[secondary];
+                datadistr.push({x: x, y: y, Date: d["Date"]});
+            }
+        }
     }
-    minimum = [];
-    for (var i=0; i<datadistr.length; i++) {
-        minimum.push(datadistr[i].x);
-    }
-    md = minimumDifference(minimum);
-
     // line chart based on http://bl.ocks.org/mbostock/3883245
     var margin = {
             top: 20,
@@ -1057,26 +1070,47 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .attr("class", "y axis")
         .call(yAxis);
 
-    var bar = svg.selectAll(".bar")
-        .data(datadistr)
-      .enter().append("g")
-        .attr("class", "bar")
-        .on("mouseover", function(d){
-            tooltip.text(d["y"]);
-            return tooltip.style("visibility", "visible");
-            })
-        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-        .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
-        .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
+    if (secondary == "NA") {
+        var bar = svg.selectAll(".bar")
+            .data(datadistr)
+          .enter().append("g")
+            .attr("class", "bar")
+            .on("mouseover", function(d){
+                tooltip.text(d["y"]);
+                return tooltip.style("visibility", "visible");
+                })
+            .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+            .on("mouseout", function(){return tooltip.style("visibility", "hidden");})
+            .attr("transform", function(d) { return "translate(" + x(d.x) + "," + y(d.y) + ")"; });
 
-    bar.append("rect")
-        .attr("x", 1)
-        .attr("width", x(datadistr[0].x + md) - x(datadistr[0].x))
-        .attr("fill", get_team_color(teamname, false))
-        .attr("stroke", get_team_color(teamname, true))
-        .attr("height", function(d) { return height - y(d.y); });
+        bar.append("rect")
+            .attr("x", 1)
+            .attr("width", x(datadistr[0].x + md) - x(datadistr[0].x))
+            .attr("fill", get_team_color(teamname, false))
+            .attr("stroke", get_team_color(teamname, true))
+            .attr("height", function(d) { return height - y(d.y); });
+    } else {
+        svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+                .data(datadistr)                                         // associates the range of data to the group of elements
+            .enter().append("circle")                               // adds a circle for each data point
+                .attr("r", 4)                                       // with a radius of 3.5 pixels
+                .attr("cx", function(d) { return x(d.x); })      // at an appropriate x coordinate 
+                .attr("cy", function(d) { return y(d.y); })     // and an appropriate y coordinate
+                .attr("fill", get_team_color(teamname, false))
+                .attr("stroke", get_team_color(teamname, true))
+                .attr("stroke-width", "2px")
+            .on("mouseover", function(d){
+                tooltip.text(d["Date"]);
+                return tooltip.style("visibility", "visible");
+                })
+            .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+            .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+    }
 
-    var text = "Distribution of " + ptext + " for " + teamname;
+    if (secondary == "NA")
+        var text = "Distribution of " + ptext + " for " + teamname;
+    else
+        var text = "Distribution of " + ptext + " vs " + stext + " for " + teamname;
 
     svg.append("text")
         .attr("x", (width / 2))             

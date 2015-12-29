@@ -56,9 +56,9 @@ def show_team_standings():
 @mod.route("/history/", methods=["GET", "POST"])
 def show_team_history():
     rd = setup_nav()
-    form = HistoryForm(request.form)
+    form = HistoryForm(request.form, prefix="form")
     cpg = ComparisonGraphForm()
-    ggf = GameGraphForm()
+    ggf = GameGraphForm(request.form, prefix="game-form")
     cpg.xaxis.data = "season"
     now = datetime.datetime.now().date()
     if request.method == "POST" and form.validate():
