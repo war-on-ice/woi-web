@@ -61,15 +61,21 @@ def show_team_history():
     ggf = GameGraphForm(request.form, prefix="game-form")
     cpg.xaxis.data = "season"
     now = datetime.datetime.now().date()
+    extrateams = []
     if request.method == "POST" and form.validate():
-        pass
+        extrateams = ggf.steam.data;
+        print extrateams
     else:
         form.endingDate.data = now
         form.startingDate.data = datetime.datetime.strptime("2002-10-01", "%Y-%m-%d").date()
 
     startingDate = form.startingDate.data
     endingDate = form.endingDate.data
+    if endingDate is None:
+        endingDate = datetime.datetime.strptime("2002-10-01", "%Y-%m-%d").date()
     team = form.filterTeams.data
+    team = [team, ]
+    team.extend(extrateams)
     columns = form.tablecolumns.data
     regularplayoffs = form.regularplayoffs.data
 
@@ -99,7 +105,7 @@ def show_team_history():
     teamrun = TeamRun.query.filter(TeamRun.Date >= startingDate, TeamRun.Date <= endingDate,
         TeamRun.gamestate.in_(teamstrengths),
         TeamRun.scorediffcat.in_(scoresituations), TeamRun.home.in_(homeaway),
-        TeamRun.Team == team,
+        TeamRun.Team.in_(team),
         TeamRun.period.in_(periods)).all()
 
     games, seasons = helpers.calculate(teamrun, True)

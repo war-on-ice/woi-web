@@ -14,44 +14,44 @@
 {% block content %}
 <div class="row">
     <div class="col-md-12">
-        <form class="table-opts" method="post" action="">
-            {{ csrf_token }}
+        <form id="game-form" class="table-opts" method="post" action="">
+        {{ csrf_token }}
+        <div class="row">
             <div class="row">
-                <div class="row">
-                    <div class="col-md-3">
-                        {{ render_field(form.teamstrengths) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ render_field(form.scoresituations) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ render_field(form.homeAway) }}
-                    </div>
-                    <div id="startingSeasonDiv" class="col-md-3">
-                        {{ render_field(form.filterTeams) }}
-                    </div>
+                <div class="col-md-3">
+                    <input type="hidden" name="form-name" value="form1">
+                    {{ render_field(form.teamstrengths) }}
                 </div>
-                <div class="row">
-                    <div class="col-md-3">
-                        {{ render_field(form.tablecolumns) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ render_field(form.startingDate) }}
-                    </div>
-                    <div class="col-md-3">
-                        {{ render_field(form.endingDate) }}
-                    </div>
-                    <div id="endingSeasonDiv" class="col-md-3">
-                        {{ render_field(form.regularplayoffs) }}
-                    </div>
+                <div class="col-md-3">
+                    {{ render_field(form.scoresituations) }}
                 </div>
-                <div class="row">
-                    <div class="col-md-3 col-md-offset-9">
-                        <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
-                    </div>
+                <div class="col-md-3">
+                    {{ render_field(form.homeAway) }}
+                </div>
+                <div id="startingSeasonDiv" class="col-md-3">
+                    {{ render_field(form.filterTeams) }}
                 </div>
             </div>
-        </form>
+            <div class="row">
+                <div class="col-md-3">
+                    {{ render_field(form.tablecolumns) }}
+                </div>
+                <div class="col-md-3">
+                    {{ render_field(form.startingDate) }}
+                </div>
+                <div class="col-md-3">
+                    {{ render_field(form.endingDate) }}
+                </div>
+                <div id="endingSeasonDiv" class="col-md-3">
+                    {{ render_field(form.regularplayoffs) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-9">
+                    <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+                </div>
+            </div>
+        </div>
     </div>
 </div>
 <div class="row">
@@ -71,26 +71,39 @@
                 {% include "tables/teaminfo.html" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="graphicalgame">
-                <form id="cpg2">
-                    <div class="row">
-                        <div class="col-md-3">
-                            {{ render_field(ggf.paxis) }}
+                <input type="hidden" name="form-name" value="form2">
+                <div class="row">
+                    <div class="col-md-3">
+                        {{ render_field(ggf.paxis) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(ggf.saxis) }}
+                    </div>
+                    <div class="col-md-3">
+                        {{ render_field(ggf.steam) }}
+                    </div>
+                    <div class="col-md-3">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <label for="game-form-maverage">Number of Games in Moving Average</label>
+                                <input id="game-form-maverage" name="game-form-maverage" step="1" type="range" min=1 max=50 onchange="printValue('game-form-maverage','rangeValue')"></input>
+                            </div>
                         </div>
-                        <div class="col-md-3">
-                            {{ render_field(ggf.saxis) }}
-                        </div>
-                        <div class="col-md-3">
-                            {{ render_field(ggf.steam) }}
+                        <div class="row">
+                            <div class="col-md-12">
+                                <input class="form-control text-center" id="rangeValue" type="text" disabled value={{ ggf.maverage.data }}></input>
+                            </div>
                         </div>
                     </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph2()">Generate Chart</button>
-                        </div>
-                        <div class="col-md-6">
-                            <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG2">Create PNG from Current Chart</button>
-                        </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-primary center-block beside-fields" onclick="addGraph2()">Generate Chart</button>
                     </div>
+                    <div class="col-md-6">
+                        <button type="button" class="btn btn-primary center-block beside-fields" id="savePNG2">Create PNG from Current Chart</button>
+                    </div>
+                </div>
                 </form>
                 <div class="row">
                     <div class="col-md-12">
@@ -224,6 +237,13 @@ function checkWidth() {
     $(function () {
       $('[data-toggle="tooltip"]').tooltip()
     })
+}
+</script>
+<script type="text/javascript">
+function printValue(sliderID, textbox) {
+    var x = document.getElementById(textbox);
+    var y = document.getElementById(sliderID);
+    x.value = y.value;
 }
 </script>
 <script type="text/javascript">
@@ -682,7 +702,7 @@ d3.select("#savePNG3").on("click", function(){
 </script>
 
 <script type="text/javascript">
-
+var extrateams = $("#game-form-steam").val();
 var alldata = [
     {% for summary in games %}
     {
@@ -753,7 +773,7 @@ function get_team_color(team, primary) {
     ]
     for (var i=0; i<coloroptions.length; i++) {
         var color = coloroptions[i];
-        if (team == color[1]) {
+        if (team == color[1] || color[4].indexOf(team) > -1) {
             if (primary == true) {
                 return color[2];
             } else {
@@ -774,8 +794,19 @@ function addGraph2() {
         s = $("#game-form-saxis").val(),
         ptext = $("#game-form-paxis option[value='" + p + "']").text(),
         stext = $("#game-form-saxis option[value='" + s + "']").text(),
+        steam = $("#game-form-steam").val();
+    if (steam != null && extrateams == null) {
+        document.getElementById("game-form").submit();
+    } else if (steam != null && extrateams != null) {
+        var test = new Set(steam);
+        for (var team in extrateams) {
+            test.add(extrateams[team]);
+        }
+        if (test.size != steam.length)
+            document.getElementById("game-form").submit();
+    }
     ptext = ptext.replace(/ *\([^)]*\) */g, "");
-    stext = stext.replace(/ *\([^)]*\) */g, "");
+    stext = stext.replace(/ *\([^)]*\) */g, ""); 
     createGraph2(p, s, ptext, stext, margin, width, height);
 
 };
@@ -783,48 +814,58 @@ function addGraph2() {
 function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
     $("#game-graph").html("");
     $("#game-graph2").html("");
-    var data = [];
-    var teamname = "";
+    var teams = {};
+    var teamname = $("#form-filterTeams").val();
     var offDates = [];
     alldata.sort(compare);
+    var tempteams = {};
     for (var i=0; i<alldata.length; i++) {
-        var g = 0;
-        var total = 0;
-        if (i != 0) {
-            var pdate = new Date(alldata[i-1]["Date"]);
-            var cdate = new Date(alldata[i]["Date"]);
-            var timeDiff = Math.abs(cdate.getTime() - pdate.getTime());
-            var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
-            if (diffDays > 30) {
-                offDates.push([pdate, cdate]);
+        if (!(alldata[i]["Team"] in tempteams)) {
+            tempteams[alldata[i]["Team"]] = [];
+        }
+        tempteams[alldata[i]["Team"]].push(alldata[i]);
+    }
+    for (var team in tempteams) {
+        for (var i=0; i<tempteams[team].length; i++) {
+            if (!(tempteams[team][i]["Team"] in teams)) {
+                teams[tempteams[team][i]["Team"]] = [];
             }
-        }
-        var curryear = alldata[i]["season"];
-        if (teamname == "") {
-            teamname = alldata[i]["teaminitial"];
-        }
-        var min = 12;
-        var max = 12;
-        while (i - min < 0) {
-            min -= 1;
-            max += 1;
-        }
-        while (i + max >= alldata.length) {
-            max -= 1;
-        }
-        for (var j=i-12; j<i+12; j++) {
-            if (j < 0 || j >= alldata.length) {
-                
+            var g = 0;
+            var total = 0;
+            if (i != 0) {
+                var pdate = new Date(tempteams[team][i-1]["Date"]);
+                var cdate = new Date(tempteams[team][i]["Date"]);
+                var timeDiff = Math.abs(cdate.getTime() - pdate.getTime());
+                var diffDays = Math.ceil(timeDiff / (1000 * 3600 * 24));
+                if (diffDays > 30) {
+                    offDates.push([pdate, cdate]);
+                }
             }
-            else if (curryear == alldata[j]["season"]) {
-                g += alldata[j][primary];
-                total += 1;
+            var curryear = tempteams[team][i]["season"];
+            var min = Math.floor($("#rangeValue").val() / 2);
+            var max = Math.ceil($("#rangeValue").val() / 2);
+            console.log(min, max);
+            while (i - min < 0) {
+                min -= 1;
+                max += 1;
             }
-        }
-        if (total != 0) {
-            data.push({"Date": alldata[i]["Date"], primary: g/total});
-        } else {
-            data.push({"Date": alldata[i]["Date"], primary: 0});
+            while (i + max >= tempteams[team].length) {
+                max -= 1;
+            }
+            for (var j=i-min; j<i+max; j++) {
+                if (j < 0 || j >= tempteams[team].length) {
+                    
+                }
+                else if (curryear == tempteams[team][j]["season"]) {
+                    g += tempteams[team][j][primary];
+                    total += 1;
+                }
+            }
+            if (total != 0) {
+                teams[tempteams[team][i]["Team"]].push({"Date": tempteams[team][i]["Date"], primary: g/total});
+            } else {
+                teams[tempteams[team][i]["Team"]].push({"Date": tempteams[team][i]["Date"], primary: 0});
+            }
         }
     }
 
@@ -837,16 +878,28 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .attr("class", "tooltip-inner")
         .text("a simple tooltip");
 
-    var minyear = new Date(d3.min(data, function(d) { return d["Date"]; })),
-        maxyear = new Date(d3.max(data, function(d) { return d["Date"]; }));
+    var minyear = new Date(d3.min(teams[alldata[0]["Team"]], function(d) { return d["Date"]; })),
+        maxyear = new Date(d3.max(teams[alldata[0]["Team"]], function(d) { return d["Date"]; }));
 
     var parseDate = d3.time.format("%Y-%m-%d").parse;
     var x = d3.time.scale()
         .domain([minyear, maxyear])
         .rangeRound([0, width - margin.left - margin.right]);
 
+    var ultmin = 10000;
+    var ultmax = 0;
+    for (var team in teams) {
+        var tdata = teams[team];
+        var tmin = d3.min(tdata, function(d) { return d.primary; });
+        var tmax = d3.max(tdata, function(d) { return d.primary; });
+        if (tmin < ultmin)
+            ultmin = tmin;
+        if (tmax > ultmax)
+            ultmax = tmax;
+    }
+
     var y = d3.scale.linear()
-        .domain([d3.min(data, function(d) { return d.primary; }), d3.max(data, function(d) { return d.primary; })])
+        .domain([ultmin, ultmax])
         .range([height - margin.top - margin.bottom, 0]);
 
     var xAxis = d3.svg.axis()
@@ -873,38 +926,42 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .attr("transform", "translate(-" + margin.left + ",-" + margin.top + ")")
         .attr("fill", "white");
 
-    var line = d3.svg.line()
-        .x(function(d) { return x(new Date(d["Date"])); })
-        .y(function(d) { return y(d.primary); });
+    for (var teamname in teams) {
+        var data = teams[teamname];
 
-    svg.append("path")
-        .datum(data)
-        .attr('stroke', get_team_color(teamname, true))
-        .attr('stroke-width', 6)
-        .attr('fill', "none")
-        .attr("d", line);
+        var line = d3.svg.line()
+            .x(function(d) { return x(new Date(d["Date"])); })
+            .y(function(d) { return y(d.primary); });
+        console.log(data.length);
+        svg.append("path")
+            .datum(data)
+            .attr('stroke', get_team_color(teamname, true))
+            .attr('stroke-width', 4)
+            .attr('fill', "none")
+            .attr("d", line);
 
-    svg.append("path")
-        .datum(data)
-        .attr('stroke', get_team_color(teamname, false))
-        .attr('stroke-width', 2)
-        .attr('fill', "none")
-        .attr("d", line);
+        svg.append("path")
+            .datum(data)
+            .attr('stroke', get_team_color(teamname, false))
+            .attr('stroke-width', 2)
+            .attr('fill', "none")
+            .attr("d", line);
 
 
-    svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
-            .data(data)                                         // associates the range of data to the group of elements
-        .enter().append("circle")                               // adds a circle for each data point
-            .attr("r", 4)                                       // with a radius of 3.5 pixels
-            .attr("cx", function(d) { return x(new Date(d["Date"])); })      // at an appropriate x coordinate 
-            .attr("cy", function(d) { return y(d.primary); })     // and an appropriate y coordinate
-            .attr("opacity", "0")
-        .on("mouseover", function(d){
-            tooltip.text(d["Date"]);
-            return tooltip.style("visibility", "visible");
-            })
-        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-        .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+        svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+                .data(data)                                         // associates the range of data to the group of elements
+            .enter().append("circle")                               // adds a circle for each data point
+                .attr("r", 4)                                       // with a radius of 3.5 pixels
+                .attr("cx", function(d) { return x(new Date(d["Date"])); })      // at an appropriate x coordinate 
+                .attr("cy", function(d) { return y(d.primary); })     // and an appropriate y coordinate
+                .attr("opacity", "0")
+            .on("mouseover", function(d){
+                tooltip.text(d["Date"]);
+                return tooltip.style("visibility", "visible");
+                })
+            .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+            .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+    }
 
     for (var i=0; i<offDates.length; i++) {
         svg.append("rect")

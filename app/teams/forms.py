@@ -1,5 +1,6 @@
 from wtforms import Form, SelectMultipleField, SelectField, BooleanField, validators
-from wtforms.fields.html5 import DateField
+from wtforms.validators import NumberRange
+from wtforms.fields.html5 import DateField, IntegerRangeField
 
 from operator import itemgetter
 
@@ -113,3 +114,5 @@ class GameGraphForm(Form):
     saxis = SelectField(u'Y Axis Variable', choices=constants.comparisonchoices + [("NA", "None"),], default="NA")
     steam = SelectMultipleField(u'Comparison Team',
         choices=sorted([(constants.teamDict[key], key) for key in constants.teamDict]))
+    maverage = IntegerRangeField(u'Number of Games in Moving Average',
+        default=25, validators=[NumberRange(1, 50)])
