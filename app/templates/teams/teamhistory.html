@@ -1120,6 +1120,28 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .style("text-decoration", "underline")  
         .text(text);
 
+    svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("x", width - 50)
+      .attr("dy", "-.71em")
+      .style("text-anchor", "end")
+      .text(ptext);
+
+    if (secondary != "NA") {
+        svg.append("g")
+          .attr("class", "y axis")
+          .call(yAxis)
+        .append("text")
+          .attr("transform", "rotate(-90)")
+          .attr("y", 6)
+          .attr("dy", ".71em")
+          .style("text-anchor", "end")
+          .text(stext);
+    }
+
     svg.append("text")
         .attr("x", width - margin.right - margin.left)
         .attr("y", height - margin.bottom)
