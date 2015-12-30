@@ -68,6 +68,7 @@
                 {% set summaries=games %}
                 {% set splitgame=True %}
                 {% set tableid="comparisons-game" %}
+                {% set teamname=form.filterTeams.data %}
                 {% include "tables/teaminfo.html" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="graphicalgame">
@@ -129,6 +130,7 @@
                 {% set summaries=seasons %}
                 {% set splitgame = False %}
                 {% set tableid="comparisons-season" %}
+                {% set teamname=form.filterTeams.data %}
                 {% include "tables/teaminfo.html" %}
             </div>
             <div role="tabpanel" class="tab-pane" id="graphicalseason">
@@ -271,9 +273,10 @@ var dataset = [
 ];
 
 createGraph("season", "SA", "CF60", "OSv%", "Time",
-    "On-Ice Shots-On-Goal Differential", "Corsi For, Per 60 Minutes", "On-Ice Save Percentage");
+    "On-Ice Shots-On-Goal Differential", "Corsi For, Per 60 Minutes", "On-Ice Save Percentage",
+    $("#form-filterTeams").val());
 
-function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
+function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext, teamname) {
     $("#season-graph").html("");
     var maxradius = 0,
         maxheight = 0,
@@ -283,8 +286,14 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         mincolor = 100000000,
         maxcolor = 0;
 
+    var data = [];
     for (var i=0; i<dataset.length; i++) {
-        var row = dataset[i];
+        if (dataset[i]["teaminitial"] == teamname)
+            data.push(dataset[i]);
+    }
+
+    for (var i=0; i<data.length; i++) {
+        var row = data[i];
         row.x = row[x];
         row.y = row[y];
         row.color = row[color];
@@ -341,7 +350,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .attr("fill", "white");
 
     svg.selectAll("circle")
-        .data(dataset)
+        .data(data)
         .enter()
         .append("circle")
         .attr("class", "circle")
@@ -364,7 +373,7 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
         .style("stroke", "black")
 
     var texts = svg.selectAll("text")
-        .data(dataset)
+        .data(data)
         .enter();
 
     texts.append("text")
@@ -426,8 +435,8 @@ function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
             .ticks(0);
     }
 
-    x.domain([d3.min(dataset, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
-    y.domain([d3.min(dataset, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
+    x.domain([d3.min(data, function(d) { return d.x; }), d3.max(dataset, function(d) { return d.x; })]);
+    y.domain([d3.min(data, function(d) { return d.y; }), d3.max(dataset, function(d) { return d.y; })]);
 
     svg.append("g")
       .attr("class", "x axis")
@@ -565,12 +574,13 @@ function addGraph() {
         xtext = $("#xaxis option[value='" + x + "']").text(),
         ytext = $("#yaxis option[value='" + y + "']").text(),
         colortext = $("#caxis option[value='" + color + "']").text(),
+        teamname = $("#form-filterTeams").val();
         sizetext = $("#saxis option[value='" + size + "']").text();
     xtext = xtext.replace(/ *\([^)]*\) */g, "");
     ytext = ytext.replace(/ *\([^)]*\) */g, "");
     colortext = colortext.replace(/ *\([^)]*\) */g, "");
     sizetext = sizetext.replace(/ *\([^)]*\) */g, "");
-    createGraph(x, y, color, size, xtext, ytext, colortext, sizetext);
+    createGraph(x, y, color, size, xtext, ytext, colortext, sizetext, teamname);
 
 };
 
@@ -736,6 +746,14 @@ function compareScore(a,b) {
     return 0;
 }
 
+function compareScoreY(a,b) {
+    if (a.y < b.y)
+        return 1;
+    if (a.y > b.y)
+        return -1;
+    return 0;
+}
+
 function get_team_color(team, primary) {
     var coloroptions = [
         ["1","ANA","#91764B","#EF5225","Anaheim Ducks","Anaheim"],
@@ -802,7 +820,7 @@ function addGraph2() {
         for (var team in extrateams) {
             test.add(extrateams[team]);
         }
-        if (test.size != steam.length)
+        if (test.size != extrateams.length)
             document.getElementById("game-form").submit();
     }
     ptext = ptext.replace(/ *\([^)]*\) */g, "");
@@ -844,7 +862,6 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
             var curryear = tempteams[team][i]["season"];
             var min = Math.floor($("#rangeValue").val() / 2);
             var max = Math.ceil($("#rangeValue").val() / 2);
-            console.log(min, max);
             while (i - min < 0) {
                 min -= 1;
                 max += 1;
@@ -932,7 +949,6 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         var line = d3.svg.line()
             .x(function(d) { return x(new Date(d["Date"])); })
             .y(function(d) { return y(d.primary); });
-        console.log(data.length);
         svg.append("path")
             .datum(data)
             .attr('stroke', get_team_color(teamname, true))
@@ -997,72 +1013,89 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .style("font-size", "12px")
         .text("war-on-ice.com")
 
-    var datadistr = [];
+    var keys = Object.keys(teams);
+    createLegend(keys, svg);
+
+    var datadistr = {};
     var xs = []
+    var md = 10000;
     if (secondary == "NA") {
-        for (var i=0; i<alldata.length; i++) {
-            var x = alldata[i][primary];
-            var found = false;
-            var foundint = 0;
-            for (var j=0; j<datadistr.length; j++) {
-                if (datadistr[j].x == x) {
-                    found = true;
-                    foundint = j;
-                    break;
-                }
-            }
-            if (found == true) {
-                datadistr[foundint].y += 1;
-                xs.push(x);
-            } else {
-                datadistr.push({x: x, y: 1})
-                xs.push(x);
-            }
-        }
-        if (datadistr.length > 50) {
-            var adata = {};
-            for (var i=0; i<datadistr.length; i++) {
-                if (adata.hasOwnProperty(Math.ceil(datadistr[i].x))) {
-                    adata[Math.ceil(datadistr[i].x)] += datadistr[i].y;
-                } else {
-                    adata[Math.ceil(datadistr[i].x)] = datadistr[i].y;
-                }
-            }
-            var i = Math.floor(Math.min.apply(null, xs)),
-                min = Math.min.apply(null, xs),
-                max = Math.max.apply(null, xs),
-                average = Math.ceil((max - min) / 50);
-            if (average < 1) {
-                average = 1;
-            }
-            var merged = [];
-            while (i <= max) {
-                var score = 0;
-                for (var j=i; j<i + average; j++) {
-                    if (adata.hasOwnProperty(j)) {
-                        score += adata[j];
+        for (var team in teams) {
+            var minimum = [];
+            if (!(team in datadistr))
+                datadistr[team] = [];
+            for (var i=0; i<alldata.length; i++) {
+                if (alldata[i]["Team"] == team) {
+                    var x = alldata[i][primary];
+                    var found = false;
+                    var foundint = 0;
+                    for (var j=0; j<datadistr[team].length; j++) {
+                        if (datadistr[team][j].x == x) {
+                            found = true;
+                            foundint = j;
+                            break;
+                        }
+                    }
+                    if (found == true) {
+                        datadistr[team][foundint].y += 1;
+                        xs.push(x);
+                    } else {
+                        datadistr[team].push({x: x, y: 1})
+                        xs.push(x);
                     }
                 }
-                merged.push({x: i, y: score});
-                i += average;
             }
-            datadistr = merged;
+            if (datadistr[team].length > 50) {
+                var adata = {};
+                for (var i=0; i<datadistr[team].length; i++) {
+                    if (adata.hasOwnProperty(Math.ceil(datadistr[team][i].x))) {
+                        adata[Math.ceil(datadistr[team][i].x)] += datadistr[team][i].y;
+                    } else {
+                        adata[Math.ceil(datadistr[team][i].x)] = datadistr[team][i].y;
+                    }
+                }
+                var i = Math.floor(Math.min.apply(null, xs)),
+                    min = Math.min.apply(null, xs),
+                    max = Math.max.apply(null, xs),
+                    average = Math.ceil((max - min) / 50);
+                if (average < 1) {
+                    average = 1;
+                }
+                var merged = [];
+                while (i <= max) {
+                    var score = 0;
+                    for (var j=i; j<i + average; j++) {
+                        if (adata.hasOwnProperty(j)) {
+                            score += adata[j];
+                        }
+                    }
+                    merged.push({x: i, y: score});
+                    i += average;
+                }
+                datadistr[team] = merged;
 
+            }
+            for (var i=0; i<datadistr[team].length; i++) {
+                minimum.push(datadistr[team][i].x);
+            }
+            var tmd = minimumDifference(minimum);
+            if (md > tmd) {
+                md = tmd;
+            }
         }
-        minimum = [];
-        for (var i=0; i<datadistr.length; i++) {
-            minimum.push(datadistr[i].x);
-        }
-        md = minimumDifference(minimum);
     } else {
-        for (var i=0; i<alldata.length; i++) {
-            var x = null;
-            var y = null;
-            var d = alldata[i];
-            if (primary in d && secondary in d) {
-                x = d[primary];
-                y = d[secondary];
-                datadistr.push({x: x, y: y, Date: d["Date"]});
+        for (var team in teams) {
+            if (!(team in datadistr))
+                datadistr[team] = [];
+            for (var i=0; i<alldata.length; i++) {
+                var x = null;
+                var y = null;
+                var d = alldata[i];
+                if (primary in d && secondary in d) {
+                    x = d[primary];
+                    y = d[secondary];
+                    datadistr[team].push({x: x, y: y, Date: d["Date"]});
+                }
             }
         }
     }
@@ -1105,12 +1138,25 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .append("g")
         .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
 
-    x.domain(d3.extent(datadistr, function(d) {
-        return d.x;
-    }));
-    y.domain(d3.extent(datadistr, function(d) {
-        return d.y;
-    }));
+    var xmin = 10000,
+        xmax = -10000,
+        ymin = 10000,
+        ymax = -10000;
+    for (var team in datadistr) {
+        for (var i=0; i<datadistr[team].length; i++) {
+            var td = datadistr[team][i];
+            if (td.x < xmin)
+                xmin = td.x;
+            if (td.y < ymin)
+                ymin = td.y;
+            if (td.x > xmax)
+                xmax = td.x;
+            if (td.y > ymax)
+                ymax = td.y;
+        }
+    }
+    x.domain([xmin, xmax]);
+    y.domain([ymin, ymax]);
 
     svg.append("rect")
         .attr("width", width + margin.left + margin.right)
@@ -1127,9 +1173,17 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .attr("class", "y axis")
         .call(yAxis);
 
+    var bar = null;
+    var bardata = [];
     if (secondary == "NA") {
+        for (var team in datadistr) {
+            for (var i=0; i<datadistr[team].length; i++) {
+                bardata.push({Team: team, x:datadistr[team][i].x, y:datadistr[team][i].y});
+            }
+        }
+        bardata.sort(compareScoreY);  
         var bar = svg.selectAll(".bar")
-            .data(datadistr)
+            .data(bardata)
           .enter().append("g")
             .attr("class", "bar")
             .on("mouseover", function(d){
@@ -1142,26 +1196,47 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
 
         bar.append("rect")
             .attr("x", 1)
-            .attr("width", x(datadistr[0].x + md) - x(datadistr[0].x))
-            .attr("fill", get_team_color(teamname, false))
-            .attr("stroke", get_team_color(teamname, true))
+            .attr("width", x(datadistr[team][0].x + md) - x(datadistr[team][0].x))
+            .attr("fill", function(d) { return get_team_color(d.Team, false); })
+            .attr("stroke", function(d) { return get_team_color(d.Team, true); })
             .attr("height", function(d) { return height - y(d.y); });
+        /*var line = d3.svg.line()
+            .x(function(d) { return x(d.x); })
+            .y(function(d) { return y(d.y); });
+        for (var team in teams) {
+            var tdata = datadistr[team].sort(compareScore);
+            svg.append("path")
+                .datum(tdata)
+                .attr('stroke', get_team_color(team, true))
+                .attr('stroke-width', 4)
+                .attr('fill', "none")
+                .attr("d", line);
+
+            svg.append("path")
+                .datum(tdata)
+                .attr('stroke', get_team_color(team, false))
+                .attr('stroke-width', 2)
+                .attr('fill', "none")
+                .attr("d", line);
+        }*/
     } else {
-        svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
-                .data(datadistr)                                         // associates the range of data to the group of elements
-            .enter().append("circle")                               // adds a circle for each data point
-                .attr("r", 4)                                       // with a radius of 3.5 pixels
-                .attr("cx", function(d) { return x(d.x); })      // at an appropriate x coordinate 
-                .attr("cy", function(d) { return y(d.y); })     // and an appropriate y coordinate
-                .attr("fill", get_team_color(teamname, false))
-                .attr("stroke", get_team_color(teamname, true))
-                .attr("stroke-width", "2px")
-            .on("mouseover", function(d){
-                tooltip.text(d["Date"]);
-                return tooltip.style("visibility", "visible");
-                })
-            .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-            .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+        for (var team in datadistr) {
+            svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+                    .data(datadistr[team])                                         // associates the range of data to the group of elements
+                .enter().append("circle")                               // adds a circle for each data point
+                    .attr("r", 4)                                       // with a radius of 3.5 pixels
+                    .attr("cx", function(d) { return x(d.x); })      // at an appropriate x coordinate 
+                    .attr("cy", function(d) { return y(d.y); })     // and an appropriate y coordinate
+                    .attr("fill", get_team_color(team, false))
+                    .attr("stroke", get_team_color(team, true))
+                    .attr("stroke-width", "2px")
+                .on("mouseover", function(d){
+                    tooltip.text(d["Date"]);
+                    return tooltip.style("visibility", "visible");
+                    })
+                .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+                .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
+        }
     }
 
     if (secondary == "NA")
@@ -1206,6 +1281,39 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .style("font-size", "12px")
         .text("war-on-ice.com")
 
+    var keys = Object.keys(datadistr);
+    createLegend(keys, svg);
+    
+
+}
+
+function createLegend(keys, svg) {
+    var legendRectSize = 10,
+        legendSpacing = 5;
+
+    var legend = svg.append("g")
+        .selectAll("g")
+        .data(keys)
+        .enter()
+        .append('g')
+          .attr('class', 'legend')
+          .attr('transform', function(d, i) {
+            var height = legendRectSize;
+            var x = 0;
+            var y = i * height;
+            return 'translate(' + x + ',' + y + ')';
+        });
+
+    legend.append('rect')
+        .attr('width', legendRectSize)
+        .attr('height', legendRectSize)
+        .style('fill', function(d) { return get_team_color(d, true); })
+        .style('stroke', function(d) { return get_team_color(d, false); });
+     
+    legend.append('text')
+        .attr('x', legendRectSize + legendSpacing)
+        .attr('y', legendRectSize - legendSpacing)
+        .text(function(d) { return d; });
 }
 
 function minimumDifference(a) {

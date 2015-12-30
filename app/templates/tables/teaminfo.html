@@ -59,8 +59,9 @@ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ heade
                     {% endif %}
                 </tr>
             </thead>
-            <tbody>
+            <tbody class="{{ teamname }}">
                 {% for summary in summaries %}
+                {% if summary["Team"] == teamname or teamname == "" %}
                 <tr>
                     <td><img alt="{{ summary["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + summary["Team"] + '.png') }}" height="20" width="20"/>{{ summary["Team"]|teamshortname }}</td>
                     {% if splitgame == True %}
@@ -112,6 +113,7 @@ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ heade
                     {% endfor %}
                     {% endif %}
                 </tr>
+                {% endif %}
                 {% endfor %}
             </tbody>
         </table>
