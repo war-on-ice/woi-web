@@ -1091,7 +1091,7 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
                 var x = null;
                 var y = null;
                 var d = alldata[i];
-                if (primary in d && secondary in d) {
+                if (primary in d && secondary in d && team == alldata[i]["Team"]) {
                     x = d[primary];
                     y = d[secondary];
                     datadistr[team].push({x: x, y: y, Date: d["Date"]});
@@ -1175,12 +1175,15 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
 
     var bar = null;
     var bardata = [];
-    if (secondary == "NA") {
-        for (var team in datadistr) {
-            for (var i=0; i<datadistr[team].length; i++) {
+    for (var team in datadistr) {
+        for (var i=0; i<datadistr[team].length; i++) {
+            if (secondary == "NA")
                 bardata.push({Team: team, x:datadistr[team][i].x, y:datadistr[team][i].y});
-            }
+            else
+                bardata.push({Team: team, x:datadistr[team][i].x, y:datadistr[team][i].y, Date: datadistr[team][i].Date});
         }
+    }
+    if (secondary == "NA") {
         bardata.sort(compareScoreY);  
         var bar = svg.selectAll(".bar")
             .data(bardata)
@@ -1220,23 +1223,21 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
                 .attr("d", line);
         }*/
     } else {
-        for (var team in datadistr) {
-            svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
-                    .data(datadistr[team])                                         // associates the range of data to the group of elements
-                .enter().append("circle")                               // adds a circle for each data point
-                    .attr("r", 4)                                       // with a radius of 3.5 pixels
-                    .attr("cx", function(d) { return x(d.x); })      // at an appropriate x coordinate 
-                    .attr("cy", function(d) { return y(d.y); })     // and an appropriate y coordinate
-                    .attr("fill", get_team_color(team, false))
-                    .attr("stroke", get_team_color(team, true))
-                    .attr("stroke-width", "2px")
-                .on("mouseover", function(d){
-                    tooltip.text(d["Date"]);
-                    return tooltip.style("visibility", "visible");
-                    })
-                .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
-                .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
-        }
+        svg.selectAll("dot")                                    // provides a suitable grouping for the svg elements that will be added
+            .data(bardata)                                         // associates the range of data to the group of elements
+        .enter().append("circle")                               // adds a circle for each data point
+            .attr("r", 4)                                       // with a radius of 3.5 pixels
+            .attr("cx", function(d) { return x(d.x); })      // at an appropriate x coordinate 
+            .attr("cy", function(d) { return y(d.y); })     // and an appropriate y coordinate
+            .attr("fill", function(d) { return get_team_color(d.Team, false); })
+            .attr("stroke", function(d) { return get_team_color(d.Team, true); })
+            .attr("stroke-width", "2px")
+        .on("mouseover", function(d){
+            tooltip.text(d["Date"]);
+            return tooltip.style("visibility", "visible");
+            })
+        .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+        .on("mouseout", function(){return tooltip.style("visibility", "hidden");});
     }
 
     if (secondary == "NA")
@@ -1269,8 +1270,9 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .append("text")
           .attr("transform", "rotate(-90)")
           .attr("y", 6)
+          .attr("dx", - height + margin.bottom)
           .attr("dy", ".71em")
-          .style("text-anchor", "end")
+          .style("text-anchor", "start")
           .text(stext);
     }
 
