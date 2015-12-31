@@ -1,11 +1,12 @@
-<h3>Skaters: {{ teamname|teamshortname }}</h3>
+<h3>Skaters: <img alt="{{ teamname }} Logo" src="{{ url_for('static', filename='img/team/' + teamname + '.png') }}" height="20" width="20"/>{{ teamname|teamshortname }}</h3>
     <div class="row datatable">
         <div class="col-sm-12">
             <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th class="left-rounded">Name</th>
                         <th>Pos</th>
+                        {% if "Gm" in team.0 %}<th>Gm</th>{% endif %}
                         <th>G</th>
                         <th>A1</th>
                         <th>A2</th>
@@ -63,6 +64,7 @@
                     <tr>
                         <td>{{ woiid[player["ID"]].full_name }}</td>
                         <td>{{ woiid[player["ID"]].pos }}</td>
+                        {% if "Gm" in team.0 %}<td>{{ player["Gm"] }}</td>{% endif %}
                         <td>{{ player["G"]|int }}</td>
                         <td>{{ player["ASSIST"]|int }}</td>
                         <td>{{ player["ASSIST_2"]|int }}</td>
@@ -70,7 +72,7 @@
                         {% if tablecolumns == 3 or tablecolumns == 0 %}
                         <td>{{ player["isSC"]|int }}</td>
                         <td>{{ player["iSC"]|int }}</td>
-                        <td>{{ (player["SHOT"] + player["SHOT1"] + player["SHOT3"] + player["SHOT4"])|int }}</td>
+                        <td>{{ (player["SHOT"] + player["MISS"] + player["BLOCKED_SHOT"])|int }}</td>
                         <td>{{ (player["CF"] - player["CA"])|int }}</td>
                         <td>{{ (player["FF"] - player["FA"])|int }}</td>
                         <td>{{ (player["GF"] - player["GA"])|int }}</td>
@@ -78,7 +80,7 @@
                         <td>{{ player["FF"]|int }}</td>
                         <td>{{ player["ZSO"]|int }}</td>
                         <td>{{ player["ZSD"]|int }}</td>
-                        <td>{{ (player["BLOCKED_SHOT"] + player["BLOCKED_SHOT1"] + player["BLOCKED_SHOT2"] + player["BLOCKED_SHOT3"] + player["BLOCKED_SHOT4"])|int }}</td>
+                        <td>{{ (player["BLOCK"])|int }}</td>
                         <td>{{ player["FAC_WIN"]|int }}</td>
                         <td>{{ player["FAC_LOSE"]|int }}</td>
                         <td>{{ player["HIT"]|int }}</td>

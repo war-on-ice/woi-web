@@ -32,14 +32,156 @@ def show_series():
     teamgames = get_r_seasons()
     form.season.choices = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
 
+    if request.method == "POST":
+        period = constants.periods_options[form.period.data]["value"]
+    else:
+        period = [0]
+        period.extend(constants.periods_options[constants.periods["default"]]["value"])
+
+    tablecolumns = form.tablecolumns.data
+
     # Find games where these teams faced each other
     games = GamesTest.query.filter(GamesTest.season==form.season.data, or_(GamesTest.hometeam==form.team1.data, GamesTest.hometeam==form.team2.data),
         or_(GamesTest.awayteam==form.team1.data, GamesTest.awayteam==form.team2.data))
+    gcodes = set()
     for game in games:
-        print game.gcode, game.hometeam, game.awayteam
+        gcodes.add(game.gcode)
+
+    gamedata = []
+    teams = []
+    goalies = []
+
+    skip = ["period", "home", "Opponent", "gamestate", "gcode", "Team", "TOI", "Gm", "ID"]
+
+    gamefound = set()
+    foundplayers = set()
+    goaliefound = set()
+    playerfound = set()
+    away = []
+    home = []
+    allplayers = []
+    players = set()
+    for gcode in gcodes:
+        rdata = get_rdata("http://data.war-on-ice.net/games/" + str(form.season.data) + str(gcode) + ".RData")
+        rteamrun = rdata["teamrun"]
+        for tr in sorted(rteamrun, key=lambda x: x["TOI"], reverse=True):
+            gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"])
+            if tr["period"] in period and int(tr["gamestate"]) == int(form.teamstrengths.data) and gid not in gamefound:
+                gamefound.add(gid)
+                ar = None
+                for team in teams:
+                    if team["Team"] == tr["Team"]:
+                        ar = team
+                        break
+                if ar is None:
+                    tr["MSF"] = int(tr["FF"]) - int(tr["SF"])
+                    tr["BSF"] = tr["CF"] - tr["MSF"] - tr["SF"]
+                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                    teams.append(tr)
+                else:
+                    for key in tr:
+                        if key not in skip:
+                            ar[key] += tr[key]
+                    ar["MSF"] += int(tr["FF"]) - int(tr["SF"])
+                    ar["BSF"] += tr["CF"] - (int(tr["FF"]) - int(tr["SF"])) - tr["SF"]
+                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+        rgoalies = rdata["goalierun"]
+        for tr in sorted(rgoalies, key=lambda x: x["TOI"], reverse=True):
+            gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"]) + str(tr["ID"])
+            if tr["period"] in period and tr["gamestate"] == int(form.teamstrengths.data) and gid not in goaliefound:
+                goaliefound.add(gid)
+                ar = None
+                for goalie in goalies:
+                    if goalie["ID"] == tr["ID"] and goalie["Team"] == tr["Team"]:
+                        ar = goalie
+                        break
+                if ar is None:
+                    tr["gu"] = tr["goals.0"]
+                    tr["su"] = tr["shots.0"]
+                    tr["gl"] = tr["goals.1"]
+                    tr["sl"] = tr["shots.1"]
+                    tr["gm"] = tr["goals.2"]
+                    tr["sm"] = tr["shots.2"]
+                    tr["gh"] = tr["goals.3"] + tr["goals.4"]
+                    tr["sh"] = tr["shots.3"] + tr["shots.4"]
+                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                    tr["Gm"] = 1
+                    goalies.append(tr)
+                    foundplayers.add(tr["ID"])
+                else:
+                    ar["gu"] += tr["goals.0"]
+                    ar["su"] += tr["shots.0"]
+                    ar["gl"] += tr["goals.1"]
+                    ar["sl"] += tr["shots.1"]
+                    ar["gm"] += tr["goals.2"]
+                    ar["sm"] += tr["shots.2"]
+                    ar["gh"] += tr["goals.3"] + tr["goals.4"]
+                    ar["sh"] += tr["shots.3"] + tr["shots.4"]
+                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+                    ar["Gm"] += 1
+        rplayerrun = rdata["playerrun"]
+        for tr in sorted(rplayerrun, key=lambda x: x["TOI"], reverse=True):
+            if tr["ID"] not in foundplayers:
+                foundplayers.add(tr["ID"])
+            gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"]) + str(tr["ID"])
+            if tr["period"] in period and tr["gamestate"] == int(form.teamstrengths.data) and gid not in playerfound:
+                playerfound.add(gid)
+                players.add(tr["ID"])
+                ar = None
+                pteam = None
+                for p in allplayers:
+                    if p["ID"] == tr["ID"]:
+                        ar = p
+                        break
+                if ar is None:
+                    tr["G"] = int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
+                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                    tr["Gm"] = 1
+                    allplayers.append(tr)
+                else:
+                    for key in tr:
+                        if key not in skip:
+                            ar[key] += tr[key]
+                    ar["G"] += int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
+                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+                    ar["Gm"] += 1
+
+    ht = None
+    at = None
+    for player in allplayers:
+        if ht is None:
+            print player.keys()
+            home.append(player)
+            ht = player["Team"]
+        elif ht == player["Team"]:
+            home.append(player)
+        elif at == None:
+            away.append(player)
+        else:
+            away.append(player)
+
+
+    rostermaster = {}
+    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(foundplayers)).all()
+    woiid = {}
+    for p in rosterquery:
+        player = {}
+        player["woi.id"] = p.__dict__["woi.id"]
+        player["pos"] = p.pos
+        player["full_name"] = p.last.title() + ", " + p.first.title()
+        rostermaster[p.numfirstlast] = player
+        woiid[player["woi.id"]] = player
+
     return render_template("game/series.html",
         rd=rd,
-        form=form)
+        form=form,
+        home=home,
+        away=away,
+        woiid=woiid,
+        teamrun=teams,
+        goalies=goalies,
+        gamedata=gamedata,
+        tablecolumns=int(tablecolumns),)
 
 
 @mod.route('/<gameId>/tables', methods=['GET'])

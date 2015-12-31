@@ -251,6 +251,10 @@
                         "fixedColumns": true,
                         //"scrollY": 300,
                     });
+                    $('thead').each(function(d, v) {
+                        $(v).find("th:last").addClass("right-rounded");
+                        $(v).find("th:first").addClass("left-rounded");
+                    });
                 },
             });
         }

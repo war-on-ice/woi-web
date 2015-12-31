@@ -5,7 +5,7 @@
             <table class="table dataTable table-striped no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th>Team</th>
+                        <th class="left-rounded">Team</th>
                         <th>GF</th>
                         <th>SF</th>
                         <th>MSF</th>
@@ -23,7 +23,7 @@
                 <tbody>
                     {% for teamrun in teamrun %}
                     <tr>
-                        <td><img alt="{{ teamvar }} Logo" src="{{ url_for('static', filename='img/team/' + teamrun["Team"] + '.png') }}" height="20" width="20"/>{{ teamrun["Team"]|teamshortname }}</td>
+                        <td><img alt="{{ teamrun["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + teamrun["Team"] + '.png') }}" height="20" width="20"/>{{ teamrun["Team"]|teamshortname }}</td>
                         <td>{{ teamrun["GF"] }}</td>
                         <td>{{ teamrun["SF"]|int }}</td>
                         <td>{{ teamrun["MSF"]|int }}</td>
@@ -49,7 +49,7 @@
             <table class="table dataTable hover stripe order-column no-footer nowrap" role="grid" cellspacing="0" width="100%" style="width: 100%;">
                 <thead>
                     <tr>
-                        <th>Name</th>
+                        <th class="left-rounded">Name</th>
                         <th>Team</th>
                         <th>GU</th>
                         <th>SU</th>
@@ -66,7 +66,7 @@
                     {% for goalie in goalies %}
                     <tr>
                         <td>{{ woiid[goalie["ID"]].full_name }}</td>
-                        <td>{{ goalie["Team"] }}</td>
+                        <td><img alt="{{ goalie["Team"] }} Logo" src="{{ url_for('static', filename='img/team/' + goalie["Team"] + '.png') }}" height="20" width="20"/>{{ goalie["Team"]|teamshortname }}</td>
                         <td>{{ goalie["gu"] }}</td>
                         <td>{{ goalie["su"] }}</td>
                         <td>{{ goalie["gl"] }}</td>
