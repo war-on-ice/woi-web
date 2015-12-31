@@ -16,7 +16,18 @@ import urllib2
 import numpy as np
 import math
 
+from resources import get_csv, combine_data
+
 mod = Blueprint('team', __name__, url_prefix='/team')
+
+
+@mod.route("/gab/")
+def show_goals_above_baseline():
+    rd = setup_nav()
+    csv = get_csv("http://war-on-ice.com/data/GAR-seasonal.csv")
+    cd = combine_data(csv)
+    return render_template("teams/gab.html",
+        rd=rd)
 
 
 @mod.route("/byteam/")
