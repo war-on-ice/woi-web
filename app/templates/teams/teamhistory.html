@@ -816,12 +816,16 @@ function addGraph2() {
     if (steam != null && extrateams == null) {
         document.getElementById("game-form").submit();
     } else if (steam != null && extrateams != null) {
-        var test = new Set(steam);
-        for (var team in extrateams) {
-            test.add(extrateams[team]);
-        }
-        if (test.size != extrateams.length)
+        if (steam.length == extrateams.length) {
+            var test = new Set(steam);
+            for (var team in extrateams) {
+                test.add(extrateams[team]);
+            }
+            if (test.size != extrateams.length)
+                document.getElementById("game-form").submit();
+        } else {
             document.getElementById("game-form").submit();
+        }
     }
     ptext = ptext.replace(/ *\([^)]*\) */g, "");
     stext = stext.replace(/ *\([^)]*\) */g, ""); 
@@ -1124,6 +1128,7 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         .orient("left");
 
     var line = d3.svg.line()
+        .interpolate("cardinal")
         .x(function(d) {
             return x(d.x);
         })
@@ -1184,7 +1189,7 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
         }
     }
     if (secondary == "NA") {
-        bardata.sort(compareScoreY);  
+        /*bardata.sort(compareScoreY);  
         var bar = svg.selectAll(".bar")
             .data(bardata)
           .enter().append("g")
@@ -1202,7 +1207,30 @@ function createGraph2(primary, secondary, ptext, stext, margin, width, height) {
             .attr("width", x(datadistr[team][0].x + md) - x(datadistr[team][0].x))
             .attr("fill", function(d) { return get_team_color(d.Team, false); })
             .attr("stroke", function(d) { return get_team_color(d.Team, true); })
-            .attr("height", function(d) { return height - y(d.y); });
+            .attr("height", function(d) { return height - y(d.y); });*/
+
+        var line = d3.svg.line()
+            .interpolate("cardinal")
+            .x(function(d) { return x(d.x); })
+            .y(function(d) { return y(d.y); });
+        for (var team in teams) {
+            var tdata = datadistr[team].sort(compareScore);
+            svg.append("path")
+                .datum(tdata)
+                .attr('stroke', get_team_color(team, true))
+                .attr('stroke-width', 4)
+                .attr('fill', "none")
+                .attr("d", line);
+
+            svg.append("path")
+                .datum(tdata)
+                .attr('stroke', get_team_color(team, false))
+                .attr('stroke-width', 2)
+                .attr('fill', "none")
+                .attr("d", line);
+        }
+        
+
         /*var line = d3.svg.line()
             .x(function(d) { return x(d.x); })
             .y(function(d) { return y(d.y); });

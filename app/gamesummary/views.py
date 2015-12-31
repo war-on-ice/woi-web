@@ -2,12 +2,12 @@ from flask import Blueprint, request
 
 from app import app, Base, constants, filters
 from flask import render_template
-from sqlalchemy import desc
+from sqlalchemy import desc, or_
 from app.navigation import setup_nav
 
 from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest, PlayByPlay
-from calls import get_r_games
-from forms import GameSummaryForm
+from calls import get_r_games, get_r_seasons
+from forms import GameSummaryForm, SeriesSummaryForm
 
 import math
 
@@ -24,6 +24,22 @@ def show_games():
         rd=rd,
         games=games,
         teamname=filters.teamname)
+
+@mod.route('/series/', methods=["GET", "POST"])
+def show_series():
+    rd = setup_nav()
+    form = SeriesSummaryForm(request.form)
+    teamgames = get_r_seasons()
+    form.season.choices = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
+
+    # Find games where these teams faced each other
+    games = GamesTest.query.filter(GamesTest.season==form.season.data, or_(GamesTest.hometeam==form.team1.data, GamesTest.hometeam==form.team2.data),
+        or_(GamesTest.awayteam==form.team1.data, GamesTest.awayteam==form.team2.data))
+    for game in games:
+        print game.gcode, game.hometeam, game.awayteam
+    return render_template("game/series.html",
+        rd=rd,
+        form=form)
 
 
 @mod.route('/<gameId>/tables', methods=['GET'])

@@ -1,0 +1,61 @@
+{% extends "wrappers/wrapper.html" %}
+
+{% block title %}Season Series Statistics{% endblock %}
+
+{% block content_header %}
+    <h1 class="text-center">Season Series Comparison</h1>
+{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-md-12">
+        {% from "_formhelpers.html" import render_field %}
+        <form class="table-opts" method="post" action="/game/series/">
+            {{ csrf_token }}
+            <div class="row">
+                <div class="col-sm-3">
+                {{ render_field(form.season) }}
+                </div>
+                <div class="col-sm-3">
+                {{ render_field(form.team1) }}
+                </div>
+                <div class="col-sm-3">
+                {{ render_field(form.teamstrengths) }}
+                </div>
+                <div class="col-sm-3">
+                {{ render_field(form.tablecolumns) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-sm-3">
+                    {{ render_field(form.session) }}
+                </div>
+                <div class="col-sm-3">
+                    {{ render_field(form.team2) }}
+                </div>
+                <div class="col-sm-3">
+                    {{ render_field(form.scoresituations) }}
+                </div>
+                <div class="col-sm-3">
+                    {{ render_field(form.period) }}
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-3 col-md-offset-9">
+                    <button type="submit" class="btn btn-primary center-block beside-fields">Submit</button>
+                </div>
+            </div>
+        </form>
+    </div>
+</div>
+<div class="row">
+    <div class="col-md-12">
+        <ul id="main-content-tab-container" class="nav nav-tabs" role="tablist">
+            <li role="presentation" class="active"><a href="#event-tables">Event Tables</a></li>
+            <li role="presentation"><a href="#event-charts">Event Charts</a></li>
+            <li role="presentation"><a href="#player-usage">Player Usage</a></li>
+            {# <li role="presentation"><a href="#win-probs">Win Probabilities</a></li> #}
+        </ul>
+    </div>
+</div>
+{% endblock %}
