@@ -109,7 +109,11 @@ data-toggle="tooltip" data-placement="top" title="{{ header|tooltip }}">{{ heade
                     {% if form.tablecolumns.data|int == 9 or form.tablecolumns.data|int == 7 %}
                     {% set headers = ["FO%", "FO_W", "FO_L", "ZSO", "ZSN", "ZSD", "HIT", "HIT-", "PN", "PN-", "PenD", "TOI"] %}
                     {% for header in headers %}
+                    {% if header != "TOI" %}
                     <td>{{ summary[header] }}</td>
+                    {% else %}
+                    <td>{{ summary[header]|calc_toi }}</td>
+                    {% endif %}
                     {% endfor %}
                     {% endif %}
                 </tr>

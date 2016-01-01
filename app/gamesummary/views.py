@@ -60,10 +60,20 @@ def show_series():
     away = []
     home = []
     allplayers = []
+    playerteams = {}
     players = set()
+    coplayers = {}
     for gcode in gcodes:
         rdata = get_rdata("http://data.war-on-ice.net/games/" + str(form.season.data) + str(gcode) + ".RData")
         rteamrun = rdata["teamrun"]
+        for play in rdata["coplayer"]:
+            ckey = play["p1"] + "|" + play["p2"]
+            if ckey not in coplayers:
+                coplayers[ckey] = play
+            else:
+                for key in play:
+                    if key not in ["p1", "p2"]:
+                        coplayers[ckey][key] += play[key]
         for tr in sorted(rteamrun, key=lambda x: x["TOI"], reverse=True):
             gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"])
             if tr["period"] in period and int(tr["gamestate"]) == int(form.teamstrengths.data) and gid not in gamefound:
@@ -76,7 +86,6 @@ def show_series():
                 if ar is None:
                     tr["MSF"] = int(tr["FF"]) - int(tr["SF"])
                     tr["BSF"] = tr["CF"] - tr["MSF"] - tr["SF"]
-                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
                     teams.append(tr)
                 else:
                     for key in tr:
@@ -84,7 +93,7 @@ def show_series():
                             ar[key] += tr[key]
                     ar["MSF"] += int(tr["FF"]) - int(tr["SF"])
                     ar["BSF"] += tr["CF"] - (int(tr["FF"]) - int(tr["SF"])) - tr["SF"]
-                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+                    ar["TOI"] += float(tr["TOI"])
         rgoalies = rdata["goalierun"]
         for tr in sorted(rgoalies, key=lambda x: x["TOI"], reverse=True):
             gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"]) + str(tr["ID"])
@@ -104,7 +113,7 @@ def show_series():
                     tr["sm"] = tr["shots.2"]
                     tr["gh"] = tr["goals.3"] + tr["goals.4"]
                     tr["sh"] = tr["shots.3"] + tr["shots.4"]
-                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                    tr["TOI"] = float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                     tr["Gm"] = 1
                     goalies.append(tr)
                     foundplayers.add(tr["ID"])
@@ -117,7 +126,7 @@ def show_series():
                     ar["sm"] += tr["shots.2"]
                     ar["gh"] += tr["goals.3"] + tr["goals.4"]
                     ar["sh"] += tr["shots.3"] + tr["shots.4"]
-                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+                    ar["TOI"] += float(tr["TOI"])  #round(float(tr["TOI"]) / 60.0, 1)
                     ar["Gm"] += 1
         rplayerrun = rdata["playerrun"]
         for tr in sorted(rplayerrun, key=lambda x: x["TOI"], reverse=True):
@@ -135,22 +144,41 @@ def show_series():
                         break
                 if ar is None:
                     tr["G"] = int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
-                    tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                    tr["TOI"] = float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                     tr["Gm"] = 1
                     allplayers.append(tr)
+                    playerteams[tr["ID"]] = tr["Team"]
                 else:
                     for key in tr:
                         if key not in skip:
                             ar[key] += tr[key]
                     ar["G"] += int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
-                    ar["TOI"] += round(float(tr["TOI"]) / 60.0, 1)
+                    ar["TOI"] += float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                     ar["Gm"] += 1
+
+    coplayerlist = []
+    coplayerdict = {}
+    coplayerlinks = []
+    for co in coplayers:
+        matchup = coplayers[co]
+        # Define each "Node" (player), and assign a value to them
+        for p in ["p1", "p2"]:
+            if matchup[p] not in coplayerdict:
+                coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]]})
+                coplayerdict[matchup[p]] = len(coplayerlist) - 1
+        # Then create a link between these two with the corresponding values
+        link = {}
+        link["source"] = matchup["p1"]
+        link["target"] = matchup["p2"]
+        #link["TOI"] =
+        #link["evf"] =
+        #link["eva"] =
+        #link["cf%"] =
 
     ht = None
     at = None
     for player in allplayers:
         if ht is None:
-            print player.keys()
             home.append(player)
             ht = player["Team"]
         elif ht == player["Team"]:
@@ -181,6 +209,7 @@ def show_series():
         teamrun=teams,
         goalies=goalies,
         gamedata=gamedata,
+        coplayers=coplayers,
         tablecolumns=int(tablecolumns),)
 
 
@@ -220,7 +249,7 @@ def show_game_summary_tables(gameId):
             if tr["Team"] not in teams:
                 tr["MSF"] = int(tr["FF"]) - int(tr["SF"])
                 tr["BSF"] = tr["CF"] - tr["MSF"] - tr["SF"]
-                tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                tr["TOI"] = float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                 teamrun.append(tr)
                 teams.add(tr["Team"])
     goalies = []
@@ -238,7 +267,7 @@ def show_game_summary_tables(gameId):
                 tr["sm"] = tr["shots.2"]
                 tr["gh"] = tr["goals.3"] + tr["goals.4"]
                 tr["sh"] = tr["shots.3"] + tr["shots.4"]
-                tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+                tr["TOI"] = float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                 goalies.append(tr)
                 teams.add(tr["Team"])
                 foundplayers.add(tr["ID"])
@@ -253,7 +282,7 @@ def show_game_summary_tables(gameId):
         if tr["period"] in period and tr["gamestate"] == gamestate and tr["ID"] not in players:
             players.add(tr["ID"])
             tr["G"] = int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
-            tr["TOI"] = round(float(tr["TOI"]) / 60.0, 1)
+            tr["TOI"] = float(tr["TOI"]) #round(float(tr["TOI"]) / 60.0, 1)
             if tr["home"] == 1:
                 home.append(tr)
             else:

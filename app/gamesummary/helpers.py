@@ -48,7 +48,7 @@ def get_db_game_summary():
         team["hit"] = int(td.HIT)
         team["pn"] = int(td.PENL_TAKEN)
         team["fo_w"] = int(td.FAC_WIN)
-        team["toi"] = round(float(td.TOI) / 60.0, 1)
+        team["toi"] = float(td.TOI) # round(float(td.TOI) / 60.0, 1)
         teamsummaries.append(team)
 
     goalieruns = GoalieRun.query.filter_by(season=season,
@@ -73,7 +73,7 @@ def get_db_game_summary():
             goalie["sm"] = td.__dict__["shots.2"]
             goalie["gh"] = td.__dict__["goals.3"] + td.__dict__["goals.4"]
             goalie["sh"] = td.__dict__["shots.3"] + td.__dict__["shots.4"]
-            goalie["toi"] = round(float(td.TOI) / 60.0, 1)
+            goalie["toi"] = float(td.TOI)  # round(float(td.TOI) / 60.0, 1)
             goalies.append(goalie)
 
     playerruns = PlayerRun.query.filter_by(season=season,
@@ -110,7 +110,7 @@ def get_db_game_summary():
             player["hitminus"] = int(td.HIT_TAKEN)
             player["pn"] = int(td.PENL_TAKEN)
             player["pnminus"] = int(td.PENL_DRAWN)
-            player["toi"] = round(float(td.TOI) / 60.0, 1)
+            player["toi"] = float(td.TOI) # round(float(td.TOI) / 60.0, 1)
             if td.home == 1:
                 home.append(player)
             else:

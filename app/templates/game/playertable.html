@@ -114,7 +114,7 @@
                         <td>{{ player["SCF"]|int }}</td>
                         <td>{{ player["SCA"]|int }}</td>
                         {% endif %}
-                        <td>{{ player["TOI"] }}</td>
+                        <td>{{ player["TOI"]|calc_toi }}</td>
                     </tr>
                     {% endfor %}
                 </tbody>

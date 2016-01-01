@@ -91,7 +91,7 @@
                                 <td>{{ teamrun["HIT"] }}</td>
                                 <td>{{ teamrun["PENL_TAKEN"] }}</td>
                                 <td>{{ teamrun["FAC_WIN"] }}</td>
-                                <td>{{ teamrun["TOI"] }}</td>
+                                <td>{{ teamrun["TOI"]|calc_toi }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>
@@ -133,7 +133,7 @@
                                 <td>{{ goalie["sm"] }}</td>
                                 <td>{{ goalie["gh"] }}</td>
                                 <td>{{ goalie["sh"] }}</td>
-                                <td>{{ goalie["TOI"] }}</td>
+                                <td>{{ goalie["TOI"]|calc_toi }}</td>
                             </tr>
                             {% endfor %}
                         </tbody>

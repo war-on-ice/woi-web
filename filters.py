@@ -134,3 +134,9 @@ def get_status(value):
                 seconds = "0" + seconds
             return str(int(19 - minutes)) + ":" + seconds + ", " + period
         return value["status"]
+
+
+@blueprint.app_template_filter()
+def calc_toi(seconds):
+    m, s = divmod(seconds, 60)
+    return str(int(m)) + ":" + str(s)
