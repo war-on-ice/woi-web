@@ -601,56 +601,56 @@ function create_corsi_events(data, divid) {
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(17))     // x position of the second end of the line
+        .attr("x2", xScale(0.5 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(-d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(37))     // x position of the second end of the line
+        .attr("x2", xScale(1 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(-d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(72))     // x position of the second end of the line
+        .attr("x2", xScale(2 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(-d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(150))     // x position of the second end of the line
+        .attr("x2", xScale(4 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(-d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(17))     // x position of the second end of the line
+        .attr("x2", xScale(0.5 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(37))     // x position of the second end of the line
+        .attr("x2", xScale(1 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(72))     // x position of the second end of the line
+        .attr("x2", xScale(2 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("line")          // attach a line
         .style("stroke", "grey")  // colour the line
         .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
         .attr("y1", yScale(0))      // y position of the first end of the line
-        .attr("x2", xScale(150))     // x position of the second end of the line
+        .attr("x2", xScale(4 * d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })))     // x position of the second end of the line
         .attr("y2", yScale(d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
 
     svg.append("text")
