@@ -611,7 +611,6 @@ d3.select("#savePNG").on("click", function(){
   var image = new Image;
   image.src = imgsrc;
   console.log(imgsrc);
-  window.open(image.src);
   image.onload = function() {
       context.drawImage(image, 0, 0);
 

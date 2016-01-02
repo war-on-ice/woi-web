@@ -126,3 +126,8 @@ def get_db_game_summary():
         player["full_name"] = p.last.title() + ", " + p.first.title()
         rostermaster[p.numfirstlast] = player
         woiid[player["woi.id"]] = player
+
+
+def add2team(existing, newdata):
+    existing["links"].append(newdata)
+    return existing

@@ -18,7 +18,19 @@
 }
 rect {
     stroke-width: 2;
-} 
+}
+
+.background {
+  fill: #eee;
+}
+
+line {
+  stroke: #fff;
+}
+
+text.active {
+  fill: red;
+}
 
 
 /*

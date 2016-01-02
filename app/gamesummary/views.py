@@ -12,6 +12,8 @@ from forms import GameSummaryForm, SeriesSummaryForm
 import math
 
 from helper import get_rdata
+from helpers import add2team
+from app.helpers import percent
 
 mod = Blueprint('game', __name__, url_prefix='/game')
 
@@ -156,25 +158,6 @@ def show_series():
                     ar["TOI"] += float(tr["TOI"]) # round(float(tr["TOI"]) / 60.0, 1)
                     ar["Gm"] += 1
 
-    coplayerlist = []
-    coplayerdict = {}
-    coplayerlinks = []
-    for co in coplayers:
-        matchup = coplayers[co]
-        # Define each "Node" (player), and assign a value to them
-        for p in ["p1", "p2"]:
-            if matchup[p] not in coplayerdict:
-                coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]]})
-                coplayerdict[matchup[p]] = len(coplayerlist) - 1
-        # Then create a link between these two with the corresponding values
-        link = {}
-        link["source"] = matchup["p1"]
-        link["target"] = matchup["p2"]
-        #link["TOI"] =
-        #link["evf"] =
-        #link["eva"] =
-        #link["cf%"] =
-
     ht = None
     at = None
     for player in allplayers:
@@ -200,8 +183,43 @@ def show_series():
         rostermaster[p.numfirstlast] = player
         woiid[player["woi.id"]] = player
 
+    coplayerlist = []
+    coplayerdict = {}
+    coplayerlinks = []
+    hometeam = None
+    awayteam = None
+    for co in coplayers:
+        matchup = coplayers[co]
+        # Define each "Node" (player), and assign a value to them
+        for p in ["p1", "p2"]:
+            team = 0
+            if matchup[p] not in coplayerdict:
+                if hometeam is None:
+                    hometeam = playerteams[matchup[p]]
+                elif awayteam is None and hometeam != playerteams[matchup[p]]:
+                    awayteam = playerteams[matchup[p]]
+                if playerteams[matchup[p]] == hometeam:
+                    team = 1
+                coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]], "rname": str(woiid[matchup[p]]["full_name"]), "group": team})
+                coplayerdict[matchup[p]] = len(coplayerlist) - 1
+        # Then create a link between these two with the corresponding values
+        link = {}
+        link["source"] = coplayerdict[matchup["p1"]]
+        link["target"] = coplayerdict[matchup["p2"]]
+        link["sourcename"] = matchup["p1"]
+        link["targetname"] = matchup["p2"]
+        link["TOI"] = matchup["el2"]
+        link["evf"] = matchup["evf"]
+        link["eva"] = matchup["eva"]
+        link["cf%"] = percent(matchup["evf"], matchup["eva"])
+        coplayerlinks.append(link)
+
+    # Set up the 4 arrays for the co occurrency
+    hvh = {"nodes": coplayerlist, "links": coplayerlinks}
+
     return render_template("game/series.html",
         rd=rd,
+        hvh=hvh,
         form=form,
         home=home,
         away=away,
@@ -210,7 +228,7 @@ def show_series():
         goalies=goalies,
         gamedata=gamedata,
         coplayers=coplayers,
-        tablecolumns=int(tablecolumns),)
+        tablecolumns=int(tablecolumns))
 
 
 @mod.route('/<gameId>/tables', methods=['GET'])
