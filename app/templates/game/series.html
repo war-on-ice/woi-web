@@ -172,7 +172,18 @@
                 </div>
             </div>
             <div id="event-charts" class="tab-pane" role="tablepanel">
+                <div class="row">
+                    <div class="col-md-6">
+                        <div id="corsi-home">
 
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div id="corsi-away">
+
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -461,7 +472,139 @@ d3.select("#savePNG").on("click", function(){
             order("group");
             d3.select("#order").property("selectedIndex", 2).node().focus();
           }, 5000);
+
+    svg.append("text")
+        .attr("x", -80)
+        .attr("y", -25)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
     }
+</script>
+<script type="text/javascript">
+var margin = {top: 20, right: 20, bottom: 30, left: 40},
+    width = ($("#event-tables").width() - margin.left) / 2,
+    height = width;
+
+/* 
+ * value accessor - returns the value to encode for a given data object.
+ * scale - maps value to a visual display encoding, such as a pixel position.
+ * map function - maps from data value to display value
+ * axis - sets up axis
+ */ 
+
+// setup x 
+var xValue = function(d) { return d.CF + d.CA;}, // data -> value
+    xScale = d3.scale.linear().range([0, width]), // value -> display
+    xMap = function(d) { return xScale(xValue(d));}, // data -> display
+    xAxis = d3.svg.axis().scale(xScale).orient("bottom");
+
+// setup y
+var yValue = function(d) { return d.CF - d.CA;}, // data -> value
+    yScale = d3.scale.linear().range([height, 0]), // value -> display
+    yMap = function(d) { return yScale(yValue(d));}, // data -> display
+    yAxis = d3.svg.axis().scale(yScale).orient("left");
+
+// setup fill color
+var cValue = function(d) { return "black";},
+    color = d3.scale.category10();
+
+// add the tooltip area to the webpage
+var tooltip = d3.select("body")
+    .append("div")
+    .style("position", "absolute")
+    .style("z-index", "10")
+    .style("visibility", "hidden")
+    .style("border-radius", 3)
+    .attr("class", "tooltip-inner")
+    .text("a simple tooltip");
+
+create_corsi_events({{ homecorsi|safe }}, "#corsi-home");
+create_corsi_events({{ awaycorsi|safe }}, "#corsi-away");
+
+// load data
+function create_corsi_events(data, divid) {
+// add the graph canvas to the body of the webpage
+    var svg = d3.select(divid).append("svg")
+        .attr("width", width + margin.left + margin.right)
+        .attr("height", height + margin.top + margin.bottom)
+      .append("g")
+        .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+  // don't want dots overlapping axis, so add in buffer to data domain
+  xScale.domain([d3.min(data, xValue)-1, d3.max(data, xValue)+1]);
+  yScale.domain([-d3.max(data, function(d) { return Math.abs(d.CF - d.CA); }), d3.max(data,  function(d) { return Math.abs(d.CF - d.CA); })-1]);
+
+  // x-axis
+  svg.append("g")
+      .attr("class", "x axis")
+      .attr("transform", "translate(0," + height + ")")
+      .call(xAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("x", width)
+      .attr("y", -6)
+      .style("text-anchor", "end")
+      .text("Corsi For Plus Corsi Against");
+
+  // y-axis
+  svg.append("g")
+      .attr("class", "y axis")
+      .call(yAxis)
+    .append("text")
+      .attr("class", "label")
+      .attr("transform", "rotate(-90)")
+      .attr("y", 6)
+      .attr("dy", ".71em")
+      .style("text-anchor", "end")
+      .text("Corsi For Minus Corsi Against");
+
+
+  function format_toi(t) {
+    var minutes = Math.floor(t / 60);
+    var seconds = t - minutes * 60;
+    return minutes + ":" + seconds
+  }
+  // draw dots
+  svg.selectAll(".dot")
+      .data(data)
+    .enter().append("circle")
+      .attr("class", "dot")
+      .attr("r", 3.5)
+      .attr("cx", xMap)
+      .attr("cy", yMap)
+      .style("fill", function(d) { return get_team_color(d.Team, true); })
+      .style("stroke", function(d) { return get_team_color(d.Team, false); })
+      .on("mouseover", mouseover)
+      .on("mousemove", function(){return tooltip.style("top", (event.pageY-10)+"px").style("left",(event.pageX+10)+"px");})
+      .on("mouseout", mouseout);
+
+    function mouseover(p) {
+        tooltip.html(p["full_name"] + "<br />SF:" + p.SF + "<br />SA:" + p.SA + "<br />TOI:" + format_toi(p.TOI));
+        tooltip.style("visibility", "visible")
+    }
+
+    function mouseout() {
+        d3.selectAll("text").classed("active", false);
+        tooltip.style("visibility", "hidden");
+    }
+
+    // Draw Lines
+    svg.append("line")          // attach a line
+        .style("stroke", "red")  // colour the line
+        .attr("x1", xScale(d3.min(data, xValue)-1))     // x position of the first end of the line
+        .attr("y1", yScale(0))      // y position of the first end of the line
+        .attr("x2", xScale(d3.max(data, xValue)+1))     // x position of the second end of the line
+        .attr("y2", yScale(0));    // y position of the second end of the line
+
+    svg.append("text")
+        .attr("x", margin.left)
+        .attr("y", height - margin.bottom)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+
+}
 </script>
 {% endblock %}
 

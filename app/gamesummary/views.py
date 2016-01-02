@@ -10,6 +10,7 @@ from calls import get_r_games, get_r_seasons
 from forms import GameSummaryForm, SeriesSummaryForm
 
 import math
+import numpy
 
 from helper import get_rdata
 from helpers import add2team
@@ -214,6 +215,23 @@ def show_series():
         link["cf%"] = percent(matchup["evf"], matchup["eva"])
         coplayerlinks.append(link)
 
+    homecorsi = []
+    awaycorsi = []
+    for line in home:
+        for key in line:
+            if type(line[key]).__module__ == "numpy" and numpy.isnan(line[key]):
+                line[key] = 0
+        if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
+            line["full_name"] = str(woiid[line["ID"]]["full_name"])
+            homecorsi.append(line)
+    for line in away:
+        for key in line:
+            if type(line[key]).__module__ == "numpy" and numpy.isnan(line[key]):
+                line[key] = 0
+        if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
+            line["full_name"] = str(woiid[line["ID"]]["full_name"])
+            awaycorsi.append(line)
+
     # Set up the 4 arrays for the co occurrency
     hvh = {"nodes": coplayerlist, "links": coplayerlinks}
 
@@ -221,8 +239,8 @@ def show_series():
         rd=rd,
         hvh=hvh,
         form=form,
-        home=home,
-        away=away,
+        home=home, homecorsi=homecorsi,
+        away=away, awaycorsi=awaycorsi,
         woiid=woiid,
         teamrun=teams,
         goalies=goalies,
