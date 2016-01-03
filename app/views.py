@@ -25,7 +25,7 @@ def index():
     count = 0
     for player in players:
         count += 1
-        line = [player.last.title() + ", " + player.first.title(), player.__dict__["woi.id"]]
+        line = [player.FullName, player.__dict__["PlayerId"]]
         search.append(line)
 
     games = calls.get_r_games()

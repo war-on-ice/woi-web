@@ -1,6 +1,48 @@
 from app.gamesummary.calls import row2dict
 
 
+def calc_strengths(play, home=True):
+    strengths = [7, ]
+    hp = 0
+    ap = 0
+    for i in xrange(1, 7):
+        if play["h" + str(i)] != "xxxxxxxNA":
+            hp += 1
+        if play["h" + str(i)] != "xxxxxxxNA":
+            ap += 1
+    if hp == ap:
+        if hp == 5:
+            strengths.append(1)
+        elif hp == 4:
+            strengths.append(4)
+        elif hp == 6:
+            # Doubt this would ever happen, but who knows
+            strengths.extend([5, 6])
+        else:
+            strengths.append(0)
+    else:
+        if home is True:
+            if hp == 5 and ap == 4:
+                strengths.append(2)
+            elif hp == 4 and ap == 5:
+                strengths.append(3)
+            elif hp == 6:
+                strengths.append(6)
+            else:
+                strengths.append(0)
+        else:
+            if hp == 5 and ap == 4:
+                strengths.append(3)
+            elif hp == 4 and ap == 5:
+                strengths.append(2)
+            elif hp == 6:
+                strengths.append(5)
+            else:
+                strengths.append(0)
+    return strengths
+
+
+
 def percent(cf, ca):
     try:
         return round(float(cf) / (float(cf) + float(ca)) * 100.00, 2)

@@ -143,12 +143,16 @@
 
                     </div>
                 </div>
+                {% if away|length > 0 %}
                 {% with team=away, teamname=away[0].Team %}
                     {% include "game/playertable.html" %}
                 {% endwith %}
+                {% endif %}
+                {% if home|length > 0 %}
                 {% with team=home, teamname=home[0].Team %}
                     {% include "game/playertable.html" %}
                 {% endwith %}
+                {% endif %}
             </div>
             <div id="h2h" class="tab-pane" role="tabpanel">
                 <div class="row">
@@ -185,10 +189,23 @@
                     </div>
                 </div>
                 <div class="row">
-                    <div class="col-md-12">
-                        <div id="rink-shots">
-                            <svg id="rink-shots-svg"></svg>
+                    <div class="col-md-6">
+                        <h3 class="text-center">{{ hometeam|teamname }} Shot Attempts</h3>
+                        <div id="rink-home">
+
                         </div>
+                    </div>
+                    <div class="col-md-6">
+                        <h3 class="text-center">{{ awayteam|teamname }} Shot Attempts</h3>
+                        <div id="rink-away">
+
+                        </div>
+                    </div>
+                </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <p class="text-center"><span style="color:red">Goals</span> are in red. Misses are in black. <span style="color:green">Blocks</span> are in green. <span style="color:blue">Saves</span> are in blue.</br /></p>
+                        <p class="text-center"><i>Rush attempts</i> are larger and italicized.<br />Rebound attempts are larger</p>
                     </div>
                 </div>
             </div>
@@ -526,12 +543,16 @@ var tooltip = d3.select("body")
     .attr("class", "tooltip-inner")
     .text("a simple tooltip");
 
+{% if homecorsi|length > 0 %}
 create_corsi_events({{ homecorsi|safe }}, "#corsi-home", "{{ homecorsi[0].Team|teamname }}");
+{% endif %}
+{% if awaycorsi|length > 0 %}
 create_corsi_events({{ awaycorsi|safe }}, "#corsi-away", "{{ awaycorsi[0].Team|teamname }}");
+{% endif %}
 
 // load data
 function create_corsi_events(data, divid, teamname) {
-// add the graph canvas to the body of the webpage
+    // add the graph canvas to the body of the webpage
     var svg = d3.select(divid).append("svg")
         .attr("width", width + margin.left + margin.right)
         .attr("height", height + margin.top + margin.bottom)
@@ -640,46 +661,17 @@ function create_corsi_events(data, divid, teamname) {
 </script>
 <script src="{{ url_for('static', filename='js/rinkPlot.js') }}"></script>
 <script type="text/javascript">
-var puckR = 3;
-var margin = {top: 2, left: 2, right: 2, bottom: 2};
-var rinkWidth = 270;
-var rinkHeight = 120;
-var rinkRadius = 28;
-var ftPerCell = 5;
-var cellSize = 20;
 
-createRink("shots", {{ pbp|safe }});
+createRink("home", {{ pbphome|safe }});
+createRink("away", {{ pbpaway|safe }});
 
 function createRink(dividelement, data) {
-    //
-    // Scales
-    //
-    var x = d3.scale.linear()
-        .domain([0, rinkWidth])
-        .range([0, (rinkWidth / ftPerCell) * cellSize]);
-    var y = d3.scale.linear()
-        .domain([0, rinkHeight])
-        .range([(rinkHeight / ftPerCell) * cellSize, 0]);
 
-    d3.select("#rink-" + dividelement + "-svg")
-        .style("height", (rinkHeight / ftPerCell) * cellSize + margin.top + margin.bottom + "px")
-        .style("width", (rinkWidth / ftPerCell) * cellSize + margin.left + margin.right + "px")
-        .append("g")
-            .attr("id", "rink-" + dividelement + "-g")
-            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+    var parent = d3.select("#rink-" + dividelement).append("svg");
 
-    d3.select("#rink-" + dividelement + "-g").append("g").attr("id", "rink-map-" + dividelement);
-
-    var homeRink = RINK_MAP({parent: d3.select("#rink-map-" + dividelement), desiredWidth:width, data: [], horizontal: true, fullRink: true});
+    var homeRink = RINK_MAP({parent: parent, desiredWidth: 380, data: data, horizontal: false, fullRink: false,
+        toolTipValue: RINK_HELPERS.toolTipText});
     homeRink();
-    d3.select("#rink-map" + dividelement).select("g.zones").attr("transform", "");
-    d3.select("#rink-map" + dividelement).append("rect")
-        .attr("width", x.range()[1])
-        .attr("height", y.range()[0])
-        .attr("rx", x(rinkRadius))
-        .attr("ry", y(0) - y(rinkRadius))
-        .style("fill", "none")
-        .style("stroke", "#ccc");
 }
 </script>
 {% endblock %}

@@ -57,17 +57,16 @@ def show_team_current(teamId):
 
 
     rostermaster = {}
-    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(players.keys())).all()
+    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(players.keys())).all()
     woiid = {}
     for p in rosterquery:
         player = {}
-        player["woi.id"] = p.__dict__["woi.id"]
+        player["woi.id"] = p.__dict__["PlayerId"]
         if p.pos is not None:
-            player["pos"] = p.pos
+            player["pos"] = p.Position
         else:
             player["pos"] = "F"
-        player["full_name"] = p.last.title() + ", " + p.first.title()
-        rostermaster[p.numfirstlast] = player
+        player["full_name"] = p.FullName
         woiid[player["woi.id"]] = player
 
     forwards = {}

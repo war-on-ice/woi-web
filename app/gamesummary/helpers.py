@@ -117,14 +117,13 @@ def get_db_game_summary():
                 away.append(player)
 
     rostermaster = {}
-    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(foundplayers)).all()
+    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(foundplayers)).all()
     woiid = {}
     for p in rosterquery:
         player = {}
-        player["woi.id"] = p.__dict__["woi.id"]
-        player["pos"] = p.pos
-        player["full_name"] = p.last.title() + ", " + p.first.title()
-        rostermaster[p.numfirstlast] = player
+        player["woi.id"] = p.__dict__["PlayerId"]
+        player["pos"] = p.Position
+        player["full_name"] = p.FullName
         woiid[player["woi.id"]] = player
 
 

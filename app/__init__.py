@@ -5,7 +5,7 @@ from flask.ext.moment import Moment
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy import create_engine
 
-#from config import contractConnStr
+from config import contractConnStr
 
 
 app = Flask(__name__)
@@ -16,9 +16,9 @@ moment = Moment(app)
 Base = declarative_base()
 Base.metadata.reflect(bind = db.engine, views = True)
 
-#capengine = create_engine(contractConnStr)
-#CapBase = declarative_base()
-#CapBase.metadata.reflect(bind=capengine, views=True)
+capengine = create_engine(contractConnStr)
+CapBase = declarative_base()
+CapBase.metadata.reflect(bind=capengine, views=True)
 
 # Register blueprints
 

@@ -501,8 +501,14 @@ var RINK_MAP = function RinkMap(config){
         }
 
         // // Define 'div' for tooltips
-        var toolTipDiv = d3.select(".tooltip")
-            .style("opacity", 0);
+        var toolTipDiv = d3.select("body")
+            .append("div")
+            .style("position", "absolute")
+            .style("z-index", "10")
+            .style("visibility", "hidden")
+            .style("border-radius", 3)
+            .attr("class", "tooltip-inner")
+            .text("a simple tooltip");
 
         // For each shot attempt, create g element which we will append circle and text to.
         var shotNodes = p.parent.selectAll(".zone1").append("g")
@@ -534,7 +540,6 @@ var RINK_MAP = function RinkMap(config){
                           }
                           return d["etype"] + shotFeature;
                         };
-
         shotNodes.append("circle")
             .attr("r", 10)
             .attr("cx", shotX)
@@ -555,12 +560,14 @@ var RINK_MAP = function RinkMap(config){
                   .style("top", (d3.event.pageY) + "px")
                   .style("opacity", 1);
                 p.parent.style("cursor", "pointer");
+                toolTipDiv.style("visibility", "visible")
             })
             .on("mouseout", function(d){
                 toolTipDiv.style("opacity", 0);
                 p.parent.style("cursor", "crosshair");
                 d3.select(this)
                   .classed("select-sa", false);
+                toolTipDiv.style("visibility", "hidden")
             });
 
         // if horizontal, rotate second zone.

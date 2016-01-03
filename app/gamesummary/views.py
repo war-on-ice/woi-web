@@ -1,6 +1,6 @@
 from flask import Blueprint, request
 
-from app import app, Base, constants, filters
+from app import app, Base, CapBase, constants, filters
 from flask import render_template
 from sqlalchemy import desc, or_
 from app.navigation import setup_nav
@@ -14,7 +14,7 @@ import numpy
 
 from helper import get_rdata
 from helpers import add2team
-from app.helpers import percent
+from app.helpers import percent, calc_strengths
 
 mod = Blueprint('game', __name__, url_prefix='/game')
 
@@ -174,16 +174,19 @@ def show_series():
         else:
             away.append(player)
 
+    for co in coplayers:
+        matchup = coplayers[co]
+        for p in ["p1", "p2"]:
+            foundplayers.add(matchup[p])
 
     rostermaster = {}
-    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(foundplayers)).all()
+    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(foundplayers)).all()
     woiid = {}
     for p in rosterquery:
         player = {}
-        player["woi.id"] = p.__dict__["woi.id"]
-        player["pos"] = p.pos
-        player["full_name"] = p.last.title() + ", " + p.first.title()
-        rostermaster[p.numfirstlast] = player
+        player["woi.id"] = str(p.__dict__["PlayerId"])
+        player["pos"] = str(p.Position)
+        player["full_name"] = str(p.FullName)
         woiid[player["woi.id"]] = player
 
     coplayerlist = []
@@ -197,25 +200,27 @@ def show_series():
         for p in ["p1", "p2"]:
             team = 0
             if matchup[p] not in coplayerdict:
-                if hometeam is None:
+                if hometeam is None and matchup[p] in playerteams:
                     hometeam = playerteams[matchup[p]]
-                elif awayteam is None and hometeam != playerteams[matchup[p]]:
+                elif awayteam is None and matchup[p] in playerteams and hometeam != playerteams[matchup[p]]:
                     awayteam = playerteams[matchup[p]]
-                if playerteams[matchup[p]] == hometeam:
+                if matchup[p] in playerteams and playerteams[matchup[p]] == hometeam:
                     team = 1
-                coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]], "rname": str(woiid[matchup[p]]["full_name"]), "group": team})
-                coplayerdict[matchup[p]] = len(coplayerlist) - 1
-        # Then create a link between these two with the corresponding values
-        link = {}
-        link["source"] = coplayerdict[matchup["p1"]]
-        link["target"] = coplayerdict[matchup["p2"]]
-        link["sourcename"] = matchup["p1"]
-        link["targetname"] = matchup["p2"]
-        link["TOI"] = matchup["el2"]
-        link["evf"] = matchup["evf"]
-        link["eva"] = matchup["eva"]
-        link["cf%"] = percent(matchup["evf"], matchup["eva"])
-        coplayerlinks.append(link)
+                if matchup[p] in playerteams:
+                    coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]], "rname": str(woiid[matchup[p]]["full_name"]), "group": team})
+                    coplayerdict[matchup[p]] = len(coplayerlist) - 1
+        if matchup["p1"] in playerteams and matchup["p2"] in playerteams:
+            # Then create a link between these two with the corresponding values
+            link = {}
+            link["source"] = coplayerdict[matchup["p1"]]
+            link["target"] = coplayerdict[matchup["p2"]]
+            link["sourcename"] = matchup["p1"]
+            link["targetname"] = matchup["p2"]
+            link["TOI"] = matchup["el2"]
+            link["evf"] = matchup["evf"]
+            link["eva"] = matchup["eva"]
+            link["cf%"] = percent(matchup["evf"], matchup["eva"])
+            coplayerlinks.append(link)
 
     homecorsi = []
     awaycorsi = []
@@ -233,26 +238,47 @@ def show_series():
         if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
             line["full_name"] = str(woiid[line["ID"]]["full_name"])
             awaycorsi.append(line)
+    # ev.team
+    pbphome = []
+    pbpaway = []
+    scoresituations = int(form.scoresituations.data)
     for play in pbp:
-        for key in play:
-            if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
-                play[key] = 0
+        if play["period"] in period and (play["score.diff.cat"] == scoresituations or scoresituations == 7) and play["etype"] in ["GOAL", "SHOT", "BLOCK", "MISS"]:
+            for key in play:
+                if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
+                    play[key] = 0
+            print play["gcode"]
+            # get Names
+            if play["ev.player.1"] != "xxxxxxxNA":
+                play["P1"] = woiid[play["ev.player.1"]]["full_name"]
+            if play["ev.player.2"] != "xxxxxxxNA":
+                play["P2"] = woiid[play["ev.player.2"]]["full_name"]
+            if play["ev.player.3"] != "xxxxxxxNA":
+                play["P3"] = woiid[play["ev.player.3"]]["full_name"]
+            if play["ev.team"] == hometeam:
+                if int(form.teamstrengths.data) in calc_strengths(play, True):
+                    pbphome.append(play)
+            elif play["ev.team"] == awayteam:
+                if int(form.teamstrengths.data) in calc_strengths(play, False):
+                    pbpaway.append(play)
 
     # Set up the 4 arrays for the co occurrency
     hvh = {"nodes": coplayerlist, "links": coplayerlinks}
 
     return render_template("game/series.html",
         rd=rd,
-        pbp=pbp,
         hvh=hvh,
         form=form,
-        home=home, homecorsi=homecorsi,
-        away=away, awaycorsi=awaycorsi,
         woiid=woiid,
         teamrun=teams,
         goalies=goalies,
+        hometeam=hometeam,
+        awayteam=awayteam,
         gamedata=gamedata,
         coplayers=coplayers,
+        home=home, homecorsi=homecorsi,
+        away=away, awaycorsi=awaycorsi,
+        pbphome=pbphome, pbpaway=pbpaway,
         tablecolumns=int(tablecolumns))
 
 
@@ -336,14 +362,13 @@ def show_game_summary_tables(gameId):
         gcode=int(gcode)).first()
 
     rostermaster = {}
-    rosterquery = RosterMaster.query.filter(Base.metadata.tables['rostermaster'].c["woi.id"].in_(foundplayers)).all()
+    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(foundplayers)).all()
     woiid = {}
     for p in rosterquery:
         player = {}
-        player["woi.id"] = p.__dict__["woi.id"]
-        player["pos"] = p.pos
-        player["full_name"] = p.last.title() + ", " + p.first.title()
-        rostermaster[p.numfirstlast] = player
+        player["woi.id"] = p.__dict__["PlayerId"]
+        player["pos"] = p.Position
+        player["full_name"] = p.FullName
         woiid[player["woi.id"]] = player
 
     return render_template('game/gamesummarytables.html',

@@ -3,6 +3,7 @@ from sqlalchemy import Column, Integer, String, PrimaryKeyConstraint, Table, Flo
 from app import db#, metadata
 
 from app import Base
+from app import CapBase
 
 class TeamRun(db.Model):
     __table__ = Base.metadata.tables['teamrun']
@@ -36,11 +37,14 @@ class GoalieRun(db.Model):
     }
 
 
+#class RosterMaster(db.Model):
+#    __table__ = Base.metadata.tables['rostermaster']
+#    __mapper_args__ = {
+#        'primary_key': [Base.metadata.tables['rostermaster'].c["woi.id"]]
+#    }
 class RosterMaster(db.Model):
-    __table__ = Base.metadata.tables['rostermaster']
-    __mapper_args__ = {
-        'primary_key': [Base.metadata.tables['rostermaster'].c["woi.id"]]
-    }
+    __bind_key__ = 'contracts'
+    __table__ = CapBase.metadata.tables["Player"]
 
 
 class GameRoster(db.Model):

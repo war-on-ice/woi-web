@@ -163,46 +163,6 @@ text {
     font-weight: strong;
 }
 
-/* Corsi Event Chart CSS*/
-.corsiEvents{
-    width: 500px;
-    height: 500px;
-}
-
-.axis path,
-.axis line {
-    fill: none;
-    stroke: black;
-    shape-rendering: crispEdges;
-}
-
-.axis text {
-    font-family: sans-serif;
-    font-size: 10px;
-}
-
-.ref{
-    stroke-width: 1;
-    stroke: gray;
-}
-
-.charttitle {
-    font-family: sans-serif;
-    font-size: 12px;
-    font-weight: bold;
-}
-
-.selected {
-    fill: blue;
-    cursor: pointer;
-    /*text-anchor: middle;*/
-}
-
-.ceName {
-    text-anchor: middle;
-}
-
-
 
 /*
  *
