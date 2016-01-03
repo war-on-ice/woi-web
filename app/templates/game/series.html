@@ -184,6 +184,13 @@
                         </div>
                     </div>
                 </div>
+                <div class="row">
+                    <div class="col-md-12">
+                        <div id="rink-shots">
+                            <svg id="rink-shots-svg"></svg>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
@@ -519,11 +526,11 @@ var tooltip = d3.select("body")
     .attr("class", "tooltip-inner")
     .text("a simple tooltip");
 
-create_corsi_events({{ homecorsi|safe }}, "#corsi-home");
-create_corsi_events({{ awaycorsi|safe }}, "#corsi-away");
+create_corsi_events({{ homecorsi|safe }}, "#corsi-home", "{{ homecorsi[0].Team|teamname }}");
+create_corsi_events({{ awaycorsi|safe }}, "#corsi-away", "{{ awaycorsi[0].Team|teamname }}");
 
 // load data
-function create_corsi_events(data, divid) {
+function create_corsi_events(data, divid, teamname) {
 // add the graph canvas to the body of the webpage
     var svg = d3.select(divid).append("svg")
         .attr("width", width + margin.left + margin.right)
@@ -565,6 +572,21 @@ function create_corsi_events(data, divid) {
     var seconds = t - minutes * 60;
     return minutes + ":" + seconds
   }
+
+    svg.append("text")
+        .attr("x", margin.left)
+        .attr("y", height - margin.bottom)
+        .attr("text-anchor", "left")
+        .style("font-size", "12px")
+        .text("war-on-ice.com")
+
+    svg.append("text")
+        .attr("x", (width / 2))             
+        .attr("y", 0 - (margin.top / 4))
+        .attr("text-anchor", "middle")  
+        .style("font-size", "16px") 
+        .style("text-decoration", "underline")  
+        .text(teamname + " On-Ice Shot Attempts For/Against");
   // draw dots
   svg.selectAll(".dot")
       .data(data)
@@ -614,13 +636,50 @@ function create_corsi_events(data, divid) {
             .attr("y2", yScale(d3.max(data, function(d) { return Math.abs(d.CF - d.CA); })));    // y position of the second end of the line
     }
 
-    svg.append("text")
-        .attr("x", margin.left)
-        .attr("y", height - margin.bottom)
-        .attr("text-anchor", "left")
-        .style("font-size", "12px")
-        .text("war-on-ice.com")
+}
+</script>
+<script src="{{ url_for('static', filename='js/rinkPlot.js') }}"></script>
+<script type="text/javascript">
+var puckR = 3;
+var margin = {top: 2, left: 2, right: 2, bottom: 2};
+var rinkWidth = 270;
+var rinkHeight = 120;
+var rinkRadius = 28;
+var ftPerCell = 5;
+var cellSize = 20;
 
+createRink("shots", {{ pbp|safe }});
+
+function createRink(dividelement, data) {
+    //
+    // Scales
+    //
+    var x = d3.scale.linear()
+        .domain([0, rinkWidth])
+        .range([0, (rinkWidth / ftPerCell) * cellSize]);
+    var y = d3.scale.linear()
+        .domain([0, rinkHeight])
+        .range([(rinkHeight / ftPerCell) * cellSize, 0]);
+
+    d3.select("#rink-" + dividelement + "-svg")
+        .style("height", (rinkHeight / ftPerCell) * cellSize + margin.top + margin.bottom + "px")
+        .style("width", (rinkWidth / ftPerCell) * cellSize + margin.left + margin.right + "px")
+        .append("g")
+            .attr("id", "rink-" + dividelement + "-g")
+            .attr("transform", "translate(" + margin.left + "," + margin.top + ")");
+
+    d3.select("#rink-" + dividelement + "-g").append("g").attr("id", "rink-map-" + dividelement);
+
+    var homeRink = RINK_MAP({parent: d3.select("#rink-map-" + dividelement), desiredWidth:width, data: [], horizontal: true, fullRink: true});
+    homeRink();
+    d3.select("#rink-map" + dividelement).select("g.zones").attr("transform", "");
+    d3.select("#rink-map" + dividelement).append("rect")
+        .attr("width", x.range()[1])
+        .attr("height", y.range()[0])
+        .attr("rx", x(rinkRadius))
+        .attr("ry", y(0) - y(rinkRadius))
+        .style("fill", "none")
+        .style("stroke", "#ccc");
 }
 </script>
 {% endblock %}

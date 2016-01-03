@@ -1,5 +1,211 @@
 /*
  *
+ * Rink Changes
+ *
+ */
+
+/* GENERAL */
+text {
+    font-family: 'Helvetica', 'Arial', sans-serif;
+    font-size: 11px;
+    color: black;
+}
+
+.tooltip {
+    position: absolute;
+    width: auto;
+    height: auto;
+    padding: 10px;
+    background-color: white;
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+    -webkit-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    -moz-box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 4px 4px 8px rgba(0, 0, 0, 0.2);
+    pointer-events: none;
+    font: 11px sans-serif;
+    background: lightgray;
+}
+
+/* Matchup Table */
+
+.team-name{
+    pointer-events: none;
+}
+
+.legend-text{
+    text-anchor: middle;
+    /*alignment-baseline: text-before-edge;*/
+}
+
+.toiText {
+    text-anchor: middle;
+    alignment-baseline: middle;
+    font-size: 12px;
+    font-weight: bold;
+    cursor: default;  
+}
+
+.hidden {
+    opacity: 0;
+}
+
+.hor-axis-text{
+    text-anchor: end;
+    alignment-baseline: middle;
+    cursor: default;   
+    font-weight: bold; 
+}
+
+.ver-axis-text{
+    text-anchor: start;
+    alignment-baseline: middle;
+    cursor: default; 
+    font-weight: bold;   
+}
+
+/* Shot Plots */
+
+.ref{
+    stroke-width: 1;
+    stroke: gray;
+}
+
+.blue-line{
+    fill: blue;
+}
+
+.red-line{
+    fill: lightgray;
+}
+
+.center-line{
+    fill: red;
+}
+
+.red-faceoff{
+    stroke: lightgray;
+}
+
+.rink-face{
+    stroke: gray;
+    fill: white;
+}
+
+.goal-crease{
+    fill: lightblue;
+    stroke: red;
+}
+
+.charttitle {
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.SHOT.outer
+{
+    fill: none;
+}
+
+.GOAL.outer
+{
+    fill: none;
+    stroke: red;
+}
+
+.BLOCK.outer
+{
+    fill: none
+}
+
+.MISS.outer
+{
+    fill: none;
+}
+
+.GOAL {
+    fill: red;
+    text-anchor: middle;
+    alignment-baseline: middle;
+}
+
+.BLOCK{
+    fill: green;
+    text-anchor: middle;
+    alignment-baseline: middle;
+}
+
+.MISS{
+    fill: black;
+    text-anchor: middle;
+    alignment-baseline: middle;
+}
+
+.SHOT{
+    fill: blue;
+    text-anchor: middle;
+    alignment-baseline: middle;
+}
+
+.reb{
+    font-size: 120%;
+}
+
+.rush{
+    font-size: 120%;
+    font-style: italic;
+}
+
+.select-sa{
+    font-size: 150%;
+    font-weight: strong;
+}
+
+/* Corsi Event Chart CSS*/
+.corsiEvents{
+    width: 500px;
+    height: 500px;
+}
+
+.axis path,
+.axis line {
+    fill: none;
+    stroke: black;
+    shape-rendering: crispEdges;
+}
+
+.axis text {
+    font-family: sans-serif;
+    font-size: 10px;
+}
+
+.ref{
+    stroke-width: 1;
+    stroke: gray;
+}
+
+.charttitle {
+    font-family: sans-serif;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.selected {
+    fill: blue;
+    cursor: pointer;
+    /*text-anchor: middle;*/
+}
+
+.ceName {
+    text-anchor: middle;
+}
+
+
+
+/*
+ *
  * Chart Changes
  *
  */

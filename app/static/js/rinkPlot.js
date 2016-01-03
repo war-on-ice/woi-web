@@ -102,7 +102,7 @@ var RINK_MAP = function RinkMap(config){
         FACEOFF_OUT_MARK_DIST_BW: 5 + (7/12),
         TRAPEZOID_TOP: 22,
         TRAPEZOID_BOTTOM: 28
-    };
+    }
 
     var RINK_COLOR =
     {
@@ -114,7 +114,15 @@ var RINK_MAP = function RinkMap(config){
     var p =
     {
         chartsize: {width: 500, height: 500},
-        margins:  {top: 30, bottom: 5, left: 10, right: 10}
+        margins:  {top: 30, bottom: 5, left: 10, right: 10},
+        danger: [{x1: -9.11, y1: 89.1},
+            {x1: -22.1, y1: 68.9}, {x1: -22.1, y1: 53.9},
+            {x1: -9.11, y1: 53.9}, {x1: -9.11, y1: 43.9},
+            {x1: 9.11, y1: 43.9}, {x1: 9.11, y1: 53.9},
+            {x1: 22.1, y1: 53.9}, {x1: 22.1, y1: 68.9},
+            {x1: 9.11, y1: 89.1}, {x1: -9.11, y1: 89.1},
+            {x1: -9.11, y1: 68.9}, {x1: 9.11, y1: 68.9},
+            {x1: 9.11, y1: 89.1}, {x1: -9.11, y1: 89.1}]
     }
 
     if (config !== "undefined"){
@@ -471,24 +479,25 @@ var RINK_MAP = function RinkMap(config){
         // if full rink, generate zone2.
         if (p.fullRink){
             zoneName = "zone2";
-            zones.append("g")
+            var zone2 = zones.append("g")
                 .attr("class", zoneName);
 
-            rinkOutLine(zoneName);
-            rinkLine(0.5 * RINK_CONFIG.RINK_LENGTH, zoneName, "center-line"); // center line
+            rinkOutLine(zone2);
+            rinkLine(0.5 * RINK_CONFIG.RINK_LENGTH, zone2, "center-line"); // center line
 
-            rinkLine(RINK_CONFIG.ZONE_LENGTH, zoneName, "blue-line");
-            faceOffCircle(RINK_CONFIG.RED_TO_BOARDS + RINK_CONFIG.RED_TO_FACEOFF, RINK_CONFIG.RINK_WIDTH/2 - RINK_CONFIG.CENTER_TO_NEUTRAL_DOT, zoneName);
-            faceOffCircle(RINK_CONFIG.RED_TO_BOARDS + RINK_CONFIG.RED_TO_FACEOFF, RINK_CONFIG.RINK_WIDTH/2 + RINK_CONFIG.CENTER_TO_NEUTRAL_DOT, zoneName)
-            goalCrease(RINK_CONFIG.RED_TO_BOARDS, zoneName);
-            redLine(RINK_CONFIG.RED_TO_BOARDS, zoneName);
-            trapezoid(0, zoneName);
+            rinkLine(RINK_CONFIG.ZONE_LENGTH, zone2, "blue-line");
+            faceOffCircle(RINK_CONFIG.RED_TO_BOARDS + RINK_CONFIG.RED_TO_FACEOFF, RINK_CONFIG.RINK_WIDTH/2 - RINK_CONFIG.CENTER_TO_NEUTRAL_DOT, zone2);
+            faceOffCircle(RINK_CONFIG.RED_TO_BOARDS + RINK_CONFIG.RED_TO_FACEOFF, RINK_CONFIG.RINK_WIDTH/2 + RINK_CONFIG.CENTER_TO_NEUTRAL_DOT, zone2)
+            goalCrease(RINK_CONFIG.RED_TO_BOARDS, zone2);
+            redLine(RINK_CONFIG.RED_TO_BOARDS, zone2);
+            trapezoid(0, zone2);
 
-            faceOffDot(RINK_CONFIG.ZONE_LENGTH + RINK_CONFIG.ZONE_TO_NEUTRAL_DOT, (RINK_CONFIG.RINK_WIDTH/2 - RINK_CONFIG.CENTER_TO_NEUTRAL_DOT), zoneName);
-            faceOffDot(RINK_CONFIG.ZONE_LENGTH + RINK_CONFIG.ZONE_TO_NEUTRAL_DOT, (RINK_CONFIG.RINK_WIDTH/2 + RINK_CONFIG.CENTER_TO_NEUTRAL_DOT), zoneName);
+            faceOffDot(RINK_CONFIG.ZONE_LENGTH + RINK_CONFIG.ZONE_TO_NEUTRAL_DOT, (RINK_CONFIG.RINK_WIDTH/2 - RINK_CONFIG.CENTER_TO_NEUTRAL_DOT), zone2);
+            faceOffDot(RINK_CONFIG.ZONE_LENGTH + RINK_CONFIG.ZONE_TO_NEUTRAL_DOT, (RINK_CONFIG.RINK_WIDTH/2 + RINK_CONFIG.CENTER_TO_NEUTRAL_DOT), zone2);
 
-            refereeCrease(0.5 * RINK_CONFIG.RINK_LENGTH, zoneName);
-            neutralCircle(0.5 * RINK_CONFIG.RINK_LENGTH, 0.5 * RINK_CONFIG.RINK_WIDTH, zoneName);
+            refereeCrease(0.5 * RINK_CONFIG.RINK_LENGTH, zone2);
+            neutralCircle(0.5 * RINK_CONFIG.RINK_LENGTH, 0.5 * RINK_CONFIG.RINK_WIDTH, zone2);
+            waterMark(RINK_CONFIG.RED_TO_BOARDS /2, RINK_CONFIG.RINK_WIDTH/2, zone2);
         }
 
         // // Define 'div' for tooltips

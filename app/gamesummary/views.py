@@ -66,8 +66,10 @@ def show_series():
     playerteams = {}
     players = set()
     coplayers = {}
+    pbp = []
     for gcode in gcodes:
         rdata = get_rdata("http://data.war-on-ice.net/games/" + str(form.season.data) + str(gcode) + ".RData")
+        pbp.extend(rdata["playbyplay"])
         rteamrun = rdata["teamrun"]
         for play in rdata["coplayer"]:
             ckey = play["p1"] + "|" + play["p2"]
@@ -231,12 +233,17 @@ def show_series():
         if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
             line["full_name"] = str(woiid[line["ID"]]["full_name"])
             awaycorsi.append(line)
+    for play in pbp:
+        for key in play:
+            if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
+                play[key] = 0
 
     # Set up the 4 arrays for the co occurrency
     hvh = {"nodes": coplayerlist, "links": coplayerlinks}
 
     return render_template("game/series.html",
         rd=rd,
+        pbp=pbp,
         hvh=hvh,
         form=form,
         home=home, homecorsi=homecorsi,
