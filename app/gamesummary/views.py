@@ -362,6 +362,24 @@ def show_game_summary_tables(gameId):
         gcode=int(gcode)).first()
 
     woiid = get_player_info(foundplayers)
+
+    homecorsi = []
+    awaycorsi = []
+    for line in home:
+        for key in line:
+            if type(line[key]).__module__ == "numpy" and numpy.isnan(line[key]):
+                line[key] = 0
+        if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
+            line["full_name"] = str(woiid[line["ID"]]["full_name"])
+            homecorsi.append(line)
+    for line in away:
+        for key in line:
+            if type(line[key]).__module__ == "numpy" and numpy.isnan(line[key]):
+                line[key] = 0
+        if line["ID"] in woiid and woiid[line["ID"]]["pos"] != "G":
+            line["full_name"] = str(woiid[line["ID"]]["full_name"])
+            awaycorsi.append(line)
+
     pbphome = []
     pbpaway = []
     if len(home) > 0:
@@ -380,20 +398,16 @@ def show_game_summary_tables(gameId):
             if play["ev.player.3"] != "xxxxxxxNA":
                 play["P3"] = woiid[play["ev.player.3"]]["full_name"]
             if play["ev.team"] == hometeam:
-                if play["etype"] == "GOAL":
-                    print gamestate, calc_strengths(play, True)
                 if gamestate in calc_strengths(play, True):
                     pbphome.append(play)
             elif play["ev.team"] == awayteam:
-                if play["etype"] == "GOAL":
-                    print play
                 if gamestate in calc_strengths(play, False):
                     pbpaway.append(play)
 
     return render_template('game/gamesummarytables.html',
         tablecolumns=int(tablecolumns),
-        home=home,
-        away=away,
+        home=home, homecorsi=homecorsi,
+        away=away, awaycorsi=awaycorsi,
         gamedata=gamedata,
         goalies=goalies,
         woiid=woiid,
