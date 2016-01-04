@@ -270,10 +270,10 @@ var dataset = [
     {% endfor %}
 ];
 
-createGraph("ZSO%", "G+/-", "PDO", "FO%", "Fraction of Off vs Def Zone Starts",
+createBubbleGraph("ZSO%", "G+/-", "PDO", "FO%", "Fraction of Off vs Def Zone Starts",
     "Goal Differential", "PDO", "Faceoff Winning Percentage");
 
-function createGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
+function createBubbleGraph(x, y, color, size, xtext, ytext, colortext, sizetext) {
     $("#comparison-graph").html("");
     var maxradius = 0,
         maxheight = 0,
@@ -565,7 +565,7 @@ function addGraph() {
     ytext = ytext.replace(/ *\([^)]*\) */g, "");
     colortext = colortext.replace(/ *\([^)]*\) */g, "");
     sizetext = sizetext.replace(/ *\([^)]*\) */g, "");
-    createGraph(x, y, color, size, xtext, ytext, colortext, sizetext);
+    createBubbleGraph(x, y, color, size, xtext, ytext, colortext, sizetext);
 
 };
 

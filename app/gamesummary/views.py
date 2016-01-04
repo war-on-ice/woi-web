@@ -309,7 +309,7 @@ def show_game_summary_tables(gameId):
 
     rdata = get_rdata("http://data.war-on-ice.net/games/" + season + gcode + ".RData")
 
-    
+    pbp = rdata["playbyplay"]
     rteamrun = rdata["teamrun"]
     teamrun = []
     teams = set()
@@ -362,6 +362,33 @@ def show_game_summary_tables(gameId):
         gcode=int(gcode)).first()
 
     woiid = get_player_info(foundplayers)
+    pbphome = []
+    pbpaway = []
+    if len(home) > 0:
+        hometeam = home[0]["Team"]
+        awayteam = away[0]["Team"]
+    for play in pbp:
+        if play["period"] in period and (play["score.diff.cat"] == int(scoresituations) or int(scoresituations) == 7) and play["etype"] in ["GOAL", "SHOT", "BLOCK", "MISS"]:
+            for key in play:
+                if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
+                    play[key] = 0
+            # get Names
+            if play["ev.player.1"] != "xxxxxxxNA":
+                play["P1"] = woiid[play["ev.player.1"]]["full_name"]
+            if play["ev.player.2"] != "xxxxxxxNA":
+                play["P2"] = woiid[play["ev.player.2"]]["full_name"]
+            if play["ev.player.3"] != "xxxxxxxNA":
+                play["P3"] = woiid[play["ev.player.3"]]["full_name"]
+            if play["ev.team"] == hometeam:
+                if play["etype"] == "GOAL":
+                    print gamestate, calc_strengths(play, True)
+                if gamestate in calc_strengths(play, True):
+                    pbphome.append(play)
+            elif play["ev.team"] == awayteam:
+                if play["etype"] == "GOAL":
+                    print play
+                if gamestate in calc_strengths(play, False):
+                    pbpaway.append(play)
 
     return render_template('game/gamesummarytables.html',
         tablecolumns=int(tablecolumns),
@@ -370,6 +397,7 @@ def show_game_summary_tables(gameId):
         gamedata=gamedata,
         goalies=goalies,
         woiid=woiid,
+        pbphome=pbphome, pbpaway=pbpaway,
         teamrun=teamrun)
 
 @mod.route('/<gameId>/header')

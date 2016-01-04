@@ -60,10 +60,12 @@ def calc_strengths(play, home=True):
     hp = 0
     ap = 0
     for i in xrange(1, 7):
+        print i, play["h" + str(i)]
         if play["h" + str(i)] != "xxxxxxxNA":
             hp += 1
-        if play["h" + str(i)] != "xxxxxxxNA":
+        if play["a" + str(i)] != "xxxxxxxNA":
             ap += 1
+    print hp, ap
     if hp == ap:
         if hp == 5:
             strengths.append(1)

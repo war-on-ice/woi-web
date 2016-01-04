@@ -97,11 +97,9 @@
     <h3>Running Scoring Chance</h3>
     <p>Use same data retrieval function as above with different parameters, Kevin's chart</p>
     <h3>Shot Attempt Charts</h3>
-    <p>Create data retrieval function to pass data out from Flask<br>
-        Use Alexandra's chart (potentially modified)</p>
     <div class="row">
-        <div class="span6" id="shAway"></div>
-        <div class="span6" id="shHome"></div>
+        <div class="col-md-6" id="shHome"></div>
+        <div class="col-md-6" id="shAway"></div>
     </div>
     <h3>Player Corsi Events</h3>
     <p>Create data retrieval function to pass data out from Flask<br>
@@ -121,3 +119,20 @@
 {#                <div id="win-probs" class="tab-pane fade">#}
 {#                    <p>Win probabilities</p>#}
 {#                </div>#}
+
+{% block page_js %}
+<script type="text/javascript">
+
+createRink("#shHome", {{ pbphome|safe }});
+createRink("#shAway", {{ pbpaway|safe }});
+
+function createRink(dividelement, data) {
+
+    var parent = d3.select(dividelement).append("svg");
+
+    var homeRink = RINK_MAP({parent: parent, desiredWidth: 380, data: data, horizontal: false, fullRink: false,
+        toolTipValue: RINK_HELPERS.toolTipText});
+    homeRink();
+}
+</script>
+{% endblock %}
