@@ -7,8 +7,9 @@ from app.gamesummary.models import RosterMaster
 from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
+from app.helpers import get_player_info
 
-from calls import get_r_seasons
+from app.gamesummary.calls import get_r_seasons
 from models import ContractHeader
 
 import datetime
@@ -56,18 +57,7 @@ def show_team_current(teamId):
 
 
 
-    rostermaster = {}
-    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(players.keys())).all()
-    woiid = {}
-    for p in rosterquery:
-        player = {}
-        player["woi.id"] = p.__dict__["PlayerId"]
-        if p.pos is not None:
-            player["pos"] = p.Position
-        else:
-            player["pos"] = "F"
-        player["full_name"] = p.FullName
-        woiid[player["woi.id"]] = player
+    woiid = get_player_info(players.keys())
 
     forwards = {}
     defensemen = {}

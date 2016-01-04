@@ -12,15 +12,15 @@ from forms import GameSummaryForm, SeriesSummaryForm
 import math
 import numpy
 
-from helper import get_rdata
 from helpers import add2team
-from app.helpers import percent, calc_strengths
+from app.helpers import percent, calc_strengths, get_rdata, get_player_info
 
 mod = Blueprint('game', __name__, url_prefix='/game')
 
 
 @mod.route('/')
 def show_games():
+    """ Shows recent game summaries, same table as the one on the home page"""
     rd = setup_nav()
     games = get_r_games()
     return render_template('game/games.html',
@@ -28,16 +28,20 @@ def show_games():
         games=games,
         teamname=filters.teamname)
 
+
 @mod.route('/series/', methods=["GET", "POST"])
 def show_series():
+    """ Show series information between two teams for a season."""
     rd = setup_nav()
     form = SeriesSummaryForm(request.form)
     teamgames = get_r_seasons()
+    # Update season choices based on teamgames data
     form.season.choices = [(x, str(x)[0:4] + "-" + str(x)[4:]) for x in sorted(teamgames.keys(), reverse=True)]
 
     if request.method == "POST":
         period = constants.periods_options[form.period.data]["value"]
     else:
+        # All periods by default
         period = [0]
         period.extend(constants.periods_options[constants.periods["default"]]["value"])
 
@@ -50,11 +54,15 @@ def show_series():
     for game in games:
         gcodes.add(game.gcode)
 
+    # Overall game data
     gamedata = []
+    # Team specific data for table
     teams = []
+    # Goalie specific data for goalie table
     goalies = []
 
-    skip = ["period", "home", "Opponent", "gamestate", "gcode", "Team", "TOI", "Gm", "ID"]
+    # Values that should be skipped in accumulation
+    skip = ["period", "home", "Opponent", "gamestate", "gcode", "Team", "TOI", "Gm", "ID", "season"]
 
     gamefound = set()
     foundplayers = set()
@@ -67,6 +75,7 @@ def show_series():
     players = set()
     coplayers = {}
     pbp = []
+    # For each gcode, get the RData file for that game
     for gcode in gcodes:
         rdata = get_rdata("http://data.war-on-ice.net/games/" + str(form.season.data) + str(gcode) + ".RData")
         pbp.extend(rdata["playbyplay"])
@@ -179,15 +188,7 @@ def show_series():
         for p in ["p1", "p2"]:
             foundplayers.add(matchup[p])
 
-    rostermaster = {}
-    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(foundplayers)).all()
-    woiid = {}
-    for p in rosterquery:
-        player = {}
-        player["woi.id"] = str(p.__dict__["PlayerId"])
-        player["pos"] = str(p.Position)
-        player["full_name"] = str(p.FullName)
-        woiid[player["woi.id"]] = player
+    woiid = get_player_info(foundplayers)
 
     coplayerlist = []
     coplayerdict = {}
@@ -247,7 +248,6 @@ def show_series():
             for key in play:
                 if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
                     play[key] = 0
-            print play["gcode"]
             # get Names
             if play["ev.player.1"] != "xxxxxxxNA":
                 play["P1"] = woiid[play["ev.player.1"]]["full_name"]
@@ -361,15 +361,7 @@ def show_game_summary_tables(gameId):
     gamedata = GamesTest.query.filter_by(season=season,
         gcode=int(gcode)).first()
 
-    rostermaster = {}
-    rosterquery = RosterMaster.query.filter(CapBase.metadata.tables['Player'].c["PlayerId"].in_(foundplayers)).all()
-    woiid = {}
-    for p in rosterquery:
-        player = {}
-        player["woi.id"] = p.__dict__["PlayerId"]
-        player["pos"] = p.Position
-        player["full_name"] = p.FullName
-        woiid[player["woi.id"]] = player
+    woiid = get_player_info(foundplayers)
 
     return render_template('game/gamesummarytables.html',
         tablecolumns=int(tablecolumns),

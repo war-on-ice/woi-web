@@ -5,7 +5,7 @@ from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
 
-from helper import get_rdata
+from app.helpers import get_rdata
 
 mod = Blueprint('player', __name__, url_prefix='/player')
 
@@ -17,7 +17,6 @@ CORE_DATA = "http://data.war-on-ice.net/nhlscrapr-20152016.RData"#core.RData"
 @mod.route('/')
 def show_player():
     rd = setup_nav()
-    #rdata = get_rdata("http://data.war-on-ice.net/games/2015201620001.RData")
     rdata = get_rdata(CORE_DATA)
     keys = []
     print len(rdata["grand.data"])

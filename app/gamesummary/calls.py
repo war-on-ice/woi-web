@@ -1,43 +1,16 @@
-from datetime import date
-
-import app
-
-from models import GamesTest
-from helper import get_rdata
+from app.helpers import get_rdata
 
 import datetime
 
 CORE_DATA = "http://data.war-on-ice.net/nhlscrapr-core.RData"
 
 
-def row2dict(row):
-    d = {}
-    for column in row.__table__.columns:
-        d[column.name] = str(getattr(row, column.name))
-
-    return d
-
-
-def get_games(cs=None):
-    cy = date.today()
-    if cs is None:
-        cs = GamesTest.query.filter(GamesTest.date<=cy).\
-            order_by(GamesTest.date.desc()).\
-            order_by(app.Base.metadata.tables['gamestest'].c["game.end"]).\
-            order_by(app.Base.metadata.tables['gamestest'].c["game.start"]).\
-            order_by(app.Base.metadata.tables['gamestest'].c["status"]).first()
-        cs = cs.season
-    games = GamesTest.query.filter(GamesTest.date<=cy).filter(GamesTest.season==cs).\
-        order_by(GamesTest.date.desc()).\
-        order_by(app.Base.metadata.tables['gamestest'].c["status"].desc()).\
-        order_by(app.Base.metadata.tables['gamestest'].c["seconds"])
-    return games
-
-
 def get_r_seasons():
+    """Gets the season data from CORE_DATA"""
     rdata = get_rdata(CORE_DATA)
     teamgames = {}
     for game in rdata["games"]:
+        # Split data up by season
         if game["season"] not in teamgames:
             teamgames[game["season"]] = []
         teamgames[game["season"]].append(game)
@@ -45,15 +18,19 @@ def get_r_seasons():
 
 
 def compiled_teams(season, years):
+    """Compile data about teams over the games in the season(s)"""
     teams = {}
     for game in season:
         hometeam = game["hometeam"]
         awayteam = game["awayteam"]
+        # If valid game
         if hometeam != "" and awayteam != "":
+            # Check to see if these teams exist yet
             if hometeam not in teams:
                 teams[hometeam] = {}
             if awayteam not in teams:
                 teams[awayteam] = {}
+            # Don't count games that haven't happened yet
             if game["status"] != 1 and game["status"] != 4:
                 if "Gm" not in teams[hometeam]:
                     teams[hometeam] = prepare_team_comparisons()
@@ -64,7 +41,6 @@ def compiled_teams(season, years):
                     teams[awayteam]["Team"] = awayteam
                     teams[awayteam]["Season"] = years
                 # Collect data
-                # ["Gm", "b2b", "corsi", "seconds", "GF", "GA"]
                 teams[hometeam]["Gm"] += 1
                 teams[awayteam]["Gm"] += 1
                 if game["homeafteraway"] == True or game["homeafterhome"] == True:
@@ -78,16 +54,17 @@ def compiled_teams(season, years):
     return teams
 
 
-
-
 def get_r_games():
+    # Get today's date
     now = datetime.datetime.now()
     now = now.isoformat()
+    # Grab the CORE_DATA RData file
     alldata = get_rdata(CORE_DATA)
+    # Grab game history
     games = alldata["games"]
-    count = 100
     fgames = []
     season = None
+    # Grab games from the current season
     for game in multikeysort(games, ["-date", "-gcode"]):
         if len(game["date"]) == 10 and game["date"] <= now:
             if season == None:
@@ -115,8 +92,8 @@ def multikeysort(items, columns):
 
 
 def get_r_standings(teamgames, seasons=None):
+    # Get overall standings for the season(s) found in seasons
     seasongames = {}
-    
     for season in seasons:
         for team in teamgames[season]:
             hometeam = team["hometeam"]

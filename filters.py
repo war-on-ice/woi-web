@@ -41,7 +41,6 @@ def find_tooltip(column, choices):
     for choice in choices:
         if choice[0] == column:
             return choice[1]
-    print column
     return column
 
 
