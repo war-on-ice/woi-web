@@ -66,6 +66,8 @@ periods_options = {"1": {'value': filter(lambda pd: pd == 1, all_periods), 'orde
 
 periods = create_dict(periods_options)
 
+section_danger = {0:0, 1:1, 2:1, 3:1, 4:1, 5:2, 6:2, 7:2, 8:1, 9:1, 10:2, 11:3, 12:3, 13:2, 14:1, 15:1, 16:1}
+
 teamDict ={
   'Anaheim Ducks': 'ANA', 'Arizona Coyotes': 'ARI',
   'Boston Bruins': 'BOS', 'Buffalo Sabres':'BUF',

@@ -9,10 +9,11 @@ from models import TeamRun, GoalieRun, PlayerRun, RosterMaster, GamesTest, PlayB
 from calls import get_r_games, get_r_seasons
 from forms import GameSummaryForm, SeriesSummaryForm
 
+import re
 import math
 import numpy
 
-from helpers import add2team
+from helpers import add2team, findPPGoal, calc_sc
 from app.helpers import percent, calc_strengths, get_rdata, get_player_info
 
 mod = Blueprint('game', __name__, url_prefix='/game')
@@ -309,11 +310,21 @@ def show_game_summary_tables(gameId):
 
     rdata = get_rdata("http://data.war-on-ice.net/games/" + season + gcode + ".RData")
 
+    eventcount = {"homepp": [], "awaypp": [], "4v4": [], "homegoal": [], "awaygoal": [], "emptynet": [],
+        "homesc": [{"seconds": 0, "value": 0}], "awaysc": [{"seconds": 0, "value": 0}], "homesa": [{"seconds": 0, "value": 0}], "awaysa": [{"seconds": 0, "value": 0}], "pend": []}
     pbp = rdata["playbyplay"]
+
     rteamrun = rdata["teamrun"]
     teamrun = []
     teams = set()
+    hometeam = ""
+    awayteam = ""
+    previous = 1000
     for tr in sorted(rteamrun, key=lambda x: x["TOI"], reverse=True):
+        if hometeam == "" and tr["home"] == 1:
+            hometeam = tr["Team"]
+        elif awayteam == "" and tr["home"] == 0:
+            awayteam = tr["Team"]
         if tr["period"] in period and tr["gamestate"] == gamestate:
             if tr["Team"] not in teams:
                 tr["MSF"] = int(tr["FF"]) - int(tr["SF"])
@@ -382,27 +393,72 @@ def show_game_summary_tables(gameId):
 
     pbphome = []
     pbpaway = []
-    if len(home) > 0:
-        hometeam = home[0]["Team"]
-        awayteam = away[0]["Team"]
+
     for play in pbp:
-        if play["period"] in period and (play["score.diff.cat"] == int(scoresituations) or int(scoresituations) == 7) and play["etype"] in ["GOAL", "SHOT", "BLOCK", "MISS"]:
-            for key in play:
-                if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
-                    play[key] = 0
-            # get Names
-            if play["ev.player.1"] != "xxxxxxxNA":
-                play["P1"] = woiid[play["ev.player.1"]]["full_name"]
-            if play["ev.player.2"] != "xxxxxxxNA":
-                play["P2"] = woiid[play["ev.player.2"]]["full_name"]
-            if play["ev.player.3"] != "xxxxxxxNA":
-                play["P3"] = woiid[play["ev.player.3"]]["full_name"]
-            if play["ev.team"] == hometeam:
-                if gamestate in calc_strengths(play, True):
-                    pbphome.append(play)
-            elif play["ev.team"] == awayteam:
-                if gamestate in calc_strengths(play, False):
-                    pbpaway.append(play)
+        if play["period"] in period and (play["score.diff.cat"] == int(scoresituations) or int(scoresituations) == 7):
+            if play["etype"] in ["MISS", "GOAL", "SHOT", "BLOCK"]:
+                # Shot Attempt
+                if play["ev.team"] == hometeam:
+                    if gamestate in calc_strengths(play, True):
+                        eventcount["homesa"].append({"seconds": play["seconds"], "value": len(eventcount["homesa"])})
+                        eventcount["homesc"] = calc_sc(eventcount["homesc"], play)
+                else:
+                    if gamestate in calc_strengths(play, False):
+                        eventcount["awaysa"].append({"seconds": play["seconds"], "value": len(eventcount["awaysa"])})
+                        eventcount["awaysc"] = calc_sc(eventcount["awaysc"], play)
+                # Goal
+                if play["etype"] == "GOAL":
+                    if play["ev.team"] == hometeam:
+                        eventcount["homegoal"].append({"seconds": play["seconds"], "value": len(eventcount["homegoal"]) + 1})
+                    else:
+                        eventcount["awaygoal"].append({"seconds": play["seconds"], "value": len(eventcount["awaygoal"]) + 1})
+            elif play["etype"] == "PENL":
+                # Penalty
+                seconds = int(re.findall("\d+", play["type"])[0]) * 60
+                if play["ev.team"] == hometeam:
+                    eventcount["awaypp"].append({"seconds": play["seconds"], "length": seconds})
+                elif play["ev.team"] == awayteam:
+                    eventcount["homepp"].append({"seconds": play["seconds"], "length": seconds})
+            elif play["etype"] == "PEND":
+                # Period End
+                eventcount["pend"].append(play["seconds"])
+            if play["etype"] in ["MISS", "GOAL", "SHOT", "BLOCK", "MISS"]:
+                for key in play:
+                    if type(play[key]).__module__ == "numpy" and numpy.isnan(play[key]):
+                        play[key] = 0
+                # get Names
+                if play["ev.player.1"] != "xxxxxxxNA":
+                    play["P1"] = woiid[play["ev.player.1"]]["full_name"]
+                if play["ev.player.2"] != "xxxxxxxNA":
+                    play["P2"] = woiid[play["ev.player.2"]]["full_name"]
+                if play["ev.player.3"] != "xxxxxxxNA":
+                    play["P3"] = woiid[play["ev.player.3"]]["full_name"]
+                if play["ev.team"] == hometeam:
+                    if gamestate in calc_strengths(play, True):
+                        pbphome.append(play)
+                elif play["ev.team"] == awayteam:
+                    if gamestate in calc_strengths(play, False):
+                        pbpaway.append(play)
+
+    # Find PowerPlay Goals
+    eventcount = findPPGoal(eventcount, "homepp", "homegoal")
+    eventcount = findPPGoal(eventcount, "awaypp", "awaygoal")
+
+    homelast = eventcount["homesa"][-1]["seconds"]
+    awaylast = eventcount["awaysa"][-1]["seconds"]
+
+    if homelast < awaylast:
+        eventcount["homesa"].append({"seconds": awaylast, "value": eventcount["homesa"][-1]["value"]})
+    elif homelast > awaylast:
+        eventcount["awaysa"].append({"seconds": homelast, "value": eventcount["awaysa"][-1]["value"]})
+
+    homelast = eventcount["homesc"][-1]["seconds"]
+    awaylast = eventcount["awaysc"][-1]["seconds"]
+
+    if homelast < awaylast:
+        eventcount["homesc"].append({"seconds": awaylast, "value": eventcount["homesc"][-1]["value"]})
+    elif homelast > awaylast:
+        eventcount["awaysc"].append({"seconds": homelast, "value": eventcount["awaysc"][-1]["value"]})
 
     return render_template('game/gamesummarytables.html',
         tablecolumns=int(tablecolumns),
@@ -412,7 +468,8 @@ def show_game_summary_tables(gameId):
         goalies=goalies,
         woiid=woiid,
         pbphome=pbphome, pbpaway=pbpaway,
-        teamrun=teamrun)
+        teamrun=teamrun,
+        eventcount=eventcount)
 
 @mod.route('/<gameId>/header')
 def show_game_summary_header(gameId):
