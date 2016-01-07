@@ -13,7 +13,7 @@ import re
 import math
 import numpy
 
-from helpers import add2team, findPPGoal, calc_sc
+from helpers import add2team, findPPGoal, calc_sc, get_coplayers, get_hvh
 from app.helpers import percent, calc_strengths, get_rdata, get_player_info
 
 mod = Blueprint('game', __name__, url_prefix='/game')
@@ -81,14 +81,7 @@ def show_series():
         rdata = get_rdata("http://data.war-on-ice.net/games/" + str(form.season.data) + str(gcode) + ".RData")
         pbp.extend(rdata["playbyplay"])
         rteamrun = rdata["teamrun"]
-        for play in rdata["coplayer"]:
-            ckey = play["p1"] + "|" + play["p2"]
-            if ckey not in coplayers:
-                coplayers[ckey] = play
-            else:
-                for key in play:
-                    if key not in ["p1", "p2"]:
-                        coplayers[ckey][key] += play[key]
+        coplayers = get_coplayers(rdata, coplayers)
         for tr in sorted(rteamrun, key=lambda x: x["TOI"], reverse=True):
             gid = str(tr["gcode"]) + str(tr["season"]) + str(tr["Team"])
             if tr["period"] in period and int(tr["gamestate"]) == int(form.teamstrengths.data) and gid not in gamefound:
@@ -191,38 +184,7 @@ def show_series():
 
     woiid = get_player_info(foundplayers)
 
-    coplayerlist = []
-    coplayerdict = {}
-    coplayerlinks = []
-    hometeam = None
-    awayteam = None
-    for co in coplayers:
-        matchup = coplayers[co]
-        # Define each "Node" (player), and assign a value to them
-        for p in ["p1", "p2"]:
-            team = 0
-            if matchup[p] not in coplayerdict:
-                if hometeam is None and matchup[p] in playerteams:
-                    hometeam = playerteams[matchup[p]]
-                elif awayteam is None and matchup[p] in playerteams and hometeam != playerteams[matchup[p]]:
-                    awayteam = playerteams[matchup[p]]
-                if matchup[p] in playerteams and playerteams[matchup[p]] == hometeam:
-                    team = 1
-                if matchup[p] in playerteams:
-                    coplayerlist.append({"name": matchup[p], "team": playerteams[matchup[p]], "rname": str(woiid[matchup[p]]["full_name"]), "group": team})
-                    coplayerdict[matchup[p]] = len(coplayerlist) - 1
-        if matchup["p1"] in playerteams and matchup["p2"] in playerteams:
-            # Then create a link between these two with the corresponding values
-            link = {}
-            link["source"] = coplayerdict[matchup["p1"]]
-            link["target"] = coplayerdict[matchup["p2"]]
-            link["sourcename"] = matchup["p1"]
-            link["targetname"] = matchup["p2"]
-            link["TOI"] = matchup["el2"]
-            link["evf"] = matchup["evf"]
-            link["eva"] = matchup["eva"]
-            link["cf%"] = percent(matchup["evf"], matchup["eva"])
-            coplayerlinks.append(link)
+    hvh, hometeam, awayteam = get_hvh(coplayers, playerteams, woiid)
 
     homecorsi = []
     awaycorsi = []
@@ -262,9 +224,6 @@ def show_series():
             elif play["ev.team"] == awayteam:
                 if int(form.teamstrengths.data) in calc_strengths(play, False):
                     pbpaway.append(play)
-
-    # Set up the 4 arrays for the co occurrency
-    hvh = {"nodes": coplayerlist, "links": coplayerlinks}
 
     return render_template("game/series.html",
         rd=rd,
@@ -356,9 +315,11 @@ def show_game_summary_tables(gameId):
     away = []
     home = []
     players = set()
+    playerteams = {}
     for tr in sorted(rplayerrun, key=lambda x: x["TOI"], reverse=True):
         if tr["ID"] not in foundplayers:
             foundplayers.add(tr["ID"])
+            playerteams[tr["ID"]] = tr["Team"]
         if tr["period"] in period and tr["gamestate"] == gamestate and tr["ID"] not in players:
             players.add(tr["ID"])
             tr["G"] = int(tr["GOAL1"] + tr["GOAL2"] + tr["GOAL3"] + tr["GOAL4"])
@@ -460,6 +421,10 @@ def show_game_summary_tables(gameId):
     elif homelast > awaylast:
         eventcount["awaysc"].append({"seconds": homelast, "value": eventcount["awaysc"][-1]["value"]})
 
+    # Get coplayer data
+    coplayers = get_coplayers(rdata)
+    hvh, hometeam, awayteam = get_hvh(coplayers, playerteams, woiid)
+
     return render_template('game/gamesummarytables.html',
         tablecolumns=int(tablecolumns),
         home=home, homecorsi=homecorsi,
@@ -469,7 +434,8 @@ def show_game_summary_tables(gameId):
         woiid=woiid,
         pbphome=pbphome, pbpaway=pbpaway,
         teamrun=teamrun,
-        eventcount=eventcount)
+        eventcount=eventcount,
+        hvh=hvh)
 
 @mod.route('/<gameId>/header')
 def show_game_summary_header(gameId):

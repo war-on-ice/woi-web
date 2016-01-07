@@ -4,6 +4,7 @@ from app import app, Base, constants, filters
 from flask import render_template
 from sqlalchemy import desc
 from app.navigation import setup_nav
+from app.gamesummary.models import RosterMaster
 
 from app.helpers import get_rdata
 
@@ -11,19 +12,18 @@ mod = Blueprint('player', __name__, url_prefix='/player')
 
 import resources
 
-CORE_DATA = "http://data.war-on-ice.net/nhlscrapr-20152016.RData"#core.RData"
+CORE_DATA = "http://data.war-on-ice.net/woi-common.RData"
+CAP_DATA = "http://war-on-ice.com/cap/current-contract-full.RData"
 
 
 @mod.route('/')
 def show_player():
     rd = setup_nav()
-    rdata = get_rdata(CORE_DATA)
+    rdata = get_rdata(CAP_DATA)
     keys = []
-    print len(rdata["grand.data"])
-    for grand in rdata["grand.data"]:
-        if keys != grand.keys():
-            print grand.keys()
-            keys = grand.keys()
+    for cap in rdata["team.two"]:
+        print cap["Name"], cap["S20152016"]
+        break
     return render_template('players/players.html',
         rd=rd)
 
